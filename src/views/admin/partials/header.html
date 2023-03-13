@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title><%= title %></title>
+
+	<link rel="shortcut icon" href="/img/logo.png" type="image/x-icon" />
+
+	<!-- Importar fuentes -->
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
+
+	<!-- Precargar estilos y scripts -->
+	<link rel="preload" href="/css/bootstrap.min.css" as="style" />
+	<link rel="preload" href="/js/bootstrap.bundle.min.js" as="script" />
+	<link rel="preload" href="/css/estilos.css" as="style" />
+
+	<!-- Importar estilos y scripts -->
+	<link rel="stylesheet" href="/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/css/estilos.css" />
+</head>
+
+<body class="bg-main">
+	<header class="bg-head d-flex align-content-center justify-content-center">
+		<h5 class="text-white my-2 text-center">Bienvenido al panel de administrador</h5>
+	</header>
+
+	<nav class="navbar navbar-expand-lg bg-navbar navbar-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="../index.html">Hardware House</a>
+			<button class="navbar-toggler bg-navbar" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse justify-content-between" id="navbarNavAltMarkup">
+				<div class="navbar-nav">
+					<a class="nav-link <%=  %>" href="../index.html">Inicio</a>
+					<a class="nav-link" href="../empresa.html">Empresa</a>
+					<a class="nav-link" href="../productos.html">Productos</a>
+					<a class="nav-link" href="../contactos.html">Contactos</a>
+				</div>
+				<div class="navbar-nav">
+					<a class="nav-link align-self-center align-self-lg-end p-0" href="#">
+						<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="40" height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+							<path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+							<path d="M7 12h14l-3 -3m0 6l3 -3" />
+						</svg>
+					</a>
+				</div>
+			</div>
+		</div>
+	</nav>

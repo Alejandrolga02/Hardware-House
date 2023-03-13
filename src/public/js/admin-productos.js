@@ -1,32 +1,11 @@
 "use strict";
 // Import the functions you need from the SDKs you need
-import { onValue, ref, set, child, get, update } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-database.js";
-import { ref as refStorage, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-storage.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
-import { db, storage, auth, showAlert } from "./config.js";
+
 
 // Declarar elementos del DOM
-const btnAgregar = document.querySelector("#btnAgregar");
-const btnConsultar = document.querySelector("#btnConsultar");
-const btnActualizar = document.querySelector("#btnActualizar");
-const btnDeshabilitar = document.querySelector("#btnDeshabilitar");
-const btnMostrar = document.querySelector("#btnMostrar");
-const btnLimpiar = document.querySelector("#btnLimpiar");
 const results = document.querySelector("#results");
-const imagen = document.querySelector("#imagen");
-const logOut = document.querySelector("#logout");
-
-// Variables input
-const getInputs = () => {
-	event.preventDefault();
-
-	return {
-		codigo: document.querySelector("#codigo").value.trim(),
-		nombre: document.querySelector("#nombre").value.trim(),
-		precio: document.querySelector("#precio").value.trim(),
-		descripcion: document.querySelector("#descripcion").value.trim(),
-	};
-};
+const imagen = document.querySelector("#urlImagen");
+const form = document.querySelector("#form");
 
 const clearInputs = () => {
 	event.preventDefault();
@@ -36,8 +15,6 @@ const clearInputs = () => {
 	document.querySelector("#descripcion").value = "";
 	document.querySelector("#url").value = "";
 	document.querySelector("#imgPreview").classList.add("d-none");
-	results.classList.add("d-none");
-	results.innerHTML = "";
 	imagen.value = "";
 };
 
@@ -237,15 +214,6 @@ async function disableProduct() {
 	}
 }
 
-btnAgregar.addEventListener("click", insertProduct);
-btnConsultar.addEventListener("click", lookUpProduct);
-btnActualizar.addEventListener("click", updateProduct);
-btnDeshabilitar.addEventListener("click", disableProduct);
-btnMostrar.addEventListener("click", showProducts);
-btnLimpiar.addEventListener("click", clearInputs);
+form.addEventListener("submit", insertProduct);
+form.addEventListener("reset", clearInputs);
 imagen.addEventListener("change", imagenChange);
-logOut.addEventListener("click", async e => {
-	e.preventDefault();
-
-	await signOut(auth);
-});

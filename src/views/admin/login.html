@@ -1,0 +1,45 @@
+<%- include('partials/header.html') %>
+
+<main class="container mh p-4 d-flex justify-content-center align-items-center">
+	<div class="border border-3 p-3 rounded bg-white">
+		<h3 class="text-start mb-3">Iniciar sesión</h3>
+		<div class="mb-3 d-flex justify-content-center align-items-center">
+			<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-circle" width="300" height="300" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+				<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+				<circle cx="12" cy="12" r="9" />
+				<circle cx="12" cy="10" r="3" />
+				<path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" />
+			</svg>
+		</div>
+		<div class="mb-3">
+			<label for="email" class="form-label">Correo electronico</label>
+			<input type="email" class="form-control" id="email" placeholder="Introduzca un correo electronico">
+		</div>
+		<div class="mb-3">
+			<label for="password" class="form-label">Contraseña</label>
+			<input type="password" class="form-control" id="password" placeholder="Introduzca una contraseña">
+		</div>
+		<div class="text-end">
+			<button type="submit" id="login" class="btn btn-primary">Iniciar sesion</button>
+		</div>
+	</div>
+</main>
+
+<div class="modal fade" id="alertModal" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="alertTitle">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p id="alertMessage">Modal body text goes here.</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<%- include('partials/footer.html') %>

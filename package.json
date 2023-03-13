@@ -1,0 +1,70 @@
+{
+	"name": "hardware-house",
+	"version": "2.0.0",
+	"description": "Proyecto punto de venta para Hardware House hecho con node y express",
+	"main": "src/app.js",
+	"type": "module",
+	"scripts": {
+		"dev": "node --watch src/index.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://gitlab.com/gadaca/hardware-house.git"
+	},
+	"keywords": [
+		"Node",
+		"Express",
+		"Ejs",
+		"Punto",
+		"de",
+		"Venta",
+		"Hardware",
+		"Shop",
+		"Mysql"
+	],
+	"author": {
+		"name": "Alejandro Ivan Lizarraga Rojas",
+		"email": "alejandroivanliza@gmail.com",
+		"url": "https://gitlab.com/Alejandrolga02"
+	},
+	"contributors": [
+		{
+			"name": "Jesus Daniel Lopez Robles",
+			"url": "https://gitlab.com/JesusLopez117"
+		},
+		{
+			"name": "Cesar Oswaldo Bernal Sanchez",
+			"url": "https://gitlab.com/CesarUPSIN"
+		},
+		{
+			"name": "Guillermo Manuel Sanchez Lizarraga",
+			"url": "https://gitlab.com/GuillermoSan02"
+		},
+		{
+			"name": "Marvin Alejandro Lopez Diaz",
+			"url": "https://gitlab.com/MarvinLopezDiaz"
+		},
+		{
+			"name": "Jose Manuel Cerezo Arreola",
+			"url": "https://gitlab.com/2018030209"
+		}
+	],
+	"license": "ISC",
+	"bugs": {
+		"url": "https://gitlab.com/gadaca/hardware-house/issues"
+	},
+	"homepage": "https://gitlab.com/gadaca/hardware-house#readme",
+	"dependencies": {
+		"cloudinary": "^1.35.0",
+		"dotenv": "^16.0.3",
+		"ejs": "^3.1.8",
+		"express": "^4.18.2",
+		"morgan": "^1.10.0",
+		"multer": "^1.4.5-lts.1",
+		"mysql2": "^3.2.0"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.21"
+	}
+}
