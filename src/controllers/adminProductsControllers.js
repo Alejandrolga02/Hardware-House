@@ -1,15 +1,18 @@
-import { pool } from "../../db.js";
-import cloudinary from '../../cloudinary.js';
+import { pool } from "../db.js";
+import cloudinary from '../cloudinary.js';
 
 export const renderProducts = async (req, res) => {
-	const [rows] = await pool.query("SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.idTipoUnidad, tipoUnidad.nombre AS unidad, categorias.nombre AS categoria FROM productos LEFT JOIN tipoUnidad ON productos.idTipoUnidad = tipoUnidad.id LEFT JOIN categorias ON productos.idCategoria = categorias.id");
+	const [rows] = await pool.query("SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id");
 	const [categorias] = await pool.query("SELECT * FROM categorias");
-	const [unidades] = await pool.query("SELECT * FROM tipoUnidad");
 	res.render("admin/productos.html", {
 		title: "Admin - Productos",
 		products: rows,
 		categorias,
-		unidades
+		scripts: [
+			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
+			"/js/bootstrap.bundle.min.js",
+			"/js/admin-productos.js"
+		]
 	});
 };
 
