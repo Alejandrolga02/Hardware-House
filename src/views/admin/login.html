@@ -1,7 +1,7 @@
 <%- include('partials/header.html') %>
 
 <main class="container mh p-4 d-flex justify-content-center align-items-center">
-	<div class="border border-3 p-3 rounded bg-white">
+	<form method="post" action="/admin/auth/login" class="border border-3 p-3 rounded bg-white">
 		<h3 class="text-start mb-3">Iniciar sesión</h3>
 		<div class="mb-3 d-flex justify-content-center align-items-center">
 			<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-circle" width="300" height="300" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -12,12 +12,12 @@
 			</svg>
 		</div>
 		<div class="mb-3">
-			<label for="email" class="form-label">Correo electronico</label>
-			<input type="email" class="form-control" id="email" placeholder="Introduzca un correo electronico">
+			<label for="usuario" class="form-label">Usuario</label>
+			<input type="text" class="form-control" id="usuario" name="usuario" placeholder="Introduzca un usuario">
 		</div>
 		<div class="mb-3">
-			<label for="password" class="form-label">Contraseña</label>
-			<input type="password" class="form-control" id="password" placeholder="Introduzca una contraseña">
+			<label for="contrasena" class="form-label">Contraseña</label>
+			<input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Introduzca una contraseña">
 		</div>
 		<div class="text-end">
 			<button type="submit" id="login" class="btn btn-primary">Iniciar sesion</button>

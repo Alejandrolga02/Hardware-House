@@ -2,8 +2,10 @@
 	<h5 class="text-white text-center m-0">Todos los derechos reservados - Hardware House</h5>
 </footer>
 
-<script src="/js/bootstrap.bundle.min.js"></script>
-<!-- <script src="/js/admin-productos.js" type="module"></script> -->
+<% scripts.forEach(element => { %>
+<script src="<%= element %>"></script>
+<% }) %>
+
 </body>
 
 </html>

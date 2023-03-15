@@ -1,6 +1,7 @@
 "use strict";
-// Import the functions you need from the SDKs you need
-
+// Import cloudinary credentials
+const api_key = "379625484436796"
+const cloud_name = "dzlemvbvt"
 
 // Declarar elementos del DOM
 const results = document.querySelector("#results");
