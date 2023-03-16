@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import morgan from "morgan";
 import ejs from "ejs";
+import fileUpload from "express-fileupload";
 
 import { fileURLToPath } from "url";
 
