@@ -24,12 +24,15 @@ app.use(express.urlencoded({ extended: false }));
 // routes
 import adminProductos from "./routes/adminProductos.js";
 import adminAuth from "./routes/adminAuth.js";
+import adminIndex from "./routes/adminIndex.js";
 
 const apiPaths = {
 	adminProductos: '/admin/productos',
-	adminAuth: '/admin/auth'
+	adminAuth: '/admin/auth',
+	adminIndex: '/admin/menu'
 }
 
+app.use(apiPaths.adminIndex, adminIndex);
 app.use(apiPaths.adminProductos, adminProductos);
 app.use(apiPaths.adminAuth, adminAuth);
 
