@@ -19,6 +19,7 @@ export const login = async (req, res) => {
         }
 
     } catch (error) {
+        console.log(error.message)
         res.redirect("/admin/auth");
     }
 }
@@ -49,7 +50,6 @@ export const register = async (req, res) => {
 
         const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [newVendedor.usuario]);
         if (result.length > 0) {
-            console.log(result.le);
             res.status(400).send("Ya existe ese usuario");
         } else {
             await pool.query("INSERT INTO admin set ?", [newVendedor]);
