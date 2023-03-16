@@ -1,17 +1,23 @@
 import { pool } from "../db.js";
 import session from '../session.js'
+import bcryptjs from 'bcryptjs'
 
 export const login = async (req, res) => {
     try {
         const { usuario, contrasena } = req.body;
-        console.log(usuario);
-        console.log(contrasena);
-        const [result] = await pool.query("SELECT * FROM vendedor WHERE usuario = ? AND contrasena = ?", [usuario, contrasena]);
-        session.id = result[0].id;
-        session.isAdmin = true;
-        session.isAuth = true;
-        console.log(session);
-        res.redirect("/admin/menu")
+        const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [usuario, contrasena]);
+
+        let equal = await bcryptjs.compare(contrasena, result[0].contrasena);
+
+        if (equal) {
+            session.id = result[0].id;
+            session.isAdmin = true;
+            session.isAuth = true;
+            res.redirect("/admin/menu");
+        } else {
+            res.status(400).send("Usuario o contraseña incorrectas");
+        }
+
     } catch (error) {
         res.redirect("/admin/auth");
     }
@@ -33,4 +39,27 @@ export const logout = async (req, res) => {
     } catch (error) {
         console.log(error.message);
     }
+}
+
+export const register = async (req, res) => {
+    try {
+        let newVendedor = req.body;
+        newVendedor.contrasena = await bcryptjs.hash(newVendedor.contrasena, 10);
+        newVendedor.id = 0;
+
+        const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [newVendedor.usuario]);
+        if (result.length > 0) {
+            console.log(result.le);
+            res.status(400).send("Ya existe ese usuario");
+        } else {
+            await pool.query("INSERT INTO admin set ?", [newVendedor]);
+            res.status(200).send("Usuario creado con exito");
+        }
+
+    } catch (error) {
+        console.log(error);
+        console.log(error.message);
+        res.status(400).send("Sucedio un error");
+    }
+
 }
