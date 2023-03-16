@@ -6,12 +6,15 @@ import {
 	renderProducts,
 	updateProducts,
 } from "../controllers/adminProductsControllers.js";
+import fileUpload from "express-fileupload";
 
 const router = Router();
 
 // Administración Productos
 router.get("/", renderProducts);
-router.post("/add/", createProducts);
+router.post("/add/", fileUpload({
+	useTempFiles: true
+}),createProducts);
 router.get("/update/:id", editProducts);
 router.post("/update/:id", updateProducts);
 router.get("/delete/:id", deleteProducts);
