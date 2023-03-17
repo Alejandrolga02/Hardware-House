@@ -1,7 +1,7 @@
 import { pool } from "../db.js";
 
 export const renderClientIndex = async (req, res) => {
-	const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen FROM productos WHERE estado = 0 LIMIT 4");
+	const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen FROM productos WHERE estado = 1 LIMIT 4");
 	res.render("clients/index.html", {
 		title: "Home",
 		products: rows,
@@ -37,7 +37,7 @@ export const renderClientAboutUs = async (req, res) => {
 };
 
 export const renderClientProducts = async (req, res) => {
-	const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen FROM productos WHERE estado = 0");
+	const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen FROM productos WHERE estado = 1");
 
 	res.render("clients/productos.html", {
 		title: "Productos",
