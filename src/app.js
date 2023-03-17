@@ -26,19 +26,23 @@ app.use(express.urlencoded({ extended: false }));
 import adminProductos from "./routes/adminProductos.js";
 import adminAuth from "./routes/adminAuth.js";
 import adminIndex from "./routes/adminIndex.js";
+import client from "./routes/clients.js";
 
 const apiPaths = {
 	adminProductos: '/admin/productos',
 	adminAuth: '/admin/auth',
-	adminIndex: '/admin/menu'
+	adminIndex: '/admin',
+	client: '/'
 }
+
+// static files
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(apiPaths.adminIndex, adminIndex);
 app.use(apiPaths.adminProductos, adminProductos);
 app.use(apiPaths.adminAuth, adminAuth);
+app.use(apiPaths.client, client);
 
-// static files
-app.use(express.static(path.join(__dirname, "public")));
 
 // starting the server
 export default app;

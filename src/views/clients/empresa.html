@@ -1,89 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta charset="UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<title>Empresa</title>
-
-	<link rel="shortcut icon" href="img/logo.png" type="image/x-icon" />
-
-	<!-- Importar fuentes -->
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
-
-	<!-- Precargar estilos y scripts -->
-	<link rel="preload" href="css/bootstrap.min.css" as="style" />
-	<link rel="preload" href="js/bootstrap.bundle.min.js" as="script" />
-	<link rel="preload" href="css/estilos.css" as="style" />
-
-	<!-- Importar estilos y scripts -->
-	<link rel="stylesheet" href="css/bootstrap.min.css" />
-	<link rel="stylesheet" href="css/estilos.css" />
-</head>
-
-<body class="bg-main">
-	<header class="bg-head d-flex align-content-center justify-content-center">
-		<h5 class="text-white my-2 text-center">Bienvenidos a AleTech</h5>
-	</header>
-
-	<nav class="navbar navbar-expand-lg bg-navbar navbar-dark">
-		<div class="container-fluid">
-			<a class="navbar-brand" href="index.html">AleTech</a>
-			<button class="navbar-toggler bg-navbar" type="button" data-bs-toggle="collapse"
-				data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
-				aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-				<div class="navbar-nav">
-					<a class="nav-link" href="index.html">Inicio</a>
-					<a class="nav-link active" href="empresa.html">Empresa</a>
-					<a class="nav-link" href="productos.html">Productos</a>
-					<a class="nav-link" href="contactos.html">Contactos</a>
-				</div>
-			</div>
+<%- include('partials/header.html') %>
+<main class="container mh py-4">
+	<h1 class="m-0">Nuestra empresa</h1>
+	<div class="row mt-2">
+		<div class="col-12 col-md-8">
+			<h3>AleTech</h3>
+			<p style="text-align: justify">
+				En AleTech creamos el lugar más conveniente para comprar electrónica en México. Nuestro sitio
+				www.AleTech.mx ya es el más
+				funcional y surtido en electrónica de consumo / computación al nivel nacional. Junto con nuestros
+				clientes, continuamos
+				innovándonos para seguir ofreciéndote el lugar más conveniente para realizar sus compras.
+				Constituida en el 2008, AleTech S.A.
+				de C.V. participó en el programa de la Incubadora de Empresas del Tecnológico de Monterrey (ITESM) y
+				fue certificada por la
+				Asociación de Internet. AleTech es socio preferido de las mejores marcas y distribuye más de 40,000
+				productos nuevos, 100%
+				originales y con la garantía del fabricante. Contamos con certificaciones como canal de distribución
+				de diferentes
+				fabricantes. Dentro de nuestra gama de productos encontrarás electrónica de consumo como son
+				productos Apple, Televisores,
+				Audio & MP3, Foto & Video, DVD & Blu-Ray así como productos de computación como son Portátiles,
+				PC's, Cómputo, Monitores,
+				Punto de Venta (POS), Impresoras & Copiadoras, Telecomunicación y Software.
+			</p>
 		</div>
-	</nav>
-
-	<main class="container mh py-4">
-		<h1 class="m-0">Nuestra empresa</h1>
-		<div class="row mt-2">
-			<div class="col-12 col-md-8">
-				<h3>AleTech</h3>
-				<p style="text-align: justify">
-					En AleTech creamos el lugar más conveniente para comprar electrónica en México. Nuestro sitio
-					www.AleTech.mx ya es el más
-					funcional y surtido en electrónica de consumo / computación al nivel nacional. Junto con nuestros
-					clientes, continuamos
-					innovándonos para seguir ofreciéndote el lugar más conveniente para realizar sus compras.
-					Constituida en el 2008, AleTech S.A.
-					de C.V. participó en el programa de la Incubadora de Empresas del Tecnológico de Monterrey (ITESM) y
-					fue certificada por la
-					Asociación de Internet. AleTech es socio preferido de las mejores marcas y distribuye más de 40,000
-					productos nuevos, 100%
-					originales y con la garantía del fabricante. Contamos con certificaciones como canal de distribución
-					de diferentes
-					fabricantes. Dentro de nuestra gama de productos encontrarás electrónica de consumo como son
-					productos Apple, Televisores,
-					Audio & MP3, Foto & Video, DVD & Blu-Ray así como productos de computación como son Portátiles,
-					PC's, Cómputo, Monitores,
-					Punto de Venta (POS), Impresoras & Copiadoras, Telecomunicación y Software.
-				</p>
-			</div>
-			<div class="col-12 col-md-4">
-				<img src="../img/confianza.webp" class="w-100" alt="" srcset="" />
-			</div>
+		<div class="col-12 col-md-4">
+			<img src="../img/confianza.webp" class="w-100" alt="" srcset="" />
 		</div>
-	</main>
-
-	<footer class="bg-footer d-flex align-content-center justify-content-center py-3">
-		<h5 class="text-white text-center m-0">Todos los derechos reservados Alejandro Ivan Lizarraga Rojas</h5>
-	</footer>
-
-	<script src="js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+	</div>
+</main>
+<%- include('partials/footer.html') %>

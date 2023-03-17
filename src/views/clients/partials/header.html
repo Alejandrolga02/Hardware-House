@@ -31,26 +31,15 @@
 
 	<nav class="navbar navbar-expand-lg bg-navbar navbar-dark">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="/admin/">Hardware House</a>
+			<a class="navbar-brand" href="/">Hardware House</a>
 			<button class="navbar-toggler bg-navbar" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<div class="collapse navbar-collapse justify-content-between" id="navbarNavAltMarkup">
+			<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 				<div class="navbar-nav">
 					<% navLinks.forEach(element => { %>
 					<a class="<%= element.class %>" href="<%= element.link %>"><%= element.title %></a>
 					<% }); %>
-				</div>
-				<div class="navbar-nav">
-					<% if (!title.includes("Login")) { %>
-					<a class="nav-link align-self-center align-self-lg-end p-0" href="/admin/auth/logout">
-						<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="40" height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-							<path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-							<path d="M7 12h14l-3 -3m0 6l3 -3" />
-						</svg>
-					</a>
-					<% } %>
 				</div>
 			</div>
 		</div>

@@ -13,7 +13,7 @@ export const login = async (req, res) => {
             session.id = result[0].id;
             session.isAdmin = true;
             session.isAuth = true;
-            res.redirect("/admin/menu");
+            res.redirect("/admin/");
         } else {
             res.status(400).send("Usuario o contraseña incorrectas");
         }
@@ -27,6 +27,9 @@ export const login = async (req, res) => {
 export const renderLogin = async (req, res) => {
     res.render("admin/login.html", {
         title: "Admin - Login",
+        navLinks: [
+            { class: "nav-link active", link: "/", title: "Iniciar Sesión" },
+        ],
         scripts: [
             "/js/bootstrap.bundle.min.js",
         ]
