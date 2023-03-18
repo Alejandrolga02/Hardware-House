@@ -33,6 +33,13 @@ export const createProducts = async (req, res) => {
 			return;
 		}
 
+		console.log(req.files.urlImagen);
+
+		if(req.files.urlImagen.truncated) {
+			res.redirect("/admin/productos");
+			return;
+		}
+
 		const photo = req.files.urlImagen;	//Se obtiene el objeto del archivo
 		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	//Se ssube la imagen a Cloudinary
 			folder: "products",
@@ -60,7 +67,7 @@ export const createProducts = async (req, res) => {
 		}
 
 		console.log(newProduct);
-		const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
+		//const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
 		res.redirect("/admin/productos");	//Se redirecciona a la pagina de productos
 		return;
 
