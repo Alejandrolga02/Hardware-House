@@ -32,7 +32,8 @@ export const createProducts = async (req, res) => {
 		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	//Se ssube la imagen a Cloudinary
 			folder: "products",
 		});
-		const url = result.public_id;	//Se obtienenla URL de la imagen en Cloudinary
+
+		const url = `${result.public_id}.${result.format}`;	//Se obtienenla URL de la imagen en Cloudinary
 
 		//Función para eliminar las imagenes temporales.
 		try {

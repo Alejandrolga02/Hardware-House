@@ -1,177 +1,164 @@
 <%- include('partials/header.html') %>
 
-	<main class="container-lg mh py-4">
-		<h1 class="text-start mb-0">Administrar productos</h1>
-		<form class="mt-3 border border-3 p-3 rounded bg-white" id="form" action="/admin/productos/add/" method="post" enctype="multipart/form-data">
-			<div class="row mb-0 mb-md-2">
-				<div class="col-12 col-md-6 mb-2 mb-md-0">
-					<label for="codigo" class="form-label">Código</label>
-					<input type="text" id="codigo" name="codigo" class="form-control" placeholder="Introduzca un código"
-						required />
-				</div>
-				<div class="col-12 col-md-6 mb-2 mb-md-0">
-					<label for="precio" class="form-label">Precio</label>
-					<div class="input-group">
-						<span class="input-group-text">$</span>
-						<input type="text" id="precio" name="precio" class="form-control"
-							placeholder="Introduzca un precio" required />
-					</div>
-				</div>
+<main class="container-lg mh py-4">
+	<h1 class="text-start mb-0">Administrar productos</h1>
+	<form class="mt-3 border border-3 p-3 rounded bg-white" id="form" action="/admin/productos/add/" method="post" enctype="multipart/form-data">
+		<div class="row mb-0 mb-md-2">
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="codigo" class="form-label">Código</label>
+				<input type="text" id="codigo" name="codigo" class="form-control" placeholder="Introduzca un código" required />
 			</div>
-			<div class="mb-2">
-				<label for="nombre" class="form-label">Nombre</label>
-				<input type="text" id="nombre" name="nombre" class="form-control" placeholder="Introduzca un nombre"
-					required />
-			</div>
-			<div class="mb-2">
-				<label for="descripcion" class="form-label">Descripción</label>
-				<textarea class="form-control" id="descripcion" name="descripcion" rows="5"
-					placeholder="Introduzca una descripción" required></textarea>
-			</div>
-			<div class="row mb-0 mb-md-2">
-				<div class="col-12 col-md-6 mb-2 mb-md-0">
-					<label for="idCategoria" class="form-label">Categoria</label>
-					<select class="form-select" name="idCategoria" id="idCategoria">
-						<% categorias.forEach(element=> { %>
-							<option value="<%= element.id %>">
-								<%= element.nombre %>
-							</option>
-							<% }) %>
-					</select>
-				</div>
-				<div class="col-12 col-md-6 mb-2 mb-md-0">
-					<label for="disponibilidad" class="form-label">Disponibilidad</label>
-					<input type="text" id="disponibilidad" name="disponibilidad" class="form-control"
-						placeholder="Introduzca un nombre" required />
-				</div>
-			</div>
-			<div class="mb-2 d-flex flex-column">
-				<label for="urlImagen" class="form-label">Imagen</label>
-				<img id="imgPreview" src="#" height="200" class="d-none align-self-center my-2"
-					alt="Imagen introducida" />
-				<input class="form-control" type="file" id="urlImagen" name="urlImagen" required />
-			</div>
-
-			<div class="d-flex flex-wrap justify-content-end gap-2">
-				<button class="btn btn-success" type="submit">
-					<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-plus" width="26"
-						height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none"
-						stroke-linecap="round" stroke-linejoin="round">
-						<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-						<rect x="4" y="4" width="16" height="16" rx="2" />
-						<line x1="9" y1="12" x2="15" y2="12" />
-						<line x1="12" y1="9" x2="12" y2="15" />
-					</svg>
-					Agregar
-				</button>
-				<button class="btn btn-warning" id="btnConsultar">
-					<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="26"
-						height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none"
-						stroke-linecap="round" stroke-linejoin="round">
-						<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-						<circle cx="10" cy="10" r="7" />
-						<line x1="21" y1="21" x2="15" y2="15" />
-					</svg>
-					Consultar
-				</button>
-				<button class="btn btn-info text-white" type="reset">
-					<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eraser" width="26"
-						height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none"
-						stroke-linecap="round" stroke-linejoin="round">
-						<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-						<path
-							d="M19 19h-11l-4 -4a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9 9" />
-						<line x1="18" y1="12.3" x2="11.7" y2="6" />
-					</svg>
-					Limpiar
-				</button>
-			</div>
-
-			<div class="scrollable">
-				<table id="results" class="table table-light table-hover table-bordered mt-2 mb-0">
-					<thead>
-						<tr>
-							<th scope="col" width="5%" class="text-center">Código</th>
-							<th scope="col" width="30%" class="text-center">Nombre</th>
-							<th scope="col" width="30%" class="text-center">Descripción</th>
-							<th scope="col" width="15%" class="text-center">Precio</th>
-							<th scope="col" width="15%" class="text-center">Imagen</th>
-							<th scope="col" width="5%" class="text-center">Disponibles</th>
-							<th scope="col" width="5%" class="text-center">Categoria</th>
-							<th scope="col" width="5%" class="text-center">Acciones</th>
-						</tr>
-					</thead>
-					<tbody>
-						<% products.forEach(element=> { %>
-							<tr>
-								<th class="text-center" scope="row">
-									<%= element.codigo %>
-								</th>
-								<td class="text-center">
-									<%= element.nombre %>
-								</td>
-								<td class="text-center">
-									<%= element.descripcion %>
-								</td>
-								<td class="text-center">$<%= element.precio %>
-								</td>
-								<td class="text-center p-0"><img class="w-100" src="<%= element.urlImagen %>"
-										alt="Imagen de <%= element.nombre %>" /></td>
-								<td class="text-center">
-									<%= element.disponibilidad %>
-								</td>
-								<td class="text-center">
-									<%= element.categoria %>
-								</td>
-								<td>
-									<a href="/admin/productos/delete/<%= element.codigo %>" class="btn btn-danger">
-										<svg xmlns="http://www.w3.org/2000/svg"
-											class="icon icon-tabler icon-tabler-trash" width="26" height="26"
-											viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none"
-											stroke-linecap="round" stroke-linejoin="round">
-											<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-											<line x1="4" y1="7" x2="20" y2="7" />
-											<line x1="10" y1="11" x2="10" y2="17" />
-											<line x1="14" y1="11" x2="14" y2="17" />
-											<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-											<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-										</svg>
-									</a>
-									<a href="/admin/productos/update/<%= element.codigo %>" class="btn btn-dark">
-										<svg xmlns="http://www.w3.org/2000/svg"
-											class="icon icon-tabler icon-tabler-edit" width="26" height="26"
-											viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none"
-											stroke-linecap="round" stroke-linejoin="round">
-											<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-											<path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
-											<path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />
-											<line x1="16" y1="5" x2="19" y2="8" />
-										</svg>
-									</a>
-								</td>
-							</tr>
-							<% }); %>
-					</tbody>
-				</table>
-			</div>
-		</form>
-
-		<div class="modal fade" id="alertModal" tabindex="-1">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="alertTitle">Modal title</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<p id="alertMessage">Modal body text goes here.</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-					</div>
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="precio" class="form-label">Precio</label>
+				<div class="input-group">
+					<span class="input-group-text">$</span>
+					<input type="text" id="precio" name="precio" class="form-control" placeholder="Introduzca un precio" required />
 				</div>
 			</div>
 		</div>
-	</main>
+		<div class="mb-2">
+			<label for="nombre" class="form-label">Nombre</label>
+			<input type="text" id="nombre" name="nombre" class="form-control" placeholder="Introduzca un nombre" required />
+		</div>
+		<div class="mb-2">
+			<label for="descripcion" class="form-label">Descripción</label>
+			<textarea class="form-control" id="descripcion" name="descripcion" rows="5" placeholder="Introduzca una descripción" required></textarea>
+		</div>
+		<div class="row mb-0 mb-md-2">
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="idCategoria" class="form-label">Categoria</label>
+				<select class="form-select" name="idCategoria" id="idCategoria">
+					<% categorias.forEach(element=> { %>
+					<option value="<%= element.id %>">
+						<%= element.nombre %>
+					</option>
+					<% }) %>
+				</select>
+			</div>
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="disponibilidad" class="form-label">Disponibilidad</label>
+				<input type="text" id="disponibilidad" name="disponibilidad" class="form-control" placeholder="Introduzca un nombre" required />
+			</div>
+		</div>
+		<div class="mb-2 d-flex flex-column">
+			<label for="urlImagen" class="form-label">Imagen</label>
+			<img id="imgPreview" src="#" height="200" class="d-none align-self-center my-2" alt="Imagen introducida" />
+			<input class="form-control" type="file" id="urlImagen" name="urlImagen" required />
+		</div>
 
-	<%- include('partials/footer.html') %>
+		<div class="d-flex flex-wrap justify-content-end gap-2">
+			<button class="btn btn-success" type="submit">
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-plus" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+					<rect x="4" y="4" width="16" height="16" rx="2" />
+					<line x1="9" y1="12" x2="15" y2="12" />
+					<line x1="12" y1="9" x2="12" y2="15" />
+				</svg>
+				Agregar
+			</button>
+			<button class="btn btn-warning" id="btnConsultar">
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+					<circle cx="10" cy="10" r="7" />
+					<line x1="21" y1="21" x2="15" y2="15" />
+				</svg>
+				Consultar
+			</button>
+			<button class="btn btn-info text-white" type="reset">
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eraser" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+					<path d="M19 19h-11l-4 -4a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9 9" />
+					<line x1="18" y1="12.3" x2="11.7" y2="6" />
+				</svg>
+				Limpiar
+			</button>
+		</div>
+
+		<div class="scrollable">
+			<table id="results" class="table table-light table-hover table-bordered mt-2 mb-0">
+				<thead>
+					<tr>
+						<th scope="col" width="5%" class="text-center">Código</th>
+						<th scope="col" width="30%" class="text-center">Nombre</th>
+						<th scope="col" width="30%" class="text-center">Descripción</th>
+						<th scope="col" width="15%" class="text-center">Precio</th>
+						<th scope="col" width="15%" class="text-center">Imagen</th>
+						<th scope="col" width="5%" class="text-center">Disponibles</th>
+						<th scope="col" width="5%" class="text-center">Categoria</th>
+						<th scope="col" width="5%" class="text-center">Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% products.forEach(element=> { %>
+					<tr>
+						<th class="text-center" scope="row">
+							<%= element.codigo %>
+						</th>
+						<td class="text-center">
+							<%= element.nombre %>
+						</td>
+						<td class="text-center">
+							<%= element.descripcion %>
+						</td>
+						<td class="text-center">$<%= element.precio %>
+						</td>
+						<td class="text-center p-0"><img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_120,h_120,c_fill,q_90/<%= element.urlImagen %>" alt="Imagen de <%= element.nombre %>" /></td>
+						<td class="text-center">
+							<%= element.disponibilidad %>
+						</td>
+						<td class="text-center">
+							<%= element.categoria %>
+						</td>
+						<td class="d-flex justify-content-center align-items-center gap-2">
+							<% if (element.estado === 1) { %>
+							<a href="/admin/productos/delete/<%= element.codigo %>" class="btn btn-danger">
+								<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<circle cx="8" cy="12" r="2" />
+									<rect x="2" y="6" width="20" height="12" rx="6" />
+								</svg>
+							</a>
+							<% } else { %>
+							<a href="/admin/productos/delete/<%= element.codigo %>" class="btn btn-primary">
+								<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<circle cx="16" cy="12" r="2" />
+									<rect x="2" y="6" width="20" height="12" rx="6" />
+								</svg>
+							</a>
+							<% } %>
+							<a href="/admin/productos/update/<%= element.codigo %>" class="btn btn-dark">
+								<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
+									<path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />
+									<line x1="16" y1="5" x2="19" y2="8" />
+								</svg>
+							</a>
+						</td>
+					</tr>
+					<% }); %>
+				</tbody>
+			</table>
+		</div>
+	</form>
+
+	<div class="modal fade" id="alertModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="alertTitle">Modal title</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p id="alertMessage">Modal body text goes here.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<%- include('partials/footer.html') %>
