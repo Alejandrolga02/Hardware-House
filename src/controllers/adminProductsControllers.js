@@ -28,6 +28,11 @@ export const renderProducts = async (req, res) => {
 //Función para crear un nuevo producto.
 export const createProducts = async (req, res) => {
 	try {
+		if(req.files === null){		//Comprobación de subida de archivo.
+			res.redirect("/admin/productos");
+			return;
+		}
+
 		const photo = req.files.urlImagen;	//Se obtiene el objeto del archivo
 		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	//Se ssube la imagen a Cloudinary
 			folder: "products",

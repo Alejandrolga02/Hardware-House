@@ -14,7 +14,9 @@ const router = Router();
 // Administración Productos
 router.get("/", session.checkAdmin, renderProducts);
 router.post("/add/", session.checkAdmin, fileUpload({
-	useTempFiles: true
+	useTempFiles: true,
+	limits: {fileSize: 2 * 1024 * 1024},	//Se tiene un limite de 2mb por archivo.
+	abortOnLimit: true
 }),createProducts);
 router.get("/update/:id", session.checkAdmin, editProducts);
 router.post("/update/:id", session.checkAdmin, updateProducts);
