@@ -19,3 +19,30 @@ export const renderCategories = async (req, res)=> {
         ]
     });
 };
+
+export const createCategories = async(req, res)=> {
+    try {
+        if(false) {
+            res.status(400).send("Los datos no son del tipo correcto");
+        }
+        if(false) {
+            res.status(400).send("Existe un registro con ese código");
+        }
+
+        const newCategorie = {
+            id: req.body.codigo,
+            nombre: res.body.nombre,
+            estado: 1
+        }
+
+        console.log(newCategorie);
+
+        const rows = await pool.query("INSERT INTO categorias set ?", [newCategorie]);
+        
+        res.status(200).send("Se insertaron con exito los datos");
+    }
+    catch(error) {
+        console.error(error.message);
+        res.status(400).send("Sucedio un error");
+    }
+};

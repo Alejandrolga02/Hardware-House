@@ -26,7 +26,7 @@ export const renderProducts = async (req, res) => {
 };
 
 //Función para crear un nuevo producto.
-export const createProducts = async (req, res) => {
+export const createProducts = async(req, res) => {
 	try {
 		if (req.files === null) {	// Comprobación de subida de archivo.
 			res.status(400).send("No se subió una imagen");
