@@ -20,7 +20,7 @@ export const renderProducts = async (req, res) => {
 		scripts: [
 			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 			"/js/bootstrap.bundle.min.js",
-			//"/js/admin-productos.js"
+			"/js/admin-productos.js"
 		]
 	});
 };
@@ -28,26 +28,24 @@ export const renderProducts = async (req, res) => {
 //Función para crear un nuevo producto.
 export const createProducts = async (req, res) => {
 	try {
-		if(req.files === null){		//Comprobación de subida de archivo.
-			res.redirect("/admin/productos");
-			return;
+		if (req.files === null) {	// Comprobación de subida de archivo.
+			res.status(400).send("No se subió una imagen");
 		}
 
 		console.log(req.files.urlImagen);
 
-		if(req.files.urlImagen.truncated) {
-			res.redirect("/admin/productos");
-			return;
+		if (req.files.urlImagen.truncated) {	// Archivo excede el tamaño limite
+			res.status(400).send("La imagen excede el tamaño limite");
 		}
 
-		const photo = req.files.urlImagen;	//Se obtiene el objeto del archivo
-		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	//Se ssube la imagen a Cloudinary
+		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
+		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se ssube la imagen a Cloudinary
 			folder: "products",
 		});
 
-		const url = `${result.public_id}.${result.format}`;	//Se obtienenla URL de la imagen en Cloudinary
+		const url = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
 
-		//Función para eliminar las imagenes temporales.
+		// Función para eliminar las imagenes temporales.
 		try {
 			fs.unlinkSync(photo.tempFilePath);
 			console.log("Archivo removido");
@@ -55,7 +53,17 @@ export const createProducts = async (req, res) => {
 			console.error("Error ", err);
 		}
 
-		const newProduct = {	//Creación del objeto usado para realizar la inserción
+		// Validar que los datos sean del tipo deseado
+		if (false) {
+			res.status(400).send("Los datos no son del tipo correcto");
+		}
+
+		// Validar que no exista un registro con ese código
+		if (false) {
+			res.status(400).send("Existe un registro con ese código");
+		}
+
+		const newProduct = {	// Creación del objeto usado para realizar la inserción
 			codigo: req.body.codigo,
 			nombre: req.body.nombre,
 			descripcion: req.body.descripcion,
@@ -67,12 +75,14 @@ export const createProducts = async (req, res) => {
 		}
 
 		console.log(newProduct);
-		//const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
-		res.redirect("/admin/productos");	//Se redirecciona a la pagina de productos
-		return;
+
+		const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
+
+		res.status(200).send("Se insertaron con exito los datos");
 
 	} catch (error) {
-		console.log(error)
+		console.log(error.message);
+		res.status(400).send("Sucedio un error");
 	}
 };
 

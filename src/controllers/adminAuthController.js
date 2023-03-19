@@ -5,19 +5,21 @@ import bcryptjs from 'bcryptjs'
 export const login = async (req, res) => {
     try {
         const { usuario, contrasena } = req.body;
-        console.log(usuario);
-        console.log(contrasena);
         const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [usuario, contrasena]);
 
-        let equal = await bcryptjs.compare(contrasena, result[0].contrasena);
-
-        if (equal) {
-            session.id = result[0].id;
-            session.isAdmin = true;
-            session.isAuth = true;
-            res.status(200).send("Sesion iniciada correctamente");
-        } else {
+        if (result[0] === undefined) {
             res.status(400).send("Usuario o contraseña incorrectas");
+        } else {
+            let equal = await bcryptjs.compare(contrasena, result[0].contrasena);
+
+            if (equal) {
+                session.id = result[0].id;
+                session.isAdmin = true;
+                session.isAuth = true;
+                res.status(200).send("Sesion iniciada correctamente");
+            } else {
+                res.status(400).send("Usuario o contraseña incorrectas");
+            }
         }
     } catch (error) {
         console.log(error.message);

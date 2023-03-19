@@ -1,5 +1,6 @@
-const loginForm = document.querySelector("#loginForm");
+"use strict";
 
+// Creacion de funciones necesarias
 function showAlert(message, title) {
 	const modalToggle = document.getElementById("alertModal");
 	const myModal = new bootstrap.Modal("#alertModal", { keyboard: false });
@@ -8,10 +9,10 @@ function showAlert(message, title) {
 	myModal.show(modalToggle);
 }
 
+const loginForm = document.querySelector("#loginForm");
 loginForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
 	try {
-		debugger;
 		const usuario = loginForm['usuario'].value;
 		const contrasena = loginForm['contrasena'].value;
 
@@ -27,10 +28,12 @@ loginForm.addEventListener("submit", async (event) => {
 		});
 		window.location.href = '/admin/';
 	} catch (error) {
-		if (error.response.status === 500) {
-			showAlert("Usuario y/o contraseña incorrectas", "Error");
+		if (error.response.data === "Usuario o contraseña incorrectas") {
+			showAlert("Usuario o contraseña incorrectas", "Error");
+		} else if (error.response.data === "Sucedio un error") {
+			showAlert("Existe un error con el servidor", "Error");
 		} else {
-			showAlert("Sucedio un error", "Error");
+			showAlert("Sucedio un error desconocido", "Error");
 		}
 	}
 });
