@@ -24,12 +24,14 @@ app.use(express.urlencoded({ extended: false }));
 
 // routes
 import adminProductos from "./routes/adminProductos.js";
+import adminCategorias from "./routes/adminCategorias.js";
 import adminAuth from "./routes/adminAuth.js";
 import adminIndex from "./routes/adminIndex.js";
 import client from "./routes/clients.js";
 
 const apiPaths = {
 	adminProductos: '/admin/productos',
+	adminCategorias: '/admin/categorias',
 	adminAuth: '/admin/auth',
 	adminIndex: '/admin',
 	client: '/'
@@ -40,6 +42,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(apiPaths.adminIndex, adminIndex);
 app.use(apiPaths.adminProductos, adminProductos);
+app.use(apiPaths.adminCategorias, adminCategorias);
 app.use(apiPaths.adminAuth, adminAuth);
 app.use(apiPaths.client, client);
 
