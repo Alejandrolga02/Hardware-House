@@ -36,6 +36,13 @@ export const createProducts = async (req, res) => {
 
 		if (req.files.urlImagen.truncated) {	// Archivo excede el tamaño limite
 			res.status(400).send("La imagen excede el tamaño limite");
+
+			try {	//Función para eliminar el archivo si excede el tamaño.
+				fs.unlinkSync(photo.tempFilePath);
+				console.log("Archivo removido");
+			} catch (err) {
+				console.error("Error ", err);
+			}
 		}
 
 		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
@@ -76,7 +83,7 @@ export const createProducts = async (req, res) => {
 
 		console.log(newProduct);
 
-		const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
+		//const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
 
 		res.status(200).send("Se insertaron con exito los datos");
 
