@@ -1,12 +1,27 @@
 "use strict";
-// Import cloudinary credentials
-const api_key = "379625484436796"
-const cloud_name = "dzlemvbvt"
+// Import the functions you need from the SDKs you need
+import { db, storage, auth, showAlert } from "./config.js";
 
 // Declarar elementos del DOM
+const btnAgregar = document.querySelector("#btnAgregar");
+const btnConsultar = document.querySelector("#btnConsultar");
+const btnActualizar = document.querySelector("#btnActualizar");
+const btnMostrar = document.querySelector("#btnMostrar");
+const btnLimpiar = document.querySelector("#btnLimpiar");
 const results = document.querySelector("#results");
-const imagen = document.querySelector("#urlImagen");
-const form = document.querySelector("#form");
+const imagen = document.querySelector("#imagen");
+
+// Variables input
+const getInputs = () => {
+	event.preventDefault();
+
+	return {
+		codigo: document.querySelector("#codigo").value.trim(),
+		nombre: document.querySelector("#nombre").value.trim(),
+		precio: document.querySelector("#precio").value.trim(),
+		descripcion: document.querySelector("#descripcion").value.trim(),
+	};
+};
 
 const clearInputs = () => {
 	event.preventDefault();
@@ -16,6 +31,8 @@ const clearInputs = () => {
 	document.querySelector("#descripcion").value = "";
 	document.querySelector("#url").value = "";
 	document.querySelector("#imgPreview").classList.add("d-none");
+	results.classList.add("d-none");
+	results.innerHTML = "";
 	imagen.value = "";
 };
 
@@ -184,37 +201,9 @@ async function updateProduct() {
 	}
 }
 
-async function disableProduct() {
-	try {
-		event.preventDefault();
-
-		let { codigo } = getInputs();
-		if (codigo === "") return showAlert("Introduzca un código", "Error");
-		const dbref = ref(db);
-
-		const snapshot = await get(child(dbref, "productos/" + codigo));
-		if (!snapshot.exists()) {
-			return showAlert("No existe un producto con ese código", "Error");
-		}
-
-		if (snapshot.val().status === "1") {
-			await update(ref(db, "productos/" + codigo), { status: "0" });
-			showAlert("El registro fue habilitado", "Resultado");
-		} else {
-			await update(ref(db, "productos/" + codigo), { status: "1" });
-			showAlert("El registro fue deshabilitado", "Resultado");
-		}
-
-		await showProducts();
-	} catch (error) {
-		if (error.code === "PERMISSION_DENIED") {
-			showAlert("No estás autentificado", "Error");
-		} else {
-			console.error(error);
-		}
-	}
-}
-
-form.addEventListener("submit", insertProduct);
-form.addEventListener("reset", clearInputs);
+btnAgregar.addEventListener("click", insertProduct);
+btnConsultar.addEventListener("click", lookUpProduct);
+btnActualizar.addEventListener("click", updateProduct);
+btnMostrar.addEventListener("click", showProducts);
+btnLimpiar.addEventListener("click", clearInputs);
 imagen.addEventListener("change", imagenChange);

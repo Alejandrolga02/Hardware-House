@@ -85,3 +85,18 @@ export const postContactUs = async (req, res) => {
 		]
 	});
 };
+
+export const renderNotFound = async (req, res) => {
+	res.status(404).render("error.html", {
+		title: "Pagina no encontrada",
+		navLinks: [
+			{ class: "nav-link active", link: "/", title: "Inicio" },
+			{ class: "nav-link", link: "/empresa", title: "Empresa" },
+			{ class: "nav-link", link: "/productos", title: "Productos" },
+			{ class: "nav-link", link: "/contactos", title: "Contactos" },
+		],
+		scripts: [
+			"js"
+		]
+	});
+}

@@ -85,3 +85,29 @@ html {
 	height: 40rem;
 	overflow: scroll;
 }
+
+#shopping-cart {
+	animation: shake 0.8s ease-in;
+	cursor: pointer;
+}
+
+@keyframes shake {
+	0% {
+		transform: translate;
+	}
+	20%,
+	40%,
+	60%,
+	80% {
+		transform: translate(0.8em);
+	}
+	10%,
+	30%,
+	50% {
+		transform: translate(-0.2em);
+	}
+	70%,
+	100% {
+		transform: translate(0);
+	}
+}

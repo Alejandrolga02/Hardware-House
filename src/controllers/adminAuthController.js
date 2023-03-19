@@ -5,6 +5,8 @@ import bcryptjs from 'bcryptjs'
 export const login = async (req, res) => {
     try {
         const { usuario, contrasena } = req.body;
+        console.log(usuario);
+        console.log(contrasena);
         const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [usuario, contrasena]);
 
         let equal = await bcryptjs.compare(contrasena, result[0].contrasena);
@@ -13,14 +15,13 @@ export const login = async (req, res) => {
             session.id = result[0].id;
             session.isAdmin = true;
             session.isAuth = true;
-            res.redirect("/admin/");
+            res.status(200).send("Sesion iniciada correctamente");
         } else {
             res.status(400).send("Usuario o contraseña incorrectas");
         }
-
     } catch (error) {
-        console.log(error.message)
-        res.redirect("/admin/auth");
+        console.log(error.message);
+        res.status(500).send("Sucedio un error");
     }
 }
 
@@ -31,7 +32,9 @@ export const renderLogin = async (req, res) => {
             { class: "nav-link active", link: "/", title: "Iniciar Sesión" },
         ],
         scripts: [
+            "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
             "/js/bootstrap.bundle.min.js",
+            "/js/login.js"
         ]
     });
 }

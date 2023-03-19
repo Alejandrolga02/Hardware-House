@@ -1,7 +1,6 @@
 <%- include('partials/header.html') %>
-
 <main class="container mh p-4 d-flex justify-content-center align-items-center">
-	<form method="post" action="/admin/auth/login" class="border border-3 p-3 rounded bg-white">
+	<form class="border border-3 p-3 rounded bg-white" id="loginForm">
 		<h3 class="text-start mb-3">Iniciar sesión</h3>
 		<div class="mb-3 d-flex justify-content-center align-items-center">
 			<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-circle" width="300" height="300" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -20,9 +19,10 @@
 			<input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Introduzca una contraseña">
 		</div>
 		<div class="text-end">
-			<button type="submit" id="login" class="btn btn-primary">Iniciar sesion</button>
+			<button type="submit" class="btn btn-primary">Iniciar sesion</button>
 		</div>
-	</div>
+		</div>
+	</form>
 </main>
 
 <div class="modal fade" id="alertModal" tabindex="-1">
@@ -41,5 +41,4 @@
 		</div>
 	</div>
 </div>
-
 <%- include('partials/footer.html') %>

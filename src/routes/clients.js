@@ -1,5 +1,12 @@
 import { Router } from "express";
-import { renderClientIndex, renderClientAboutUs, renderClientProducts, renderClientContactUs, postContactUs } from "../controllers/clientsController.js";
+import {
+	renderClientIndex,
+	renderClientAboutUs,
+	renderClientProducts,
+	renderClientContactUs,
+	postContactUs,
+	renderNotFound
+} from "../controllers/clientsController.js";
 
 const router = Router();
 
@@ -10,16 +17,6 @@ router.get("/productos", renderClientProducts);
 router.get("/contactos", renderClientContactUs);
 router.post("/contactos", postContactUs);
 
-router.use((req, res, next) => {
-	res.status(404).render("error.html", {
-		title: "Pagina no encontrada",
-		navLinks: [
-			{ class: "nav-link", link: "/", title: "Inicio" },
-		],
-		scripts: [
-			"js"
-		]
-	});
-});
+router.use(renderNotFound);
 
 export default router;
