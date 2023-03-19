@@ -1,3 +1,10 @@
 "use strict";
-// Import the functions you need from the SDKs you need
-import { showAlert } from "./config.js";
+
+// Creacion de funciones necesarias
+function showAlert(message, title) {
+	const modalToggle = document.getElementById("alertModal");
+	const myModal = new bootstrap.Modal("#alertModal", { keyboard: false });
+	document.getElementById("alertTitle").innerHTML = title;
+	document.getElementById("alertMessage").innerHTML = message;
+	myModal.show(modalToggle);
+}

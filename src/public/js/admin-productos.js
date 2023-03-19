@@ -1,40 +1,20 @@
 "use strict";
-// Import the functions you need from the SDKs you need
-import { db, storage, auth, showAlert } from "./config.js";
 
 // Declarar elementos del DOM
+const form = document.querySelector("#form");
 const btnAgregar = document.querySelector("#btnAgregar");
 const btnConsultar = document.querySelector("#btnConsultar");
-const btnActualizar = document.querySelector("#btnActualizar");
-const btnMostrar = document.querySelector("#btnMostrar");
-const btnLimpiar = document.querySelector("#btnLimpiar");
 const results = document.querySelector("#results");
-const imagen = document.querySelector("#imagen");
+const imagen = document.querySelector("#urlImagen");
 
-// Variables input
-const getInputs = () => {
-	event.preventDefault();
-
-	return {
-		codigo: document.querySelector("#codigo").value.trim(),
-		nombre: document.querySelector("#nombre").value.trim(),
-		precio: document.querySelector("#precio").value.trim(),
-		descripcion: document.querySelector("#descripcion").value.trim(),
-	};
-};
-
-const clearInputs = () => {
-	event.preventDefault();
-	document.querySelector("#codigo").value = "";
-	document.querySelector("#nombre").value = "";
-	document.querySelector("#precio").value = "";
-	document.querySelector("#descripcion").value = "";
-	document.querySelector("#url").value = "";
-	document.querySelector("#imgPreview").classList.add("d-none");
-	results.classList.add("d-none");
-	results.innerHTML = "";
-	imagen.value = "";
-};
+// Creacion de funciones necesarias
+function showAlert(message, title) {
+	const modalToggle = document.getElementById("alertModal");
+	const myModal = new bootstrap.Modal("#alertModal", { keyboard: false });
+	document.getElementById("alertTitle").innerHTML = title;
+	document.getElementById("alertMessage").innerHTML = message;
+	myModal.show(modalToggle);
+}
 
 const fillInputs = ({ codigo, nombre, descripcion, precio, url }) => {
 	document.querySelector("#codigo").value = codigo;
@@ -46,36 +26,67 @@ const fillInputs = ({ codigo, nombre, descripcion, precio, url }) => {
 	document.querySelector("#imgPreview").classList.remove("d-none");
 };
 
+// Variables input
+const getInputs = () => {
+	return {
+		codigo: form['codigo'].value.trim(),
+		precio: form['precio'].value.trim(),
+		nombre: form['nombre'].value.trim(),
+		descripcion: form['descripcion'].value.trim(),
+		idCategoria: form['idCategoria'].value.trim(),
+		disponibilidad: form['disponibilidad'].value.trim(),
+	};
+};
+
+// Evento de cambiar imagen muestra thumbnail
 const imagenChange = () => {
 	document.querySelector("#imgPreview").src = URL.createObjectURL(imagen.files[0]);
 	document.querySelector("#imgPreview").classList.remove("d-none");
+	console.log(imagen.files[0].size);
 };
 
 async function insertProduct() {
 	try {
 		event.preventDefault();
 
-		let { codigo, nombre, descripcion, precio } = getInputs();
-		const dbref = ref(db);
-		const storageRef = refStorage(storage, "productos/" + codigo);
+		let { codigo, precio, nombre, descripcion, idCategoria, disponibilidad } = getInputs();
 
-		if (isNaN(parseFloat(precio)) || parseFloat(precio) <= 0) return showAlert("Introduzca un precio valido", "Error");
 		if (!codigo || !nombre || !descripcion || !imagen.value) return showAlert("Existen campos vacios", "Error");
+		if (isNaN(parseFloat(precio)) || parseFloat(precio) <= 0 ||
+			isNaN(parseInt(idCategoria)) || parseInt(idCategoria) <= 0 ||
+			isNaN(parseInt(disponibilidad)) || parseInt(disponibilidad) < 0) return showAlert("Introduzca valores validos", "Error");
+		if (imagen.files[0].size > 2000000) return showAlert("Las imagenes no deben pesar mas de 2MB", "Error");
 
-		const snapshot = await get(child(dbref, "productos/" + codigo));
-		if (snapshot.exists()) return showAlert("Ya existe un producto con ese código", "Error");
-
-		await uploadBytes(storageRef, imagen.files[0]);
-		let url = await getDownloadURL(storageRef);
-
-		await set(ref(db, "productos/" + codigo), { nombre, descripcion, precio: "$" + precio, url, status: "0" });
+		await axios.post('/admin/productos/add', {
+			codigo,
+			precio,
+			nombre,
+			descripcion,
+			idCategoria,
+			disponibilidad,
+			urlImagen: imagen.files[0]
+		}, {
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		});
 
 		showAlert("Se insertaron con exito los datos", "Resultado");
+		window.location.href = '/admin/productos/';
+
 	} catch (error) {
-		if (error.code === "PERMISSION_DENIED" || error.code === "storage/unauthorized") {
-			showAlert("No estás autentificado", "Error");
+		if (error.response.data === "No se subió una imagen") {
+			showAlert("Debes insertar una imagen", "Error");
+		} else if (error.response.data === "La imagen excede el tamaño limite") {
+			showAlert("Las imagenes no deben pesar mas de 2MB", "Error");
+		} else if (error.response.data === "Sucedio un error") {
+			showAlert("Existe un error con el servidor", "Error");
+		} else if (error.response.data === "Los datos no son del tipo correcto") {
+			showAlert("Los datos no son del tipo correcto", "Error");
+		} else if (error.response.data === "Existe un registro con ese código") {
+			showAlert("Ya existe un producto con ese código", "Error");
 		} else {
-			console.error(error);
+			showAlert("Sucedio un error desconocido", "Error");
 		}
 	}
 }
@@ -102,67 +113,6 @@ async function lookUpProduct() {
 		} else {
 			showAlert("No se encontró el registro", "Error");
 		}
-	} catch (error) {
-		if (error.code === "PERMISSION_DENIED") {
-			showAlert("No estás autentificado", "Error");
-		} else {
-			console.error(error);
-		}
-	}
-}
-
-async function showProducts() {
-	event.preventDefault();
-
-	try {
-		const dbref = ref(db, "productos");
-
-		const storageRef = refStorage(storage, "imagenVacia.svg");
-		let urlDefault = await getDownloadURL(storageRef);
-
-		await onValue(dbref, snapshot => {
-			results.innerHTML = `<caption>Lista de productos</caption><thead><tr>
-					<th scope="col" width="5%" class="text-center">Código</th>
-					<th scope="col" width="30%" class="text-center">Nombre</th>
-					<th scope="col" width="30%" class="text-center">Descripción</th>
-					<th scope="col" width="15%" class="text-center">Precio</th>
-					<th scope="col" width="15%" class="text-center">Imagen</th>
-					<th scope="col" width="5%" class="text-center">Estado</th>
-				</tr></thead><tbody></tbody>`;
-
-			snapshot.forEach(childSnapshot => {
-				const childKey = childSnapshot.key;
-				const childData = childSnapshot.val();
-
-				let imgURL = childData.url;
-				let status = `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-check" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-					<rect x="4" y="4" width="16" height="16" rx="2" />
-					<path d="M9 12l2 2l4 -4" />
-				</svg>`;
-
-				if (childData.url === undefined) imgURL = urlDefault;
-
-				if (childData.status === "1") {
-					status = `<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-x" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-						<path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-						<rect x="4" y="4" width="16" height="16" rx="2" />
-						<path d="M10 10l4 4m0 -4l-4 4" />
-					</svg>`;
-				}
-
-				results.lastElementChild.innerHTML += `<tr>
-					<th class="text-center" scope="row">${childKey}</th>
-					<td class="text-center">${childData.nombre}</td>
-					<td class="text-center">${childData.descripcion}</td>
-					<td class="text-center">${childData.precio}</td>
-					<td class="text-center p-0"><img class="w-100" src="${imgURL}" alt="Imagen de ${childData.nombre}"/></td>
-					<td class="text-center">${status}</td>
-				</tr>`;
-			});
-		});
-
-		results.classList.remove("d-none");
 	} catch (error) {
 		if (error.code === "PERMISSION_DENIED") {
 			showAlert("No estás autentificado", "Error");
@@ -203,7 +153,4 @@ async function updateProduct() {
 
 btnAgregar.addEventListener("click", insertProduct);
 btnConsultar.addEventListener("click", lookUpProduct);
-btnActualizar.addEventListener("click", updateProduct);
-btnMostrar.addEventListener("click", showProducts);
-btnLimpiar.addEventListener("click", clearInputs);
 imagen.addEventListener("change", imagenChange);
