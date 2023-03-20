@@ -25,50 +25,57 @@ export const renderProducts = async (req, res) => {
 	});
 };
 
+const deleteTempImage = (filePath) => {
+	// Función para eliminar las imagenes temporales.
+	try {
+		fs.unlinkSync(filePath);
+		console.log("Archivo removido");
+	} catch (err) {
+		console.error("Error ", err);
+	}
+}
+
 //Función para crear un nuevo producto.
-export const createProducts = async(req, res) => {
+export const createProducts = async (req, res) => {
 	try {
 		if (req.files === null) {	// Comprobación de subida de archivo.
-			res.status(400).send("No se subió una imagen");
+			return res.status(400).send("No se subió una imagen");
 		}
 
 		console.log(req.files.urlImagen);
+		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
 
-		if (req.files.urlImagen.truncated) {	// Archivo excede el tamaño limite
-			res.status(400).send("La imagen excede el tamaño limite");
+		if (false) {	// Validar que los datos sean del tipo deseado
+			deleteTempImage(photo.tempFilePath);
 
-			try {	//Función para eliminar el archivo si excede el tamaño.
-				fs.unlinkSync(photo.tempFilePath);
-				console.log("Archivo removido");
-			} catch (err) {
-				console.error("Error ", err);
-			}
+			return res.status(400).send("Los datos no son del tipo correcto");
 		}
 
-		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
+		if (false) {	// Validar que no exista un registro con ese código
+			deleteTempImage(photo.tempFilePath);
+
+			return res.status(400).send("Existe un registro con ese código");
+		}
+
+		if (false) {	// Validar que la imagen sea de las extensiones deseadas
+			deleteTempImage(photo.tempFilePath);
+
+			return res.status(400).send("La imagen debe ser de las extensiones deseadas");
+		}
+
+		if (req.files.urlImagen.truncated) {	// Archivo excede el tamaño limite
+			deleteTempImage(photo.tempFilePath);
+
+			return res.status(400).send("La imagen excede el tamaño limite");
+		}
+
 		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se ssube la imagen a Cloudinary
 			folder: "products",
 		});
 
 		const url = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
 
-		// Función para eliminar las imagenes temporales.
-		try {
-			fs.unlinkSync(photo.tempFilePath);
-			console.log("Archivo removido");
-		} catch (err) {
-			console.error("Error ", err);
-		}
-
-		// Validar que los datos sean del tipo deseado
-		if (false) {
-			res.status(400).send("Los datos no son del tipo correcto");
-		}
-
-		// Validar que no exista un registro con ese código
-		if (false) {
-			res.status(400).send("Existe un registro con ese código");
-		}
+		deleteTempImage(photo.tempFilePath);
 
 		const newProduct = {	// Creación del objeto usado para realizar la inserción
 			codigo: req.body.codigo,
@@ -85,11 +92,11 @@ export const createProducts = async(req, res) => {
 
 		//const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
 
-		res.status(200).send("Se insertaron con exito los datos");
+		return res.status(200).send("Se insertaron con exito los datos");
 
 	} catch (error) {
 		console.log(error.message);
-		res.status(400).send("Sucedio un error");
+		return res.status(400).send("Sucedio un error");
 	}
 };
 

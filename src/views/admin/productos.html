@@ -43,39 +43,26 @@
 		<div class="mb-2 d-flex flex-column">
 			<label for="urlImagen" class="form-label">Imagen</label>
 			<img id="imgPreview" src="#" height="200" class="d-none align-self-center my-2" alt="Imagen introducida" />
-			<input class="form-control" type="file" id="urlImagen" name="urlImagen" required />
+			<input class="form-control" type="file" accept="image/png,image/jpeg,image/webp,image/svg,image/gif" id="urlImagen" name="urlImagen" required />
 		</div>
 
 		<div class="d-flex flex-wrap justify-content-end gap-2">
 			<button class="btn btn-success" id="btnAgregar">
-				<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-square-plus" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-					<rect x="4" y="4" width="16" height="16" rx="2" />
-					<line x1="9" y1="12" x2="15" y2="12" />
-					<line x1="12" y1="9" x2="12" y2="15" />
-				</svg>
+				<img src="/img/agregar.svg" alt="Icono de agregar">
 				Agregar
 			</button>
 			<button class="btn btn-warning" id="btnConsultar">
-				<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-					<circle cx="10" cy="10" r="7" />
-					<line x1="21" y1="21" x2="15" y2="15" />
-				</svg>
+				<img src="/img/consultar.svg" alt="Icono de consultar">
 				Consultar
 			</button>
 			<button class="btn btn-info text-white" type="reset">
-				<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-eraser" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-					<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-					<path d="M19 19h-11l-4 -4a1 1 0 0 1 0 -1.41l10 -10a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1 0 1.41l-9 9" />
-					<line x1="18" y1="12.3" x2="11.7" y2="6" />
-				</svg>
+				<img src="/img/limpiar.svg" alt="Icono de limpiar">
 				Limpiar
 			</button>
 		</div>
 
 		<div class="scrollable">
-			<table id="results" class="table table-light table-hover table-bordered mt-2 mb-0">
+			<table id="results" class="table table-light table-hover table-bordered mt-2 mb-0 align-middle">
 				<thead>
 					<tr>
 						<th scope="col" width="5%" class="text-center">Código</th>
@@ -112,28 +99,15 @@
 						<td class="d-flex justify-content-center align-items-center gap-2">
 							<% if (element.estado === 1) { %>
 							<a href="/admin/productos/delete/<%= element.codigo %>" class="btn btn-danger">
-								<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-									<circle cx="8" cy="12" r="2" />
-									<rect x="2" y="6" width="20" height="12" rx="6" />
-								</svg>
+								<img src="/img/desactivar.svg" alt="Icono de desactivar">
 							</a>
 							<% } else { %>
 							<a href="/admin/productos/delete/<%= element.codigo %>" class="btn btn-primary">
-								<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-									<circle cx="16" cy="12" r="2" />
-									<rect x="2" y="6" width="20" height="12" rx="6" />
-								</svg>
+								<img src="/img/activar.svg" alt="Icono de activar">
 							</a>
 							<% } %>
 							<a href="/admin/productos/update/<%= element.codigo %>" class="btn btn-dark">
-								<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="26" height="26" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-									<path d="M9 7h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />
-									<path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />
-									<line x1="16" y1="5" x2="19" y2="8" />
-								</svg>
+								<img src="/img/editar.svg" alt="Icono de editar">
 							</a>
 						</td>
 					</tr>
