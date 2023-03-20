@@ -42,7 +42,6 @@ const getInputs = () => {
 const imagenChange = () => {
 	document.querySelector("#imgPreview").src = URL.createObjectURL(imagen.files[0]);
 	document.querySelector("#imgPreview").classList.remove("d-none");
-	console.log(imagen.files[0].size);
 };
 
 async function insertProduct() {
@@ -51,10 +50,12 @@ async function insertProduct() {
 
 		let { codigo, precio, nombre, descripcion, idCategoria, disponibilidad } = getInputs();
 
+		const imageFormats = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 		if (!codigo || !nombre || !descripcion || !imagen.value) return showAlert("Existen campos vacios", "Error");
 		if (isNaN(parseFloat(precio)) || parseFloat(precio) <= 0 ||
 			isNaN(parseInt(idCategoria)) || parseInt(idCategoria) <= 0 ||
 			isNaN(parseInt(disponibilidad)) || parseInt(disponibilidad) < 0) return showAlert("Introduzca valores validos", "Error");
+		if (!imageFormats.includes(imagen.files[0].type)) return showAlert("Sube una en el campo", "Error");
 		if (imagen.files[0].size > 2000000) return showAlert("Las imagenes no deben pesar mas de 2MB", "Error");
 
 		await axios.post('/admin/productos/add', {
@@ -72,7 +73,10 @@ async function insertProduct() {
 		});
 
 		showAlert("Se insertaron con exito los datos", "Resultado");
-		window.location.href = '/admin/productos/';
+
+		setTimeout(() => {
+			window.location.href = '/admin/productos/';
+		}, 2000);
 
 	} catch (error) {
 		if (error.response.data === "No se subió una imagen") {

@@ -42,6 +42,9 @@ export const createProducts = async (req, res) => {
 			return res.status(400).send("No se subió una imagen");
 		}
 
+		console.log(req.files.urlImagen);
+		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
+
 		if (false) {	// Validar que los datos sean del tipo deseado
 			deleteTempImage(photo.tempFilePath);
 
@@ -59,9 +62,6 @@ export const createProducts = async (req, res) => {
 
 			return res.status(400).send("La imagen debe ser de las extensiones deseadas");
 		}
-
-		console.log(req.files.urlImagen);
-		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
 
 		if (req.files.urlImagen.truncated) {	// Archivo excede el tamaño limite
 			deleteTempImage(photo.tempFilePath);
