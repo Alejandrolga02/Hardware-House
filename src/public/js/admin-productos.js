@@ -85,6 +85,8 @@ async function insertProduct() {
 			showAlert("Los datos no son del tipo correcto", "Error");
 		} else if (error.response.data === "Existe un registro con ese código") {
 			showAlert("Ya existe un producto con ese código", "Error");
+		} else if (error.response.data === "La imagen debe ser de las extensiones deseadas") {
+			showAlert("La imagen debe ser de las extensiones deseadas", "Error");
 		} else {
 			showAlert("Sucedio un error desconocido", "Error");
 		}
