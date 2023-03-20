@@ -55,7 +55,7 @@ async function insertProduct() {
 		if (isNaN(parseFloat(precio)) || parseFloat(precio) <= 0 ||
 			isNaN(parseInt(idCategoria)) || parseInt(idCategoria) <= 0 ||
 			isNaN(parseInt(disponibilidad)) || parseInt(disponibilidad) < 0) return showAlert("Introduzca valores validos", "Error");
-		if (!imageFormats.includes(imagen.files[0].type)) return showAlert("Sube una en el campo", "Error");
+		if (!imageFormats.includes(imagen.files[0].type)) return showAlert("Sube una imagen en el campo", "Error");
 		if (imagen.files[0].size > 2000000) return showAlert("Las imagenes no deben pesar mas de 2MB", "Error");
 
 		await axios.post('/admin/productos/add', {
