@@ -103,10 +103,24 @@ export const createProducts = async (req, res) => {
 //Función para traer la información del producto selecciónado.
 export const editProducts = async (req, res) => {
 	const { id } = req.params;	//obtención del id
-	const [result] = await pool.query("SELECT * FROM productos WHERE codigo = ?", [id,]);	//Solicitud para la obtencion de datos.
-	res.render("admin/productos.html", {
+	const [result] = await pool.query("SELECT * FROM productos WHERE codigo = ?", [id]);	//Solicitud para la obtencion de datos.
+	const [categorias] = await pool.query("SELECT * FROM categorias");
+	res.render("admin/editProduct.html", {
 		title: "Editar Producto",
-		product: result[0]
+		product: result[0],
+		categorias,
+		navLinks: [
+			{ class: "nav-link", link: "/", title: "Inicio" },
+			{ class: "nav-link active", link: "/admin/productos/", title: "Productos" },
+			{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
+			{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
+			{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
+		],
+		scripts: [
+			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
+			"/js/bootstrap.bundle.min.js",
+			"/js/admin-edit-product.js"
+		]
 	});
 };
 

@@ -1,0 +1,79 @@
+<%- include('partials/header.html') %>
+
+<main class="container-lg mh py-4">
+	<h1 class="text-start mb-0">Editar producto</h1>
+	<form class="mt-3 border border-3 p-3 rounded bg-white" id="form">
+		<div class="row mb-0 mb-md-2">
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="codigo" class="form-label">Código</label>
+				<input type="text" id="codigo" name="codigo" class="form-control" value="<%= product.codigo %>" placeholder="Introduzca un código" disabled required />
+			</div>
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="precio" class="form-label">Precio</label>
+				<div class="input-group">
+					<span class="input-group-text">$</span>
+					<input type="text" id="precio" name="precio" class="form-control" value="<%= product.precio %>" placeholder="Introduzca un precio" required />
+				</div>
+			</div>
+		</div>
+		<div class="mb-2">
+			<label for="nombre" class="form-label">Nombre</label>
+			<input type="text" id="nombre" name="nombre" value="<%= product.nombre %>" class="form-control" placeholder="Introduzca un nombre" required />
+		</div>
+		<div class="mb-2">
+			<label for="descripcion" class="form-label">Descripción</label>
+			<textarea class="form-control" id="descripcion" name="descripcion" rows="5" placeholder="Introduzca una descripción" required><%= product.descripcion %></textarea>
+		</div>
+		<div class="row mb-0 mb-md-2">
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="idCategoria" class="form-label">Categoria</label>
+				<select class="form-select" name="idCategoria" id="idCategoria">
+					<% categorias.forEach(element=> { %>
+					<option <% if (product.idCategoria === element.id) { %> selected <% } %> value="<%= element.id %>">
+						<%= element.nombre %>
+					</option>
+					<% }) %>
+				</select>
+			</div>
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="disponibilidad" class="form-label">Disponibilidad</label>
+				<input type="text" id="disponibilidad" name="disponibilidad" class="form-control" value="<%= product.disponibilidad %>" placeholder="Introduzca un nombre" required />
+			</div>
+		</div>
+		<div class="mb-2 d-flex flex-column">
+			<label for="urlImagen" class="form-label">Imagen</label>
+			<img id="imgPreview" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_200,h_200,c_fill,q_90/<%= product.urlImagen %>" height="200" class="align-self-center my-2" alt="Imagen introducida" />
+			<input class="form-control" type="file" accept="image/png,image/jpeg" id="urlImagen" name="urlImagen" />
+		</div>
+
+		<div class="d-flex flex-wrap justify-content-end gap-2">
+			<button class="btn btn-dark" id="btnActualizar">
+				<img src="/img/editar.svg" alt="Icono de agregar">
+				Editar
+			</button>
+			<button class="btn btn-info text-white" type="reset">
+				<img src="/img/limpiar.svg" alt="Icono de limpiar">
+				Restablecer
+			</button>
+		</div>
+	</form>
+
+	<div class="modal fade" id="alertModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="alertTitle">Modal title</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p id="alertMessage">Modal body text goes here.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<%- include('partials/footer.html') %>
