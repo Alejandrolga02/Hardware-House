@@ -1,6 +1,7 @@
 import { pool } from "../db.js";
 import cloudinary from '../cloudinary.js';
 import fs from "fs";
+import session from '../session.js'
 
 //Función para mostrar todos los productos.
 export const renderProducts = async (req, res) => {
@@ -38,44 +39,30 @@ const deleteTempImage = (filePath) => {
 //Función para validar que la cadena no cuente con caracteres especiales
 const validateString = (cadena) =>{
 	let regex = /^[a-zA-Z0-9]+$/;
-	return !(regex.test(cadena));	//Retorna 'true' si no contiene caracteres especiales
+	return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
 }
 
 //Función para validar. Recibe el objeto
 const validateData = (product) =>{
-	if(!validateString(product.codigo) || (product.codigo == " ")){	//Convierte e false en 'true'
-		return false;
-	}
+	if(validateString(product.codigo)  || (product.codigo == " ")){	//Convierte en false en 'true'
+	}else{return false;}
 	
-	if(!validateString(product.nombre) || (product.nombre == " ")){
-		return false;
-	}
+	if(validateString(product.nombre) || (product.nombre == " ")){
+	}else{return false;}
 
-	if(!validateString(product.descripcion) || (product.descripcion == " ")){
-		return false;
-	}
+	if(validateString(product.descripcion) || (product.descripcion == " ")){
+	}else{return false;}
 
-	if(isNaN(product.precio) || (parseFloat(product.precio) <= 0)){
-		return false;
-	}
+	if(!isNaN(product.precio) || (parseFloat(product.precio) <= 0)){
+	}else{return false;}
 
-	if(isNaN(product.disponibilidad) || (parseInt(product.disponibilidad) <= 0)){
-		return false;
-	}
+	if(!isNaN(product.disponibilidad) || (parseInt(product.disponibilidad) <= 0)){
+	}else{return false;}
 
-	if(isNaN(product.idCategoria) || (parseInt(product.idCategoria) <= 0)){
-		return false;
-	}
+	if(!isNaN(product.idCategoria) || (parseInt(product.idCategoria) <= 0)){
+	}else{return false;}
 
-	if(product.url === undefined){
-		return false;
-	}
-}
-
-//Función para comprobar existencia del mismo codigo.
-const findSameCode = async (codigo) =>{
-	const [rows] = await pool.query("SELECT estado FROM productos WHERE codigo = ?", [codigo]);
-	const cod = rows[0];	//obtención del estado.
+	return true;
 }
 
 //Función para la validación del formato de la imagen
@@ -90,7 +77,7 @@ export const createProducts = async (req, res) => {
 			return res.status(400).send("No se subió una imagen");
 		}
 
-		console.log(req.files.urlImagen);
+		//console.log(req.files.urlImagen);
 		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
 
 		const newProduct = {	// Creación del objeto usado para realizar la inserción
@@ -110,7 +97,11 @@ export const createProducts = async (req, res) => {
 			return res.status(400).send("Los datos no son del tipo correcto");
 		}
 
-		if (!findSameCode(newProduct.codigo)) {	// Validar que no exista un registro con ese código
+		console.log(newProduct.codigo);
+		const [rows] = await pool.query("SELECT * FROM productos WHERE codigo = ?", [newProduct.codigo]);
+		console.log(rows);
+
+		if (false) {	// Validar que no exista un registro con ese código
 			deleteTempImage(photo.tempFilePath);
 
 			return res.status(400).send("Existe un registro con ese código");
@@ -128,9 +119,9 @@ export const createProducts = async (req, res) => {
 			return res.status(400).send("La imagen excede el tamaño limite");
 		}
 
-		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se sube la imagen a Cloudinary
+		/*const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se sube la imagen a Cloudinary
 			folder: "products",
-		});
+		});*/
 
 		const url = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
 
