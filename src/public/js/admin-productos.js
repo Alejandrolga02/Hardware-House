@@ -34,7 +34,7 @@ const imagenChange = () => {
 	document.querySelector("#imgPreview").classList.remove("d-none");
 };
 
-async function insertProduct() {
+async function insertProduct(event) {
 	try {
 		event.preventDefault();
 
@@ -69,21 +69,8 @@ async function insertProduct() {
 		}, 2000);
 
 	} catch (error) {
-		if (error.response.data === "No se subió una imagen") {
-			showAlert("Debes insertar una imagen", "Error");
-		} else if (error.response.data === "La imagen excede el tamaño limite") {
-			showAlert("Las imagenes no deben pesar mas de 2MB", "Error");
-		} else if (error.response.data === "Sucedio un error") {
-			showAlert("Existe un error con el servidor", "Error");
-		} else if (error.response.data === "Los datos no son del tipo correcto") {
-			showAlert("Los datos no son del tipo correcto", "Error");
-		} else if (error.response.data === "Existe un registro con ese código") {
-			showAlert("Ya existe un producto con ese código", "Error");
-		} else if (error.response.data === "La imagen debe ser de las extensiones deseadas") {
-			showAlert("La imagen debe ser de las extensiones deseadas", "Error");
-		} else {
-			showAlert("Sucedio un error desconocido", "Error");
-		}
+		// Captura de error y mandar retroalimentación al usuario
+		showAlert(error.response.data, "Error");
 	}
 }
 

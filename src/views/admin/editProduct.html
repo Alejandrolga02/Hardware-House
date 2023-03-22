@@ -16,9 +16,18 @@
 				</div>
 			</div>
 		</div>
-		<div class="mb-2">
-			<label for="nombre" class="form-label">Nombre</label>
-			<input type="text" id="nombre" name="nombre" value="<%= product.nombre %>" class="form-control" placeholder="Introduzca un nombre" required />
+		<div class="row mb-0 mb-md-2">
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="nombre" class="form-label">Nombre</label>
+				<input type="text" id="nombre" name="nombre" value="<%= product.nombre %>" class="form-control" placeholder="Introduzca un nombre" required />
+			</div>
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
+				<label for="estado" class="form-label">Estado</label>
+				<select class="form-select" name="estado" id="estado">
+					<option <% if (product.estado === 1) { %> selected <% } %> value="1">Activado</option>
+					<option <% if (product.estado === 0) { %> selected <% } %> value="0">Desactivado</option>
+				</select>
+			</div>
 		</div>
 		<div class="mb-2">
 			<label for="descripcion" class="form-label">Descripción</label>

@@ -3,7 +3,6 @@
 // Declarar elementos del DOM
 const form = document.querySelector("#form");
 const btnActualizar = document.querySelector("#btnActualizar");
-const results = document.querySelector("#results");
 const imagen = document.querySelector("#urlImagen");
 const ulrImagenDefault = document.querySelector("#imgPreview").src;
 
@@ -26,6 +25,7 @@ const getInputs = () => {
 		descripcion: form['descripcion'].value.trim(),
 		idCategoria: form['idCategoria'].value.trim(),
 		disponibilidad: form['disponibilidad'].value.trim(),
+		estado: form['estado'].value.trim(),
 	};
 };
 
@@ -35,18 +35,19 @@ const imagenChange = () => {
 	document.querySelector("#imgPreview").classList.remove("d-none");
 };
 
-async function updateProduct() {
+async function updateProduct(event) {
 	try {
 		event.preventDefault();
 
 		// Llamada a funcion para obtener datos del formulario
-		let { codigo, precio, nombre, descripcion, idCategoria, disponibilidad } = getInputs();
+		let { codigo, precio, nombre, descripcion, idCategoria, disponibilidad, estado } = getInputs();
 
 		// Validación de campos
-		if (!codigo || !nombre || !descripcion) return showAlert("Existen campos vacios", "Error");
+		if (!codigo || !nombre || !descripcion || !estado) return showAlert("Existen campos vacios", "Error");
 		if (isNaN(parseFloat(precio)) || parseFloat(precio) <= 0 ||
 			isNaN(parseInt(idCategoria)) || parseInt(idCategoria) <= 0 ||
-			isNaN(parseInt(disponibilidad)) || parseInt(disponibilidad) < 0) return showAlert("Introduzca valores validos", "Error");
+			isNaN(parseInt(disponibilidad)) || parseInt(disponibilidad) < 0 ||
+			isNaN(parseInt(estado)) || parseInt(estado) < 0) return showAlert("Introduzca valores validos", "Error");
 
 		// Creación de objeto a mandar petición
 		let productoModificado = {
@@ -56,6 +57,7 @@ async function updateProduct() {
 			descripcion,
 			idCategoria,
 			disponibilidad,
+			estado
 		}
 
 		if (imagen.value) { // Existe una imagen
@@ -92,21 +94,7 @@ async function updateProduct() {
 
 	} catch (error) {
 		// Captura de error y mandar retroalimentación al usuario
-		if (error.response.data === "La imagen excede el tamaño limite") {
-			showAlert("Las imagenes no deben pesar mas de 2MB", "Error");
-		} else if (error.response.data === "Sucedio un error") {
-			showAlert("Existe un error con el servidor", "Error");
-		} else if (error.response.data === "Los datos no son del tipo correcto") {
-			showAlert("Los datos no son del tipo correcto", "Error");
-		} else if (error.response.data === "La imagen debe ser de las extensiones deseadas") {
-			showAlert("La imagen debe ser de las extensiones deseadas", "Error");
-		} else if (error.response.data === "Los códigos no coinciden") {
-			showAlert("No debes alterar el código", "Error");
-		} else if (error.response.data === "No existe un registro con ese código") {
-			showAlert("No existe un registro con ese código", "Error");
-		} else {
-			showAlert("Sucedio un error desconocido", "Error");
-		}
+		showAlert(error.response.data, "Error");
 	}
 }
 
