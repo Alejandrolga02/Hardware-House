@@ -5,7 +5,7 @@ import bcryptjs from 'bcryptjs'
 export const login = async (req, res) => {
     try {
         const { usuario, contrasena } = req.body;
-        const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [usuario, contrasena]);
+        const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [usuario]);
 
         if (result[0] === undefined) {
             res.status(400).send("Usuario o contraseña incorrectas");

@@ -28,12 +28,7 @@ loginForm.addEventListener("submit", async (event) => {
 		});
 		window.location.href = '/admin/';
 	} catch (error) {
-		if (error.response.data === "Usuario o contraseña incorrectas") {
-			showAlert("Usuario o contraseña incorrectas", "Error");
-		} else if (error.response.data === "Sucedio un error") {
-			showAlert("Existe un error con el servidor", "Error");
-		} else {
-			showAlert("Sucedio un error desconocido", "Error");
-		}
+
+		showAlert(error.response.data, "Error");
 	}
 });

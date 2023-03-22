@@ -13,7 +13,7 @@ router.get("/", (req, res, next) => {
 	}
 }, renderLogin);
 router.post('/login', login);
-router.get("/logout", logout);
+router.get("/logout", session.checkAdmin, logout);
 
 // Crear usuarios
 router.post("/register", session.checkAdmin, register);
