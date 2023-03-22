@@ -15,6 +15,36 @@ export const renderCategories = async (req, res)=> {
         scripts: [
             "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
             "/js/bootstrap.bundle.min.js",
+            "/js/admin-categorias.js"
         ]
     });
+};
+
+export const createCategories = async(req, res)=> {
+    try {
+        let {codigo, nombre} = req.body;
+
+        if(false) {
+            res.status(400).send("Los datos no son del tipo correcto");
+        }
+        if(false) {
+            res.status(400).send("Existe un registro con ese código");
+        }
+
+        const newCategorie = {
+            id: codigo.trim(),
+            nombre: nombre.trim(),
+            estado: 1
+        }
+
+        console.log(newCategorie);
+
+        const rows = await pool.query("INSERT INTO categorias set ?", [newCategorie]);
+        
+        res.status(200).send("Se insertaron con exito los datos");
+    }
+    catch(error) {
+        console.error(error.message);
+        res.status(400).send("Sucedio un error");
+    }
 };
