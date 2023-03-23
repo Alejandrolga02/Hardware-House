@@ -86,30 +86,37 @@ const deleteTempImage = (filePath) => {
 
 //Función para validar que la cadena no cuente con caracteres especiales
 const validateString = (cadena) => {
-	let regex = /^[a-zA-Z0-9]+$/;
+	let regex = new RegExp(/^[A-Za-z0-9\s]+$/g);
 	return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
 }
 
 //Función para validar. Recibe el objeto
 const validateData = (product) => {
-	if (validateString(product.codigo) || (product.codigo == " ")) {	//Convierte en false en 'true'
-	} else { return true; }
-
-	if (validateString(product.nombre) || (product.nombre == " ")) {
-	} else { return true; }
-
-	if (validateString(product.descripcion) || (product.descripcion == " ")) {
-	} else { return true; }
-
-	if (!isNaN(product.precio) || (parseFloat(product.precio) <= 0)) {
+	if (!validateString(product.codigo) || (product.codigo == " ")) {	//Convierte en false en 'true'
 		return true;
 	}
 
-	if (!isNaN(product.disponibilidad) || (parseInt(product.disponibilidad) <= 0)) {
+	if (!validateString(product.nombre) || (product.nombre == " ")) {
+		return true;
+	} 
+
+	if (!validateString(product.descripcion) || (product.descripcion == " ")) {
+		return true;
+	} 
+
+	if (isNaN(product.precio) || (parseFloat(product.precio) <= 0)) {
 		return true;
 	}
 
-	if (!isNaN(product.idCategoria) || (parseInt(product.idCategoria) <= 0)) {
+	if (isNaN(product.disponibilidad) || (parseInt(product.disponibilidad) <= 0)) {
+		return true;
+	}
+
+	if (isNaN(product.idCategoria) || (parseInt(product.idCategoria) <= 0)) {
+		return true;
+	}
+
+	if (isNaN(product.estado) || (parseInt(product.estado) < 0)){
 		return true;
 	}
 
@@ -244,19 +251,63 @@ export const editProducts = async (req, res) => {
 
 //Función para actualizar los datos necesarios.
 export const updateProducts = async (req, res) => {
-	const { id } = req.params;
-	const newProduct = {
-		codigo: req.body.codigo,
-		nombre: req.body.nombre,
-		descripcion: req.body.descripcion,
-		precio: parseFloat(req.body.precio),
-		urlImagen: url,
-		estado: req.body.estado,
-		disponibilidad: parseInt(req.body.disponibilidad),
-		idCategoria: parseInt(req.body.idCategoria)
+	try{
+		const [codigo] = req.params;
+		console.log(req.params);
+
+		if (req.files === null) {	// Comprobación de subida de archivo.
+			return res.status(400).send("No se subió una imagen");
+		}
+
+		//console.log(req.files.urlImagen);
+		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
+		console.log(photo.mimetype.split('/')[1]);
+
+		const newProduct = {
+			codigo: codigo,
+			nombre: req.body.nombre,
+			descripcion: req.body.descripcion,
+			precio: req.body.precio,
+			urlImagen: photo,
+			estado: req.body.estado,
+			disponibilidad: req.body.disponibilidad,
+			idCategoria: req.body.idCategoria
+		}
+
+		const resData = validateData(newProduct);
+		console.log(resData);
+
+		if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
+			deleteTempImage(photo.tempFilePath);
+			console.log("Entro a este error");
+			return res.status(400).send("Los datos no son del tipo correcto");
+		}
+
+		if (validationFormatImage(photo)) {	// Validar que la imagen sea de las extensiones deseadas
+			deleteTempImage(photo.tempFilePath);
+			return res.status(400).send("La imagen debe ser de las extensiones deseadas");
+		}
+
+		if (photo.truncated) {	// Archivo excede el tamaño limite
+			deleteTempImage(photo.tempFilePath);
+			return res.status(400).send("La imagen excede el tamaño limite");
+		}
+
+		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se sube la imagen a Cloudinary
+			folder: "products",
+		});
+
+		newProduct.urlImagen = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
+
+		deleteTempImage(photo.tempFilePath);
+
+		const product = await pool.query("UPDATE productos set ? WHERE codigo = ?", [newProduct, codigo]);
+		res.redirect("/admin/productos");
+
+	}catch(error){
+		console.log(error.message + "Sucedio un error");
+		return res.status(400).send("Sucedio un error");
 	}
-	await pool.query("UPDATE productos set ? WHERE codigo = ?", [newCustomer, id]);
-	res.redirect("/admin/productos");
 };
 
 //Función para desactivar los productos.
