@@ -45,29 +45,57 @@ const validateString = (cadena) =>{
 //Función para validar. Recibe el objeto
 const validateData = (product) =>{
 	if(validateString(product.codigo)  || (product.codigo == " ")){	//Convierte en false en 'true'
-	}else{return false;}
+	}else{return true;}
 	
 	if(validateString(product.nombre) || (product.nombre == " ")){
-	}else{return false;}
+	}else{return true;}
 
 	if(validateString(product.descripcion) || (product.descripcion == " ")){
-	}else{return false;}
+	}else{return true;}
 
 	if(!isNaN(product.precio) || (parseFloat(product.precio) <= 0)){
-	}else{return false;}
+		return true;
+	}
 
 	if(!isNaN(product.disponibilidad) || (parseInt(product.disponibilidad) <= 0)){
-	}else{return false;}
+		return true;
+	}
 
 	if(!isNaN(product.idCategoria) || (parseInt(product.idCategoria) <= 0)){
-	}else{return false;}
+		return true;
+	}
 
-	return true;
+	return false;
+}
+
+//Función para validar la existencia del mismo codigo
+const validateCode = async (codigo) => {
+	const [productos] = await pool.query("SELECT productos.codigo FROM productos");
+	console.log(productos);
+	console.log(codigo);
+	console.log(productos[0].codigo);
+
+	for(let index = 0; index < productos.length; index++){
+		console.log('Valor del ciclo ' + index);
+		if(productos[index].codigo === codigo){
+			console.log(productos[index].codigo);
+			return true;
+		}
+	}
+	return false;
 }
 
 //Función para la validación del formato de la imagen
 const validationFormatImage = (photo) =>{
+	const extension = photo.mimetype.split('/')[1];	//Extrae la extensión.
+	console.log(extension);
+	const exteValid = ['png', 'jpg'];
 
+	if(!exteValid.includes(extension)){
+		return true;
+	}
+
+	return false;
 }
 
 //Función para crear un nuevo producto.
@@ -79,6 +107,7 @@ export const createProducts = async (req, res) => {
 
 		//console.log(req.files.urlImagen);
 		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
+		console.log(photo.mimetype.split('/')[1]);
 
 		const newProduct = {	// Creación del objeto usado para realizar la inserción
 			codigo: req.body.codigo,
@@ -91,23 +120,25 @@ export const createProducts = async (req, res) => {
 			idCategoria: req.body.idCategoria
 		}
 
-		if (!validateData(newProduct)) {	// Validar que los datos sean del tipo deseado pasando la función
+		const resData = validateData(newProduct);
+		console.log(resData);
+
+		if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
 			deleteTempImage(photo.tempFilePath);
+			console.log("Entro a este error");
 
 			return res.status(400).send("Los datos no son del tipo correcto");
 		}
 
-		console.log(newProduct.codigo);
-		const [rows] = await pool.query("SELECT * FROM productos WHERE codigo = ?", [newProduct.codigo]);
-		console.log(rows);
-
-		if (false) {	// Validar que no exista un registro con ese código
+		const resFun = await validateCode(newProduct.codigo);
+		
+		if (resFun) {	// Validar que no exista un registro con ese código
 			deleteTempImage(photo.tempFilePath);
-
+			console.log("Se metio al error");
 			return res.status(400).send("Existe un registro con ese código");
 		}
 
-		if (!validationFormatImage(photo)) {	// Validar que la imagen sea de las extensiones deseadas
+		if (validationFormatImage(photo)) {	// Validar que la imagen sea de las extensiones deseadas
 			deleteTempImage(photo.tempFilePath);
 
 			return res.status(400).send("La imagen debe ser de las extensiones deseadas");
@@ -119,17 +150,17 @@ export const createProducts = async (req, res) => {
 			return res.status(400).send("La imagen excede el tamaño limite");
 		}
 
-		/*const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se sube la imagen a Cloudinary
+		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se sube la imagen a Cloudinary
 			folder: "products",
-		});*/
+		});
 
-		const url = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
+		newProduct.urlImagen = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
 
 		deleteTempImage(photo.tempFilePath);
 
 		console.log(newProduct);
 
-		//const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
+		const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
 
 		return res.status(200).send("Se insertaron con exito los datos");
 
