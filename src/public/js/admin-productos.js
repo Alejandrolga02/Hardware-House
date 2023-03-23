@@ -78,47 +78,49 @@ async function lookUpProduct(event) {
 	try {
 		event.preventDefault();
 
-		let { codigo, precio, nombre, descripcion, idCategoria, disponibilidad } = getInputs();
+		let producto = getInputs();
 
 		let nuevabusqueda = {};
 
-		if (codigo) {
-			nuevabusqueda.codigo = codigo;
+		if (producto.codigo) {
+			nuevabusqueda.codigo = producto.codigo;
 		}
 
-		if (nombre) {
-			nuevabusqueda.nombre = nombre;
+		if (producto.nombre) {
+			nuevabusqueda.nombre = producto.nombre;
 		}
 
-		if (descripcion) {
-			nuevabusqueda.descripcion = descripcion;
+		if (producto.descripcion) {
+			nuevabusqueda.descripcion = producto.descripcion;
 		}
 
-		if (precio) {
-			if (isNaN(parseFloat(precio)) || parseFloat(precio) <= 0) return showAlert("Introduzca un precio valido", "Error");
+		if (producto.precio) {
+			if (isNaN(parseFloat(producto.precio)) || parseFloat(producto.precio) <= 0) return showAlert("Introduzca un precio valido", "Error");
 
-			nuevabusqueda.precio = precio;
+			nuevabusqueda.precio = producto.precio;
 		}
 
-		if (idCategoria !== "0") {
-			if (isNaN(parseFloat(idCategoria)) || parseFloat(idCategoria) <= 0) return showAlert("Introduzca una categoría valida", "Error");
+		if (producto.idCategoria !== "0") {
+			if (isNaN(parseFloat(producto.idCategoria)) || parseFloat(producto.idCategoria) <= 0) return showAlert("Introduzca una categoría valida", "Error");
 
-			nuevabusqueda.idCategoria = idCategoria;
+			nuevabusqueda.idCategoria = producto.idCategoria;
 		}
 
-		if (disponibilidad) {
-			if (isNaN(parseFloat(disponibilidad)) || parseFloat(disponibilidad) <= 0) return showAlert("Introduzca una categoría valida", "Error");
+		if (producto.disponibilidad) {
+			if (isNaN(parseFloat(producto.disponibilidad)) || parseFloat(producto.disponibilidad) <= 0) return showAlert("Introduzca una categoría valida", "Error");
 
-			nuevabusqueda.disponibilidad = disponibilidad;
+			nuevabusqueda.disponibilidad = producto.disponibilidad;
 		}
 
 		console.log(nuevabusqueda);
 
-		let result = await axios.post('/admin/productos/search', nuevabusqueda, {
+		await axios.post('/admin/productos/', nuevabusqueda, {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			}
 		});
+
+		window.location.pathname = window.location.pathname;
 	} catch (error) {
 		// Captura de error y mandar retroalimentación al usuario
 		showAlert(error.response.data, "Error");

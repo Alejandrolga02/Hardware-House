@@ -3,15 +3,32 @@ import cloudinary from '../cloudinary.js';
 import fs from "fs";
 import session from '../session.js';
 import { escape } from 'mysql2';
+let query = undefined;
+let form = {};
 
 //Función para mostrar todos los productos.
 export const renderProducts = async (req, res) => {
-	const [rows] = await pool.query("SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id");
+	if (query === "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id") {
+		form = {};
+	}
+
+	if (!query) {
+		query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
+	}
+
+
+	const [rows] = await pool.query(query);
 	const [categorias] = await pool.query("SELECT * FROM categorias");
+
+	query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
+
+	console.log(form)
+
 	res.render("admin/productos.html", {
 		title: "Admin - Productos",
 		products: rows,
 		categorias,
+		form,
 		navLinks: [
 			{ class: "nav-link", link: "/", title: "Inicio" },
 			{ class: "nav-link active", link: "/admin/productos/", title: "Productos" },
@@ -27,46 +44,34 @@ export const renderProducts = async (req, res) => {
 	});
 };
 
+
+
 // Función para buscar productos
 export const searchProducts = async (req, res) => {
-	let searchProduct = req.body;
+	try {
+		let searchProduct = req.body;
 
-	if (!searchProduct) {
-		return res.status(400).send("Añade contenido a la consulta");
-	}
-
-	let query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id WHERE ";
-
-	let length = Object.keys(searchProduct).length;
-	let i = 0;
-	for (const [key, value] of Object.entries(searchProduct)) {
-		if (i === length - 1) {
-			query += `${key} = ${escape(value)}`;
-		} else {
-			query += `${key} = ${escape(value)} AND `;
+		if (Object.keys(searchProduct).length === 0) {
+			return res.status(400).send("Añade contenido a la consulta");
 		}
-		i++;
-	}
-	const [rows] = await pool.query(query);
-	const [categorias] = await pool.query("SELECT * FROM categorias");
 
-	res.render("admin/productosResult.html", {
-		title: "Admin - Productos",
-		products: rows,
-		categorias,
-		navLinks: [
-			{ class: "nav-link", link: "/", title: "Inicio" },
-			{ class: "nav-link active", link: "/admin/productos/", title: "Productos" },
-			{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
-			{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
-			{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
-		],
-		scripts: [
-			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-			"/js/bootstrap.bundle.min.js",
-			"/js/admin-productos.js"
-		]
-	});
+		query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id WHERE ";
+
+		let i = 0;
+		for (const [key, value] of Object.entries(searchProduct)) {
+			if (i === Object.keys(searchProduct).length - 1) {
+				query += `${key} = ${escape(value)}`;
+				form[key] = value;
+			} else {
+				query += `${key} = ${escape(value)} AND `;
+			}
+
+			i++;
+		}
+		return res.status(200).send("Query creado exitosamente");
+	} catch (error) {
+		console.log(error)
+	}
 };
 
 const deleteTempImage = (filePath) => {

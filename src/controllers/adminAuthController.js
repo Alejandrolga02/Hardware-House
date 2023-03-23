@@ -21,7 +21,7 @@ export const login = async (req, res) => {
             }
         }
     } catch (error) {
-        console.log(error.message);
+        console.log(error);
         res.status(500).send("Sucedio un error");
     }
 }

@@ -14,7 +14,7 @@ const router = Router();
 
 // Administración Productos
 router.get("/", session.checkAdmin, renderProducts);
-router.post("/search", session.checkAdmin, searchProducts);
+router.post("/", session.checkAdmin, searchProducts);
 router.post("/add", session.checkAdmin, fileUpload({
 	useTempFiles: true,
 	limits: { fileSize: 2 * 1024 * 1024 }	//Se tiene un limite de 2mb por archivo
