@@ -1,13 +1,56 @@
 import { pool } from "../db.js";
 import cloudinary from '../cloudinary.js';
 import fs from "fs";
-import session from '../session.js'
+import session from '../session.js';
+import { escape } from 'mysql2';
 
 //Función para mostrar todos los productos.
 export const renderProducts = async (req, res) => {
 	const [rows] = await pool.query("SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id");
 	const [categorias] = await pool.query("SELECT * FROM categorias");
 	res.render("admin/productos.html", {
+		title: "Admin - Productos",
+		products: rows,
+		categorias,
+		navLinks: [
+			{ class: "nav-link", link: "/", title: "Inicio" },
+			{ class: "nav-link active", link: "/admin/productos/", title: "Productos" },
+			{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
+			{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
+			{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
+		],
+		scripts: [
+			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
+			"/js/bootstrap.bundle.min.js",
+			"/js/admin-productos.js"
+		]
+	});
+};
+
+// Función para buscar productos
+export const searchProducts = async (req, res) => {
+	let searchProduct = req.body;
+
+	if (!searchProduct) {
+		return res.status(400).send("Añade contenido a la consulta");
+	}
+
+	let query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id WHERE ";
+
+	let length = Object.keys(searchProduct).length;
+	let i = 0;
+	for (const [key, value] of Object.entries(searchProduct)) {
+		if (i === length - 1) {
+			query += `${key} = ${escape(value)}`;
+		} else {
+			query += `${key} = ${escape(value)} AND `;
+		}
+		i++;
+	}
+	const [rows] = await pool.query(query);
+	const [categorias] = await pool.query("SELECT * FROM categorias");
+
+	res.render("admin/productosResult.html", {
 		title: "Admin - Productos",
 		products: rows,
 		categorias,
@@ -37,36 +80,36 @@ const deleteTempImage = (filePath) => {
 }
 
 //Función para validar que la cadena no cuente con caracteres especiales
-const validateString = (cadena) =>{
+const validateString = (cadena) => {
 	let regex = /^[a-zA-Z0-9]+$/;
 	return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
 }
 
 //Función para validar. Recibe el objeto
-const validateData = (product) =>{
-	if(validateString(product.codigo)  || (product.codigo == " ")){	//Convierte en false en 'true'
-	}else{return false;}
-	
-	if(validateString(product.nombre) || (product.nombre == " ")){
-	}else{return false;}
+const validateData = (product) => {
+	if (validateString(product.codigo) || (product.codigo == " ")) {	//Convierte en false en 'true'
+	} else { return false; }
 
-	if(validateString(product.descripcion) || (product.descripcion == " ")){
-	}else{return false;}
+	if (validateString(product.nombre) || (product.nombre == " ")) {
+	} else { return false; }
 
-	if(!isNaN(product.precio) || (parseFloat(product.precio) <= 0)){
-	}else{return false;}
+	if (validateString(product.descripcion) || (product.descripcion == " ")) {
+	} else { return false; }
 
-	if(!isNaN(product.disponibilidad) || (parseInt(product.disponibilidad) <= 0)){
-	}else{return false;}
+	if (!isNaN(product.precio) || (parseFloat(product.precio) <= 0)) {
+	} else { return false; }
 
-	if(!isNaN(product.idCategoria) || (parseInt(product.idCategoria) <= 0)){
-	}else{return false;}
+	if (!isNaN(product.disponibilidad) || (parseInt(product.disponibilidad) <= 0)) {
+	} else { return false; }
+
+	if (!isNaN(product.idCategoria) || (parseInt(product.idCategoria) <= 0)) {
+	} else { return false; }
 
 	return true;
 }
 
 //Función para la validación del formato de la imagen
-const validationFormatImage = (photo) =>{
+const validationFormatImage = (photo) => {
 
 }
 

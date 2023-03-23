@@ -6,7 +6,7 @@ const router = Router();
 
 // Autentificacion
 router.get("/", (req, res, next) => {
-	if (session.isAuth) {
+	if (session.getAdmin()) {
 		res.redirect("/admin/");
 	} else {
 		next();

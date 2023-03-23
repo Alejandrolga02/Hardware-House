@@ -16,6 +16,10 @@ const session = {
 	},
 
 	getAuth: () => {
+		return session.isAuth;
+	},
+
+	getAdmin: () => {
 		return session.isAdmin;
 	},
 

@@ -74,34 +74,54 @@ async function insertProduct(event) {
 	}
 }
 
-async function lookUpProduct() {
+async function lookUpProduct(event) {
 	try {
 		event.preventDefault();
 
-		let { codigo } = getInputs();
-		if (codigo === "") return showAlert("Introduzca un código", "Error");
+		let { codigo, precio, nombre, descripcion, idCategoria, disponibilidad } = getInputs();
 
-		const dbref = ref(db);
-		const snapshot = await get(child(dbref, "productos/" + codigo));
+		let nuevabusqueda = {};
 
-		if (snapshot.exists()) {
-			let nombre = snapshot.val().nombre;
-			let descripcion = snapshot.val().descripcion;
-			let precio = snapshot.val().precio;
-			let url = snapshot.val().url;
-
-			if (!url) url = await getDownloadURL(refStorage(storage, "imagenVacia.svg"));
-			document.querySelector("#imagen").value = "";
-			fillInputs({ codigo, nombre, descripcion, precio, url });
-		} else {
-			showAlert("No se encontró el registro", "Error");
+		if (codigo) {
+			nuevabusqueda.codigo = codigo;
 		}
+
+		if (nombre) {
+			nuevabusqueda.nombre = nombre;
+		}
+
+		if (descripcion) {
+			nuevabusqueda.descripcion = descripcion;
+		}
+
+		if (precio) {
+			if (isNaN(parseFloat(precio)) || parseFloat(precio) <= 0) return showAlert("Introduzca un precio valido", "Error");
+
+			nuevabusqueda.precio = precio;
+		}
+
+		if (idCategoria !== "0") {
+			if (isNaN(parseFloat(idCategoria)) || parseFloat(idCategoria) <= 0) return showAlert("Introduzca una categoría valida", "Error");
+
+			nuevabusqueda.idCategoria = idCategoria;
+		}
+
+		if (disponibilidad) {
+			if (isNaN(parseFloat(disponibilidad)) || parseFloat(disponibilidad) <= 0) return showAlert("Introduzca una categoría valida", "Error");
+
+			nuevabusqueda.disponibilidad = disponibilidad;
+		}
+
+		console.log(nuevabusqueda);
+
+		let result = await axios.post('/admin/productos/search', nuevabusqueda, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		});
 	} catch (error) {
-		if (error.code === "PERMISSION_DENIED") {
-			showAlert("No estás autentificado", "Error");
-		} else {
-			console.error(error);
-		}
+		// Captura de error y mandar retroalimentación al usuario
+		showAlert(error.response.data, "Error");
 	}
 }
 

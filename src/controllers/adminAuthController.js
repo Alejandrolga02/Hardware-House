@@ -13,9 +13,8 @@ export const login = async (req, res) => {
             let equal = await bcryptjs.compare(contrasena, result[0].contrasena);
 
             if (equal) {
-                session.id = result[0].id;
-                session.isAdmin = true;
-                session.isAuth = true;
+                session.setSession(result[0].id, true, true);
+
                 res.status(200).send("Sesion iniciada correctamente");
             } else {
                 res.status(400).send("Usuario o contraseña incorrectas");

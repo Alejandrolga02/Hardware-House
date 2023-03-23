@@ -1,5 +1,3 @@
-import session from '../session.js'
-
 export const renderIndex = async (req, res) => {
 	res.render("admin/menu.html", {
 		title: "Admin - Menu Principal",
