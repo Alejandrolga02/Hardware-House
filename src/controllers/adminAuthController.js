@@ -1,18 +1,22 @@
 import { pool } from "../db.js";
 import session from '../session.js'
-import bcryptjs from 'bcryptjs'
+import { scryptSync, randomBytes, timingSafeEqual } from 'crypto'
 
 export const login = async (req, res) => {
     try {
         const { usuario, contrasena } = req.body;
+
         const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [usuario]);
+        const [salt, key] = result[0].contrasena.split(':');
+        const hashedBuffer = scryptSync(contrasena, salt, 64);
+        const keyBuffer = Buffer.from(key, 'hex');
 
         if (result[0] === undefined) {
             res.status(400).send("Usuario o contraseña incorrectas");
         } else {
-            let equal = await bcryptjs.compare(contrasena, result[0].contrasena);
+            const match = timingSafeEqual(hashedBuffer, keyBuffer);
 
-            if (equal) {
+            if (match) {
                 session.setSession(result[0].id, true, true);
 
                 res.status(200).send("Sesion iniciada correctamente");
@@ -52,8 +56,12 @@ export const logout = async (req, res) => {
 export const register = async (req, res) => {
     try {
         let newVendedor = req.body;
-        newVendedor.contrasena = await bcryptjs.hash(newVendedor.contrasena, 10);
+
+        const salt = randomBytes(16).toString('hex');
+        const hashedPassword = scryptSync(newVendedor.contrasena, salt, 64).toString('hex');
+        newVendedor.contrasena = `${salt}:${hashedPassword}`;
         newVendedor.id = 0;
+
 
         const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [newVendedor.usuario]);
         if (result.length > 0) {
