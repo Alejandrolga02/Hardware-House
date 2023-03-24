@@ -67,9 +67,10 @@ async function updateProduct(event) {
 			if (imagen.files[0].size > 2000000) return showAlert("Las imagenes no deben pesar mas de 2MB", "Error");
 
 			// Añadir imagen al objeto
-			productoModificado[urlImagen] = imagen.files[0];
+			productoModificado['urlImagen'] = imagen.files[0];
 
 			console.log(productoModificado);
+			console.log(window.location.pathname);
 
 			// Petición a la api para actualizar el registro
 			await axios.post(window.location.pathname, productoModificado, {

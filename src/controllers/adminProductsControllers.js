@@ -98,11 +98,11 @@ const validateData = (product) => {
 
 	if (!validateString(product.nombre) || (product.nombre == " ")) {
 		return true;
-	} 
+	}
 
-	if (!validateString(product.descripcion) || (product.descripcion == " ")) {
+	if (product.descripcion === "" || typeof product.descripcion !== "string") {
 		return true;
-	} 
+	}
 
 	if (isNaN(product.precio) || (parseFloat(product.precio) <= 0)) {
 		return true;
@@ -116,7 +116,7 @@ const validateData = (product) => {
 		return true;
 	}
 
-	if (isNaN(product.estado) || (parseInt(product.estado) < 0)){
+	if (isNaN(product.estado) || (parseInt(product.estado) < 0)) {
 		return true;
 	}
 
@@ -125,19 +125,9 @@ const validateData = (product) => {
 
 //Función para validar la existencia del mismo codigo
 const validateCode = async (codigo) => {
-	const [productos] = await pool.query("SELECT productos.codigo FROM productos");
-	console.log(productos);
-	console.log(codigo);
-	console.log(productos[0].codigo);
+	const [productos] = await pool.query("SELECT productos.codigo FROM productos WHERE codigo = ?", [codigo]);
 
-	for (let index = 0; index < productos.length; index++) {
-		console.log('Valor del ciclo ' + index);
-		if (productos[index].codigo === codigo) {
-			console.log(productos[index].codigo);
-			return true;
-		}
-	}
-	return false;
+	return productos[0] === null;
 }
 
 //Función para la validación del formato de la imagen
@@ -251,60 +241,82 @@ export const editProducts = async (req, res) => {
 
 //Función para actualizar los datos necesarios.
 export const updateProducts = async (req, res) => {
-	try{
-		const [codigo] = req.params;
+	try {
+		const { id } = req.params;
 		console.log(req.params);
 
-		if (req.files === null) {	// Comprobación de subida de archivo.
-			return res.status(400).send("No se subió una imagen");
+		let codigo = req.body.codigo;
+		if (id != codigo) {
+			res.status(400).send("No alterar los códigos");
 		}
 
-		//console.log(req.files.urlImagen);
-		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
-		console.log(photo.mimetype.split('/')[1]);
+		if (!validateCode(id)) {
+			res.status(400).send("No existe ese registro a modificar");
+		}
 
 		const newProduct = {
-			codigo: codigo,
 			nombre: req.body.nombre,
 			descripcion: req.body.descripcion,
 			precio: req.body.precio,
-			urlImagen: photo,
 			estado: req.body.estado,
 			disponibilidad: req.body.disponibilidad,
 			idCategoria: req.body.idCategoria
 		}
 
 		const resData = validateData(newProduct);
-		console.log(resData);
+		console.log(req.files);
 
-		if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
+		if (req.files === undefined) {	// Comprobación de subida de archivo.
+			if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
+				deleteTempImage(photo.tempFilePath);
+				console.log("Entro a este error");
+				return res.status(400).send("Los datos no son del tipo correcto");
+			}
+
+			const product = await pool.query("UPDATE productos set ? WHERE codigo = ?", [newProduct, codigo]);
+			return res.redirect("/admin/productos");
+
+		} else {
+			const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
+			console.log(photo.mimetype.split('/')[1]);
+
+			newProduct['urlImagen'] = photo;
+			console.log(resData);
+
+			if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
+				deleteTempImage(photo.tempFilePath);
+				console.log("Entro a este error");
+				return res.status(400).send("Los datos no son del tipo correcto");
+			}
+
+			if (validationFormatImage(photo)) {	// Validar que la imagen sea de las extensiones deseadas
+				deleteTempImage(photo.tempFilePath);
+				return res.status(400).send("La imagen debe ser de las extensiones deseadas");
+			}
+
+			if (photo.truncated) {	// Archivo excede el tamaño limite
+				deleteTempImage(photo.tempFilePath);
+				return res.status(400).send("La imagen excede el tamaño limite");
+			}
+
+			let public_image = await pool.query("SELECT urlImagen FROM productos WHERE codigo = ?", [codigo]);
+			console.log(public_image);
+			let public_id = public_image[0].urlImagen.split(".");
+			console.log(public_id);
+			await cloudinary.uploader.destroy(public_id[0]);
+
+			const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se sube la imagen a Cloudinary
+				folder: "products",
+			});
+
+			newProduct.urlImagen = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
 			deleteTempImage(photo.tempFilePath);
-			console.log("Entro a este error");
-			return res.status(400).send("Los datos no son del tipo correcto");
+
+			const product = await pool.query("UPDATE productos set ? WHERE codigo = ?", [newProduct, codigo]);
+			return res.redirect("/admin/productos");
 		}
-
-		if (validationFormatImage(photo)) {	// Validar que la imagen sea de las extensiones deseadas
-			deleteTempImage(photo.tempFilePath);
-			return res.status(400).send("La imagen debe ser de las extensiones deseadas");
-		}
-
-		if (photo.truncated) {	// Archivo excede el tamaño limite
-			deleteTempImage(photo.tempFilePath);
-			return res.status(400).send("La imagen excede el tamaño limite");
-		}
-
-		const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se sube la imagen a Cloudinary
-			folder: "products",
-		});
-
-		newProduct.urlImagen = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
-
-		deleteTempImage(photo.tempFilePath);
-
-		const product = await pool.query("UPDATE productos set ? WHERE codigo = ?", [newProduct, codigo]);
-		res.redirect("/admin/productos");
-
-	}catch(error){
+	} catch (error) {
+		console.log(error);
 		console.log(error.message + "Sucedio un error");
 		return res.status(400).send("Sucedio un error");
 	}
