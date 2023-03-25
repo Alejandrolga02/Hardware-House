@@ -299,11 +299,11 @@ export const updateProducts = async (req, res) => {
 				return res.status(400).send("La imagen excede el tamaño limite");
 			}
 
-			let public_image = await pool.query("SELECT urlImagen FROM productos WHERE codigo = ?", [codigo]);
-			console.log(public_image);
-			let public_id = public_image[0].urlImagen.split(".");
+			const [ rows ] = await pool.query("SELECT urlImagen FROM productos WHERE codigo = ?", [codigo]);
+			console.log(rows);
+			const public_id = rows[0].urlImagen.split(".")[0];
 			console.log(public_id);
-			await cloudinary.uploader.destroy(public_id[0]);
+			await cloudinary.uploader.destroy(public_id);
 
 			const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se sube la imagen a Cloudinary
 				folder: "products",
