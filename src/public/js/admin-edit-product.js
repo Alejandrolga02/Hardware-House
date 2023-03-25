@@ -69,9 +69,6 @@ async function updateProduct(event) {
 			// Añadir imagen al objeto
 			productoModificado['urlImagen'] = imagen.files[0];
 
-			console.log(productoModificado);
-			console.log(window.location.pathname);
-
 			// Petición a la api para actualizar el registro
 			await axios.post(window.location.pathname, productoModificado, {
 				headers: {
