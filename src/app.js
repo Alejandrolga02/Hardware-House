@@ -2,8 +2,6 @@ import express from "express";
 import path from "path";
 import morgan from "morgan";
 import ejs from "ejs";
-import fileUpload from "express-fileupload";
-
 import { fileURLToPath } from "url";
 
 const app = express();
@@ -28,6 +26,8 @@ import adminCategorias from "./routes/adminCategorias.js";
 import adminAuth from "./routes/adminAuth.js";
 import adminIndex from "./routes/adminIndex.js";
 import client from "./routes/clients.js";
+import session from './session.js';
+session.clearSession();
 
 const apiPaths = {
 	adminProductos: '/admin/productos',
