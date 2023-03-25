@@ -112,8 +112,6 @@ async function lookUpProduct(event) {
 			nuevabusqueda.disponibilidad = producto.disponibilidad;
 		}
 
-		console.log(nuevabusqueda);
-
 		await axios.post('/admin/productos/', nuevabusqueda, {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
@@ -129,4 +127,9 @@ async function lookUpProduct(event) {
 
 btnAgregar.addEventListener("click", insertProduct);
 btnConsultar.addEventListener("click", lookUpProduct);
+form.addEventListener("reset", (event) => {
+	event.preventDefault();
+
+	window.location.pathname = window.location.pathname;
+})
 imagen.addEventListener("change", imagenChange);

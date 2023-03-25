@@ -3,26 +3,19 @@ import cloudinary from '../cloudinary.js';
 import fs from "fs";
 import session from '../session.js';
 import { escape } from 'mysql2';
-let query = undefined;
+let query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
 let form = {};
 
 //Función para mostrar todos los productos.
 export const renderProducts = async (req, res) => {
-	if (query === "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id") {
+	form.counter -= 1;
+	if (form.counter === 0) {
 		form = {};
+		query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
 	}
-
-	if (!query) {
-		query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
-	}
-
 
 	const [rows] = await pool.query(query);
 	const [categorias] = await pool.query("SELECT * FROM categorias");
-
-	query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
-
-	console.log(form)
 
 	res.render("admin/productos.html", {
 		title: "Admin - Productos",
@@ -55,19 +48,20 @@ export const searchProducts = async (req, res) => {
 			return res.status(400).send("Añade contenido a la consulta");
 		}
 
-		query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.disponibilidad, productos.idCategoria, productos.estado, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id WHERE ";
+		query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id WHERE ";
 
 		let i = 0;
 		for (const [key, value] of Object.entries(searchProduct)) {
 			if (i === Object.keys(searchProduct).length - 1) {
-				query += `${key} = ${escape(value)}`;
-				form[key] = value;
+				query += `productos.${key} LIKE ${escape("%" + value + "%")}`;
 			} else {
-				query += `${key} = ${escape(value)} AND `;
+				query += `productos.${key} LIKE ${escape("%" + value + "%")} AND `;
 			}
 
+			form[key] = value;
 			i++;
 		}
+		form.counter = 2;
 		return res.status(200).send("Query creado exitosamente");
 	} catch (error) {
 		console.log(error)
@@ -78,7 +72,6 @@ const deleteTempImage = (filePath) => {
 	// Función para eliminar las imagenes temporales.
 	try {
 		fs.unlinkSync(filePath);
-		console.log("Archivo removido");
 	} catch (err) {
 		console.error("Error ", err);
 	}
@@ -133,7 +126,6 @@ const validateCode = async (codigo) => {
 //Función para la validación del formato de la imagen
 const validationFormatImage = (photo) => {
 	const extension = photo.mimetype.split('/')[1];	//Extrae la extensión.
-	console.log(extension);
 	const exteValid = ['png', 'jpg'];
 
 	if (!exteValid.includes(extension)) {
@@ -150,9 +142,7 @@ export const createProducts = async (req, res) => {
 			return res.status(400).send("No se subió una imagen");
 		}
 
-		//console.log(req.files.urlImagen);
 		const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
-		console.log(photo.mimetype.split('/')[1]);
 
 		const newProduct = {	// Creación del objeto usado para realizar la inserción
 			codigo: req.body.codigo,
@@ -166,12 +156,9 @@ export const createProducts = async (req, res) => {
 		}
 
 		const resData = validateData(newProduct);
-		console.log(resData);
 
 		if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
 			deleteTempImage(photo.tempFilePath);
-			console.log("Entro a este error");
-
 			return res.status(400).send("Los datos no son del tipo correcto");
 		}
 
@@ -179,19 +166,16 @@ export const createProducts = async (req, res) => {
 
 		if (resFun) {	// Validar que no exista un registro con ese código
 			deleteTempImage(photo.tempFilePath);
-			console.log("Se metio al error");
 			return res.status(400).send("Existe un registro con ese código");
 		}
 
 		if (validationFormatImage(photo)) {	// Validar que la imagen sea de las extensiones deseadas
 			deleteTempImage(photo.tempFilePath);
-
 			return res.status(400).send("La imagen debe ser de las extensiones deseadas");
 		}
 
 		if (photo.truncated) {	// Archivo excede el tamaño limite
 			deleteTempImage(photo.tempFilePath);
-
 			return res.status(400).send("La imagen excede el tamaño limite");
 		}
 
@@ -200,13 +184,9 @@ export const createProducts = async (req, res) => {
 		});
 
 		newProduct.urlImagen = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
-
 		deleteTempImage(photo.tempFilePath);
 
-		console.log(newProduct);
-
 		const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
-
 		return res.status(200).send("Se insertaron con exito los datos");
 
 	} catch (error) {
@@ -243,7 +223,6 @@ export const editProducts = async (req, res) => {
 export const updateProducts = async (req, res) => {
 	try {
 		const { id } = req.params;
-		console.log(req.params);
 
 		let codigo = req.body.codigo;
 		if (id != codigo) {
@@ -264,12 +243,10 @@ export const updateProducts = async (req, res) => {
 		}
 
 		const resData = validateData(newProduct);
-		console.log(req.files);
 
 		if (req.files === undefined) {	// Comprobación de subida de archivo.
 			if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
 				deleteTempImage(photo.tempFilePath);
-				console.log("Entro a este error");
 				return res.status(400).send("Los datos no son del tipo correcto");
 			}
 
@@ -278,14 +255,11 @@ export const updateProducts = async (req, res) => {
 
 		} else {
 			const photo = req.files.urlImagen;	// Se obtiene el objeto del archivo
-			console.log(photo.mimetype.split('/')[1]);
 
 			newProduct['urlImagen'] = photo;
-			console.log(resData);
 
 			if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
 				deleteTempImage(photo.tempFilePath);
-				console.log("Entro a este error");
 				return res.status(400).send("Los datos no son del tipo correcto");
 			}
 
@@ -299,10 +273,8 @@ export const updateProducts = async (req, res) => {
 				return res.status(400).send("La imagen excede el tamaño limite");
 			}
 
-			const [ rows ] = await pool.query("SELECT urlImagen FROM productos WHERE codigo = ?", [codigo]);
-			console.log(rows);
+			const [rows] = await pool.query("SELECT urlImagen FROM productos WHERE codigo = ?", [codigo]);
 			const public_id = rows[0].urlImagen.split(".")[0];
-			console.log(public_id);
 			await cloudinary.uploader.destroy(public_id);
 
 			const result = await cloudinary.uploader.upload(photo.tempFilePath, {	// Se sube la imagen a Cloudinary
@@ -316,8 +288,7 @@ export const updateProducts = async (req, res) => {
 			return res.redirect("/admin/productos");
 		}
 	} catch (error) {
-		console.log(error);
-		console.log(error.message + "Sucedio un error");
+		console.log(error.message);
 		return res.status(400).send("Sucedio un error");
 	}
 };
@@ -330,10 +301,8 @@ export const deleteProducts = async (req, res) => {
 
 	if (estado == 1) {	//Se realiza el cambio del estado.
 		const result = await pool.query("UPDATE productos set estado = ? WHERE codigo = ?", [0, id]);
-		console.log("SE DESACTIVO")
 	} else {
 		const result = await pool.query("UPDATE productos set estado = ? WHERE codigo = ?", [1, id]);
-		console.log("SE ACTIVO");
 	}
 	res.redirect("/admin/productos");
 };
