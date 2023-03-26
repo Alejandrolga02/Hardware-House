@@ -31,17 +31,21 @@ export const login = async (req, res) => {
 }
 
 export const renderLogin = async (req, res) => {
-    res.render("admin/login.html", {
-        title: "Admin - Login",
-        navLinks: [
-            { class: "nav-link active", link: "/", title: "Iniciar Sesión" },
-        ],
-        scripts: [
-            "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-            "/js/bootstrap.bundle.min.js",
-            "/js/login.js"
-        ]
-    });
+    try {
+        res.render("admin/login.html", {
+            title: "Admin - Login",
+            navLinks: [
+                { class: "nav-link active", link: "/", title: "Iniciar Sesión" },
+            ],
+            scripts: [
+                "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
+                "/js/bootstrap.bundle.min.js",
+                "/js/login.js"
+            ]
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export const logout = async (req, res) => {
@@ -73,8 +77,6 @@ export const register = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        console.log(error.message);
         res.status(400).send("Sucedio un error");
     }
-
 }
