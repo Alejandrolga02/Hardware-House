@@ -28,7 +28,7 @@ const session = {
 	},
 
 	checkAdmin: (req, res, next) => {
-		if (session.isAuth) {
+		if (session.isAuth === true) {
 			next();
 		} else {
 			res.redirect("/admin/auth");

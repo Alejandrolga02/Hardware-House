@@ -1,7 +1,14 @@
 import { pool } from "../db.js";
 
+//Función para validar que la cadena no cuente con caracteres especiales
+const validateString = (cadena) => {
+	let regex = new RegExp(/^[A-Za-z0-9\s]+$/g);
+	return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
+}
+
 export const renderClientIndex = async (req, res) => {
 	const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen FROM productos WHERE estado = 1 LIMIT 4");
+
 	res.render("clients/index.html", {
 		title: "Home",
 		products: rows,
@@ -14,7 +21,7 @@ export const renderClientIndex = async (req, res) => {
 		scripts: [
 			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 			"/js/bootstrap.bundle.min.js",
-			//"/js/admin-productos.js"
+			"/js/productos.js"
 		]
 	});
 };
@@ -29,9 +36,7 @@ export const renderClientAboutUs = async (req, res) => {
 			{ class: "nav-link", link: "/contactos", title: "Contactos" },
 		],
 		scripts: [
-			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 			"/js/bootstrap.bundle.min.js",
-			//"/js/admin-productos.js"
 		]
 	});
 };
@@ -51,9 +56,27 @@ export const renderClientProducts = async (req, res) => {
 		scripts: [
 			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 			"/js/bootstrap.bundle.min.js",
-			//"/js/admin-productos.js"
+			"/js/productos.js"
 		]
 	});
+};
+
+export const getProduct = async (req, res) => {
+	try {
+		let { id } = req.body;
+
+		if (!validateString(id)) return res.status(400).send("Introduzca un articulo valido");
+
+		const [producto] = await pool.query("SELECT codigo, nombre, precio, urlImagen, disponibilidad FROM productos WHERE estado = 1 AND codigo = ?", [id]);
+
+		if (producto[0]) {
+			return res.json(producto[0]);
+		} else {
+			return res.status(400).send("El producto no existe o está deshabilitado");
+		}
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 export const renderClientContactUs = async (req, res) => {
@@ -68,7 +91,6 @@ export const renderClientContactUs = async (req, res) => {
 		scripts: [
 			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 			"/js/bootstrap.bundle.min.js",
-			//"/js/admin-productos.js"
 		]
 	});
 };
@@ -81,7 +103,6 @@ export const postContactUs = async (req, res) => {
 		scripts: [
 			"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 			"/js/bootstrap.bundle.min.js",
-			//"/js/admin-productos.js"
 		]
 	});
 };
@@ -96,7 +117,7 @@ export const renderNotFound = async (req, res) => {
 			{ class: "nav-link", link: "/contactos", title: "Contactos" },
 		],
 		scripts: [
-			"js"
+			"/js/bootstrap.bundle.min.js"
 		]
 	});
 }

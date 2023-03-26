@@ -104,8 +104,13 @@ html {
 }
 
 #shopping-cart {
-	animation: shake 0.8s ease-in;
 	cursor: pointer;
+}
+
+.shake {
+	animation-name: shake;
+	animation-duration: 0.8s;
+	animation-timing-function: ease-in;
 }
 
 @keyframes shake {

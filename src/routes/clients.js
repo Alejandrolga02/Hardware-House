@@ -5,6 +5,7 @@ import {
 	renderClientProducts,
 	renderClientContactUs,
 	postContactUs,
+	getProduct,
 	renderNotFound
 } from "../controllers/clientsController.js";
 
@@ -14,6 +15,7 @@ const router = Router();
 router.get("/", renderClientIndex);
 router.get("/empresa", renderClientAboutUs);
 router.get("/productos", renderClientProducts);
+router.post("/productos/get", getProduct);
 router.get("/contactos", renderClientContactUs);
 router.post("/contactos", postContactUs);
 

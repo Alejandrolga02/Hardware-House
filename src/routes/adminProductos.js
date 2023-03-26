@@ -23,7 +23,7 @@ router.get("/update/:id", session.checkAdmin, editProducts);
 router.post("/update/:id", session.checkAdmin, fileUpload({
 	useTempFiles: true,
 	limits: { fileSize: 2 * 1024 * 1024 }	//Se tiene un limite de 2mb por archivo
-}),updateProducts);
+}), updateProducts);
 router.get("/delete/:id", session.checkAdmin, deleteProducts);
 
 export default router;
