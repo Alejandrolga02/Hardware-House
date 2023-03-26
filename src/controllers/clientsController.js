@@ -12,7 +12,20 @@ const validateString = (cadena) => {
 
 export const renderClientIndex = async (req, res) => {
 	try {
-		const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen FROM productos WHERE estado = 1 LIMIT 4");
+		const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen, idCategoria FROM productos WHERE estado = 1 LIMIT 4");
+		if (!rows[0]) {
+			return res.status(400).send("No existen productos disponibles");
+		}
+
+		for (const item of rows) {
+			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
+
+			if (promociones[0]) {
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)))
+			} else {
+				item.precioFinal = item.precio;
+			}
+		}
 
 		res.render("clients/index.html", {
 			title: "Home",
@@ -55,7 +68,20 @@ export const renderClientAboutUs = async (req, res) => {
 
 export const renderClientProducts = async (req, res) => {
 	try {
-		const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen FROM productos WHERE estado = 1");
+		const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen, idCategoria FROM productos WHERE estado = 1");
+		if (!rows[0]) {
+			return res.status(400).send("No existen productos disponibles");
+		}
+
+		for (const item of rows) {
+			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
+
+			if (promociones[0]) {
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)))
+			} else {
+				item.precioFinal = item.precio;
+			}
+		}
 
 		res.render("clients/productos.html", {
 			title: "Productos",
@@ -83,10 +109,25 @@ export const getProduct = async (req, res) => {
 
 		if (!validateString(codigo)) return res.status(400).send("Introduzca un articulo valido");
 
-		const [producto] = await pool.query("SELECT codigo, nombre, precio, urlImagen, disponibilidad FROM productos WHERE estado = 1 AND codigo = ?", [codigo]);
+		const [resultado] = await pool.query("SELECT codigo, nombre, precio, urlImagen, disponibilidad, idCategoria FROM productos WHERE estado = 1 AND codigo = ?", [codigo]);
+		const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [resultado[0].idCategoria]);
 
-		if (producto[0]) {
-			return res.json(producto[0]);
+		if (resultado[0]) {
+			let producto = {
+				codigo: resultado[0].codigo,
+				nombre: resultado[0].nombre,
+				precio: parseFloat(resultado[0].precio),
+				urlImagen: resultado[0].urlImagen,
+				disponibilidad: parseInt(resultado[0].disponibilidad),
+			}
+
+			if (promociones[0]) {
+				producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)));
+			} else {
+				producto.precioFinal = producto.precio;
+			}
+
+			return res.json(producto);
 		} else {
 			return res.status(400).send("El producto no existe o está deshabilitado");
 		}

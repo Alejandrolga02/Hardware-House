@@ -5,35 +5,77 @@
 		<% products.forEach(element => { %>
 		<div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
 			<div class="card">
-				<img src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_298,h_298,c_fill,q_90/<%= element.urlImagen %>" class="card-img-top" alt="Imagen de <%= element.nombre %>">
+				<img src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_298,h_298,c_fill,q_90/<%= element.urlImagen %>" class="card-img-top">
 				<div class="card-body">
 					<h5 class="card-title my-0"><%= element.nombre %></h5>
 					<p class="card-text my-2"><%= element.descripcion %></p>
-					<b class="d-block my-0">$<%= element.precio %></b>
+
+					<b class="d-block my-0 text-end">
+						<% if (element.precioFinal === element.precio) { %>
+						<span class="badge bg-dark fs-5 me-0">$<%= element.precioFinal %></span>
+						<% } else { %>
+						<span class="crossed-out">$<%= element.precio %></span>
+						<span class="badge bg-dark ms-2 fs-5">$<%= element.precioFinal %></span>
+						<% } %>
+					</b>
 				</div>
 				<div class="card-footer text-end">
-					<a class="btn btn-primary" onclick="addProductToCart('<%= element.codigo %>')">Comprar</a>
+					<a class="btn btn-primary" onclick="addProductToCart('<%= element.codigo %>')">
+						<span>Añadir al carrito</span>
+						<img src="/img/carritoAdd.svg" alt="Icono de añadir al carrito">
+					</a>
 				</div>
 			</div>
 		</div>
 		<% }); %>
 	</div>
+</main>
 
-	<div class="modal fade" id="alertModal" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="alertTitle">Modal title</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<p id="alertMessage">Modal body text goes here.</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-				</div>
+<div class="modal fade" id="alertModal" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="alertTitle">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p id="alertMessage">Modal body text goes here.</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 			</div>
 		</div>
 	</div>
-</main>
+</div>
+
+<div class="modal fade" id="shopping-cart-modal" tabindex="-2">
+	<div class="modal-dialog modal-xl modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Carrito de compras</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body" id="shopping-cart-body"></div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" id="clearCarrito">
+					<span>Vaciar carrito</span>
+					<img src="/img/carritoDelete.svg" alt="Icono de vaciar carrito">
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+	<div id="productsToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+		<div class="toast-header">
+			<img src="/img/agregado.svg" class="rounded me-2 bg-success" alt="Icono verde">
+			<strong class="me-auto" id="productsToastTitle"></strong>
+			<small>Ahora</small>
+			<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body" id="productsToastBody"></div>
+	</div>
+</div>
+
 <%- include('partials/footer.html') %>
