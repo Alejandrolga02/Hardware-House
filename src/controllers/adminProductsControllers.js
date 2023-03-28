@@ -201,8 +201,8 @@ export const createProducts = async (req, res) => {
 
 		newProduct.urlImagen = `${result.public_id}.${result.format}`;	// Se obtienenla URL de la imagen en Cloudinary
 		deleteTempImage(photo.tempFilePath);
-
 		const rows = await pool.query("INSERT INTO productos set ?", [newProduct]);	//Se realiza la inserción.
+		console.log()
 		return res.status(200).send("Se insertaron con exito los datos");
 	} catch (error) {
 		console.log(error.message);

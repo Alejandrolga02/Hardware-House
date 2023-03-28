@@ -172,6 +172,61 @@ export const postContactUs = async (req, res) => {
 	}
 };
 
+export const completePurchase = async (req, res) => {
+	try {
+		let { productsList } = req.body;
+
+		let total = 0;
+
+		for (const product of productsList) {
+			let [[result]] = await pool.query("SELECT * FROM productos WHERE codigo = ?", product.codigo);
+			console.log(result);
+			if (product.cantidad > result.disponibilidad) {
+				return res.status(400).send("El producto que intentas comprar no cuenta con el stock suficiente");
+			}
+
+			const [[promociones]] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [product.idCategoria]);
+
+			if (promociones) {
+				product.precioFinal = parseFloat(product.precio - (product.precio * (parseFloat(promociones.porcentajeDescuento) / 100)))
+			} else {
+				product.precioFinal = product.precio;
+			}
+
+			let newVenta = {
+				idVenta: 0,
+				idProducto: product.codigo,
+				cantidad: product.cantidad,
+			}
+
+			await pool.query("INSERT INTO ventas_detalle set ?", [newVenta]);	//Se realiza la inserción.
+
+			total += product.precioFinal;
+		}
+
+		const newPurchase = {
+			id: 0,
+			idVendedor: 1,
+			idComprador: 1,
+			total
+		}
+
+		const rows = await pool.query("INSERT INTO ventas set fecha = CURRENT_TIMESTAMP() AND ?", [newPurchase]);	//Se realiza la inserción.
+
+		res.render("admin/productos.html", {
+			title: "Admin - Productos",
+			products: rows,
+			categorias,
+			scripts: [
+				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
+				"/js/bootstrap.bundle.min.js",
+			]
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 export const renderNotFound = async (req, res) => {
 	try {
 		res.status(404).render("error.html", {
