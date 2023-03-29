@@ -133,6 +133,7 @@ export const getProduct = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(400).send("El producto no existe o está deshabilitado");
 	}
 };
 
@@ -174,7 +175,7 @@ export const postContactUs = async (req, res) => {
 
 export const completePurchase = async (req, res) => {
 	try {
-		let { productsList } = req.body;
+		let { productsList, idUsuario, tipoPago } = req.body;
 
 		let total = 0;
 
