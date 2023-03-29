@@ -6,7 +6,7 @@ export const login = async (req, res) => {
     try {
         const { usuario, contrasena } = req.body;
 
-        const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [usuario]);
+        const [result] = await pool.query("SELECT * FROM usuarios WHERE usuario = ?", [usuario]);
         const [salt, key] = result[0].contrasena.split(':');
         const hashedBuffer = scryptSync(contrasena, salt, 64);
         const keyBuffer = Buffer.from(key, 'hex');
@@ -59,19 +59,19 @@ export const logout = async (req, res) => {
 
 export const register = async (req, res) => {
     try {
-        let newVendedor = req.body;
+        let newUser = req.body;
 
         const salt = randomBytes(16).toString('hex');
-        const hashedPassword = scryptSync(newVendedor.contrasena, salt, 64).toString('hex');
-        newVendedor.contrasena = `${salt}:${hashedPassword}`;
-        newVendedor.id = 0;
+        const hashedPassword = scryptSync(newUser.contrasena, salt, 64).toString('hex');
+        newUser.contrasena = `${salt}:${hashedPassword}`;
+        newUser.id = 0;
 
 
-        const [result] = await pool.query("SELECT * FROM admin WHERE usuario = ?", [newVendedor.usuario]);
+        const [result] = await pool.query("SELECT * FROM usuarios WHERE usuario = ?", [newUser.usuario]);
         if (result.length > 0) {
             res.status(400).send("Ya existe ese usuario");
         } else {
-            await pool.query("INSERT INTO admin set ?", [newVendedor]);
+            await pool.query("INSERT INTO usuarios set ?", [newUser]);
             res.status(200).send("Usuario creado con exito");
         }
 
