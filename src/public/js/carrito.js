@@ -2,7 +2,7 @@
 
 const carrito = document.querySelector("#shopping-cart");
 const productsToast = new bootstrap.Toast(document.getElementById('productsToast'));
-const alertModal = new bootstrap.Modal("#alertModal", { backdrop: 'static', keyboard: false });
+const alertModal = new bootstrap.Modal("#alertModal", { backdrop: true, keyboard: true });
 const carritoModal = new bootstrap.Modal("#shopping-cart-modal", { backdrop: 'static', keyboard: false });
 
 // Creacion de funciones necesarias

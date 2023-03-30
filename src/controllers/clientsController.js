@@ -39,7 +39,7 @@ export const renderClientIndex = async (req, res) => {
 			scripts: [
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
-				"/js/productos.js"
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -58,7 +58,9 @@ export const renderClientAboutUs = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
+				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -95,7 +97,7 @@ export const renderClientProducts = async (req, res) => {
 			scripts: [
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
-				"/js/productos.js"
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -150,6 +152,7 @@ export const renderClientContactUs = async (req, res) => {
 			scripts: [
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -166,6 +169,7 @@ export const postContactUs = async (req, res) => {
 			scripts: [
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -221,6 +225,7 @@ export const completePurchase = async (req, res) => {
 			scripts: [
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -239,7 +244,9 @@ export const renderNotFound = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"/js/bootstrap.bundle.min.js"
+				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
+				"/js/bootstrap.bundle.min.js",
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
