@@ -151,6 +151,16 @@ DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 
+-- -----------------------------------------------------
+-- Trigger `HardwareHouse`.`restar_existencias`
+-- -----------------------------------------------------
+CREATE TRIGGER `restar_existencias` 
+AFTER INSERT ON `ventas_detalle` 
+FOR EACH ROW
+BEGIN
+    UPDATE productos SET disponibilidad = disponibilidad - NEW.cantidad WHERE codigo = NEW.idProducto;
+END;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

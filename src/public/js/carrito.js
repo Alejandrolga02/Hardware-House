@@ -287,11 +287,32 @@ async function mostrarCarrito() {
 	}
 }
 
-
 carrito.addEventListener("click", mostrarCarrito);
 
-document.querySelector("#clearCarrito").addEventListener("click", (event) => {
+document.querySelector("#clearCarrito").addEventListener("click", () => {
 	// Eliminación de carrito de localStorage
 	localStorage.removeItem('shopping-cart');
 	mostrarCarrito();
+});
+
+document.querySelector("#completarCompra").addEventListener("click", async () => {
+	try {
+		let productsList = localStorage.getItem("shopping-cart");
+
+		let { data } = await axios.post('/buy', {
+			productsList,
+			idUsuario: 5,
+			tipoPago: 'Efectivo'
+		}, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		});
+
+		localStorage.removeItem('shopping-cart');
+		carritoModal.hide(document.getElementById("shopping-cart-modal"));
+		showAlert("Muchas gracias", "Venta Realizada con exito");
+	} catch (error) {
+		showAlert(error.response.data, "Error");
+	}
 });
