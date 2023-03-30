@@ -7,40 +7,73 @@ const carritoModal = new bootstrap.Modal("#shopping-cart-modal", { keyboard: fal
 
 // Creacion de funciones necesarias
 function showAlert(message, title) {
-	const modalToggle = document.getElementById("alertModal");
-	document.getElementById("alertTitle").innerHTML = title;
-	document.getElementById("alertMessage").innerHTML = message;
-	alertModal.show(modalToggle);
+	// Funcion necesaria para poder mostrar mensajes al usuario
+	try {
+		const modalToggle = document.getElementById("alertModal");
+		document.getElementById("alertTitle").innerHTML = title;
+		document.getElementById("alertMessage").innerHTML = message;
+		alertModal.show(modalToggle);
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 function showShoppingCart(fragment) {
-	const modalToggle = document.getElementById("shopping-cart-modal");
-	document.getElementById("shopping-cart-body").innerHTML = "";
-	document.getElementById("shopping-cart-body").appendChild(fragment);
-	carritoModal.show(modalToggle);
+	// Funcion para mostrar carrito al usuario
+	try {
+		const modalToggle = document.getElementById("shopping-cart-modal");
+		document.getElementById("shopping-cart-body").innerHTML = "";
+		document.getElementById("shopping-cart-body").appendChild(fragment);
+		carritoModal.show(modalToggle);
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 function showProductsToast(message, title) {
-	document.querySelector("#productsToastBody").innerHTML = message;
-	document.querySelector("#productsToastTitle").innerHTML = title;
-	productsToast.show();
+	// Funcion para notificaciones al usuario
+	try {
+		document.querySelector("#productsToastBody").innerHTML = message;
+		document.querySelector("#productsToastTitle").innerHTML = title;
+		productsToast.show();
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 function validateString(cadena) {
-	let regex = new RegExp(/^[A-Za-z0-9\s]+$/g);
-	return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
+	// Funcion para validar texto
+	try {
+		let regex = new RegExp(/^[A-Za-z0-9\s]+$/g);
+		return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
 }
 
 function deleteItem(index) {
-	// Obtención de carrito de localStorage
-	let shoppingCart = localStorage.getItem("shopping-cart");
-	shoppingCart = JSON.parse(shoppingCart);
+	try {
+		// Obtención de carrito de localStorage
+		let shoppingCart = localStorage.getItem("shopping-cart");
+		shoppingCart = JSON.parse(shoppingCart);
 
-	shoppingCart.splice(index, 1);
-	carritoModal.hide(document.getElementById("shopping-cart-modal"));
+		// Si el carrito es nulo o solo tiene un producto
+		if (shoppingCart === null || shoppingCart.length <= 1) {
+			localStorage.removeItem("shopping-cart");
+			return carritoModal.hide(document.getElementById("shopping-cart-modal"));
+		} else {
+			// Eliminar producto del carrito
+			shoppingCart.splice(index, 1);
+			localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
 
-	localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
-	mostrarCarrito();
+			// Recargar carrito
+			carritoModal.hide(document.getElementById("shopping-cart-modal"));
+			mostrarCarrito();
+		}
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 function increaseItem(index) {
@@ -49,15 +82,18 @@ function increaseItem(index) {
 	shoppingCart = JSON.parse(shoppingCart);
 
 	if (shoppingCart[index].cantidad <= 0) {
+		// Si item es menor o igual a cero le asigna 1
 		shoppingCart[index].cantidad = 1;
+
+	} else if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
+		// Si el item es mayor que lo disponible te lo asigna a lo disponible
+		shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
+
 	} else {
 		shoppingCart[index].cantidad += 1;
 	}
 
-	if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
-		shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
-	}
-
+	// Cambiar valor de caja de texto
 	document.querySelectorAll(".item-counter")[index].value = shoppingCart[index].cantidad;
 
 	// Guardar carrito en el localStorage
@@ -70,15 +106,18 @@ function decreaseItem(index) {
 	shoppingCart = JSON.parse(shoppingCart);
 
 	if (shoppingCart[index].cantidad <= 1) {
+		// Si el item es menor a 1 lo elimina
 		return deleteItem(index);
+
+	} else if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
+		// Si el item es mayor que lo disponible te lo asigna a lo disponible
+		shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
+
 	} else {
 		shoppingCart[index].cantidad -= 1;
 	}
 
-	if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
-		shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
-	}
-
+	// Cambiar valor de caja de texto
 	document.querySelectorAll(".item-counter")[index].value = shoppingCart[index].cantidad;
 
 	// Guardar carrito en el localStorage
@@ -90,7 +129,6 @@ function clearCarrito() {
 	localStorage.removeItem('shopping-cart');
 
 	carritoModal.hide(document.getElementById("shopping-cart-modal"));
-	mostrarCarrito();
 }
 
 function changeCantidadItem(index) {
@@ -103,7 +141,7 @@ function changeCantidadItem(index) {
 	if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
 		shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
 	} else if (shoppingCart[index].cantidad <= 0) {
-		deleteItem(index)
+		deleteItem(index);
 	}
 
 	document.querySelectorAll(".item-counter")[index].setAttribute("value", shoppingCart[index].cantidad);
@@ -173,18 +211,17 @@ async function mostrarCarrito() {
 		if (shoppingCart === null || shoppingCart.length === 0) { // Validar si el carro está vacio
 			div.innerHTML = `<p class="fs-3">Carrito vacio</p><p class="fs-5">Añade productos al carrito para poder continuar</p>`;
 		} else {
-			div.classList.add("scrollable");
-			div.innerHTML = `<table class="table table-light table-hover table-bordered mt-2 mb-0 align-middle">
+			div.innerHTML = `<table class="table table-light table-hover mt-2 mb-0 align-middle">
 				<thead>
 					<tr>
-						<th scope="col" width="20%" class="text-center">Imagen</th>
-						<th scope="col" width="30%" class="text-center">Nombre</th>
-						<th scope="col" width="20%" class="text-center">Precio</th>
-						<th scope="col" width="20%" class="text-center">Cantidad</th>
-						<th scope="col" width="10%" class="text-center">Acciones</th>
+						<th scope="col" style="min-width: 125px" class="text-center">Imagen</th>
+						<th scope="col" style="min-width: 200px" class="text-center">Nombre</th>
+						<th scope="col" style="min-width: 100px" class="text-center">Precio</th>
+						<th scope="col" style="min-width: 200px" class="text-center">Cantidad</th>
+						<th scope="col" style="min-width: 100px" class="text-center">Acciones</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody class="table-group-divider">
 				</tbody>
 			</table>`;
 			let table = div.lastElementChild;
@@ -216,13 +253,13 @@ async function mostrarCarrito() {
 					if (item.precio === item.precioFinal) {
 						table.lastElementChild.innerHTML += `<tr>
 							<td class="text-center p-0">
-								<img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_215,h_215,c_fill,q_90/${item.urlImagen}" alt="Imagen de ${item.nombre}" />
+								<img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_150,h_150,c_fill,q_90/${item.urlImagen}" alt="Imagen de ${item.nombre}" />
 							</td>
 							<td class="text-center" scope="row">
 								${item.nombre}
 							</td>
 							<td class="text-center">
-								<span class="badge bg-dark fs-5 me-0">$${item.precioFinal}</span>
+								<span class="badge bg-dark fs-6 m-0">$${item.precioFinal}</span>
 							</td>
 							<td class="text-center">
 								<div class="d-flex justify-content-center gap-2">
@@ -234,7 +271,7 @@ async function mostrarCarrito() {
 										<img src="/img/increase.svg">
 									</a>
 								</div>
-								<p>Disponibles: ${item.disponibilidad}</p>
+								<p class="mb-0 mt-2 p-0">Disponibles: ${item.disponibilidad}</p>
 							</td>
 							<td class="text-center p-0">
 								<a class="btn btn-danger">
@@ -245,15 +282,15 @@ async function mostrarCarrito() {
 					} else {
 						table.lastElementChild.innerHTML += `<tr>
 							<td class="text-center p-0">
-								<img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_215,h_215,c_fill,q_90/${item.urlImagen}" alt="Imagen de ${item.nombre}" />
+								<img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_150,h_150,c_fill,q_90/${item.urlImagen}" alt="Imagen de ${item.nombre}" />
 							</td>
 							<td class="text-center" scope="row">
 								${item.nombre}
 							</td>
 							<td class="text-center">
-								<span class="badge bg-dark ms-2 fs-5">$${item.precioFinal}</span>
+								<span class="badge bg-dark fs-6">$${item.precioFinal}</span>
 								<br>
-								<span class="crossed-out">$${item.precio}</span>
+								<span class="mt-2 crossed-out">$${item.precio}</span>
 							</td>
 							<td class="text-center">
 								<div class="d-flex justify-content-center gap-2">
@@ -265,7 +302,7 @@ async function mostrarCarrito() {
 										<img src="/img/increase.svg">
 									</a>
 								</div>
-								<p>Disponibles: ${item.disponibilidad}</p>
+								<p class="mb-0 mt-2 p-0">Disponibles: ${item.disponibilidad}</p>
 							</td>
 							<td class="text-center p-0">
 								<a class="btn btn-danger">

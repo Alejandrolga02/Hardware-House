@@ -32,18 +32,18 @@
 		<div class="row">
 			<% products.forEach(element => { %>
 			<div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
-				<div class="card">
+				<div class="card h-100">
 					<img src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_298,h_298,c_fill,q_90/<%= element.urlImagen %>" class="card-img-top">
-					<div class="card-body">
+					<div class="card-body pb-5 position-relative">
 						<h5 class="card-title my-0"><%= element.nombre %></h5>
 						<p class="card-text my-2"><%= element.descripcion %></p>
 
-						<b class="d-block my-0 text-end">
+						<b class="d-block my-0 text-end position-absolute bottom-0 end-0">
 							<% if (element.precioFinal === element.precio) { %>
-							<span class="badge bg-dark fs-5 me-0">$<%= element.precioFinal %></span>
+							<span class="badge bg-dark fs-6 me-3 my-3">$<%= element.precioFinal %></span>
 							<% } else { %>
 							<span class="crossed-out">$<%= element.precio %></span>
-							<span class="badge bg-dark ms-2 fs-5">$<%= element.precioFinal %></span>
+							<span class="badge bg-dark ms-2 me-3 my-3 fs-6">$<%= element.precioFinal %></span>
 							<% } %>
 						</b>
 					</div>
@@ -78,7 +78,7 @@
 </div>
 
 <div class="modal fade" id="shopping-cart-modal" tabindex="-2">
-	<div class="modal-dialog modal-xl modal-dialog-scrollable">
+	<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Carrito de compras</h5>
