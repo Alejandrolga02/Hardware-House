@@ -27,6 +27,7 @@ html {
 
 ::-webkit-scrollbar {
 	width: 5px;
+	height: 5px;
 	position: fixed;
 }
 
@@ -149,7 +150,7 @@ input[type="number"] {
 
 .item-counter {
 	text-align: center;
-	max-width: fit-content;
+	min-width: 56px;
 }
 
 .crossed-out {

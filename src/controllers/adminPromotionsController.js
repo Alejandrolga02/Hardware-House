@@ -27,10 +27,40 @@ export const renderPromotions = async(req, res) => {
             scripts: [
                 "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
                 "/js/bootstrap.bundle.min.js",
-                //"/js/admin-promociones.js"
+                "/js/admin-promotions.js"
             ]
         });
     } catch (error) {
         console.log(error);
+    }
+};
+
+export const createPromotions = async(req, res)=> {
+    try {
+        let { codigo, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria} = req.body;
+
+        if (false) {
+            res.status(400).send("Los datos no son del tipo correcto");
+        }
+        if (false) {
+            res.status(400).send("Existe un registro con ese código");
+        }
+
+        const newPromotion = {
+            id: codigo.trim(),
+            nombre: nombre.trim(),
+            fechaInicio: fechaInicio.trim(),
+            fechaFin: fechaFin.trim(),
+            porcentajeDescuento: porcentajeDescuento.trim(),
+            idCategoria: idCategoria.trim()
+        }
+
+        const rows = await pool.query("INSERT INTO promociones set ?", [newPromotion]);
+
+        res.status(200).send("Se insertaron con exito los datos");
+    }
+    catch (error) {
+        console.error(error);
+        res.status(400).send("Sucedio un error");
     }
 };
