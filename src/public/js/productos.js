@@ -2,8 +2,8 @@
 
 const carrito = document.querySelector("#shopping-cart");
 const productsToast = new bootstrap.Toast(document.getElementById('productsToast'));
-const alertModal = new bootstrap.Modal("#alertModal", { keyboard: false });
-const carritoModal = new bootstrap.Modal("#shopping-cart-modal", { keyboard: false });
+const alertModal = new bootstrap.Modal("#alertModal", { backdrop: 'static', keyboard: false });
+const carritoModal = new bootstrap.Modal("#shopping-cart-modal", { backdrop: 'static', keyboard: false });
 
 // Creacion de funciones necesarias
 function showAlert(message, title) {
@@ -61,16 +61,16 @@ function deleteItem(index) {
 		// Si el carrito es nulo o solo tiene un producto
 		if (shoppingCart === null || shoppingCart.length <= 1) {
 			localStorage.removeItem("shopping-cart");
-			return carritoModal.hide(document.getElementById("shopping-cart-modal"));
 		} else {
 			// Eliminar producto del carrito
 			shoppingCart.splice(index, 1);
 			localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
 
-			// Recargar carrito
-			carritoModal.hide(document.getElementById("shopping-cart-modal"));
-			mostrarCarrito();
+			let cartContent = document.querySelector("#shoppingCartContent");
+			cartContent.removeChild(cartContent.children[index]);
+
 		}
+		mostrarCarrito();
 	} catch (error) {
 		console.log(error);
 	}
@@ -82,13 +82,13 @@ function increaseItem(index) {
 	shoppingCart = JSON.parse(shoppingCart);
 
 	if (shoppingCart[index].cantidad <= 0) {
-		// Si item es menor o igual a cero le asigna 1
-		shoppingCart[index].cantidad = 1;
+		// Si item es menor o igual a cero se borra
+		return deleteItem(index);
+	}
 
-	} else if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
+	if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
 		// Si el item es mayor que lo disponible te lo asigna a lo disponible
 		shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
-
 	} else {
 		shoppingCart[index].cantidad += 1;
 	}
@@ -109,10 +109,11 @@ function decreaseItem(index) {
 		// Si el item es menor a 1 lo elimina
 		return deleteItem(index);
 
-	} else if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
+	}
+
+	if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
 		// Si el item es mayor que lo disponible te lo asigna a lo disponible
 		shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
-
 	} else {
 		shoppingCart[index].cantidad -= 1;
 	}
@@ -122,13 +123,6 @@ function decreaseItem(index) {
 
 	// Guardar carrito en el localStorage
 	localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
-}
-
-function clearCarrito() {
-	// Eliminación de carrito de localStorage
-	localStorage.removeItem('shopping-cart');
-
-	carritoModal.hide(document.getElementById("shopping-cart-modal"));
 }
 
 function changeCantidadItem(index) {
@@ -206,6 +200,7 @@ async function mostrarCarrito() {
 		// Obtener información del localStorage
 		let shoppingCart = localStorage.getItem("shopping-cart");
 		shoppingCart = JSON.parse(shoppingCart);
+
 		const div = document.createElement('div');
 
 		if (shoppingCart === null || shoppingCart.length === 0) { // Validar si el carro está vacio
@@ -221,7 +216,7 @@ async function mostrarCarrito() {
 						<th scope="col" style="min-width: 100px" class="text-center">Acciones</th>
 					</tr>
 				</thead>
-				<tbody class="table-group-divider">
+				<tbody id="shoppingCartContent" class="table-group-divider">
 				</tbody>
 			</table>`;
 			let table = div.lastElementChild;
@@ -239,105 +234,64 @@ async function mostrarCarrito() {
 						}
 					});
 
-					item.disponibilidad = data.disponibilidad;
-					item.nombre = data.nombre;
-					item.precio = data.precio;
-					item.urlImagen = data.urlImagen;
-					item.precioFinal = data.precioFinal;
-					console.log(item);
-
 					if (data.disponibilidad < item.cantidad) {
 						item.cantidad = data.disponibilidad;
 					}
 
-					if (item.precio === item.precioFinal) {
-						table.lastElementChild.innerHTML += `<tr>
-							<td class="text-center p-0">
-								<img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_150,h_150,c_fill,q_90/${item.urlImagen}" alt="Imagen de ${item.nombre}" />
-							</td>
-							<td class="text-center" scope="row">
-								${item.nombre}
-							</td>
-							<td class="text-center">
-								<span class="badge bg-dark fs-6 m-0">$${item.precioFinal}</span>
-							</td>
-							<td class="text-center">
-								<div class="d-flex justify-content-center gap-2">
-									<a class="btn btn-dark" onClick="decreaseItem(${i})">
-										<img src="/img/decrease.svg">
-									</a>
-									<input type="number" class="form-control item-counter" value="${item.cantidad}" onChange="changeCantidadItem(${i})">
-									<a class="btn btn-dark" onClick="increaseItem(${i})">
-										<img src="/img/increase.svg">
-									</a>
-								</div>
-								<p class="mb-0 mt-2 p-0">Disponibles: ${item.disponibilidad}</p>
-							</td>
-							<td class="text-center p-0">
-								<a class="btn btn-danger">
-									<img src="/img/eliminar.svg" onClick="deleteItem(${i})">
+					table.lastElementChild.innerHTML += `<tr>
+						<td class="text-center p-0">
+							<img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_150,h_150,c_fill,q_90/${data.urlImagen}" alt="Imagen de ${data.nombre}" />
+						</td>
+						<td class="text-center" scope="row">
+							${data.nombre}
+						</td>
+						<td class="text-center">
+							${data.precioFinal === data.precio
+							? `<span class="badge bg-dark fs-6 m-0">$${data.precioFinal}</span>`
+							: `<span class="badge bg-dark fs-6">$${data.precioFinal}</span><br><span class="mt-2 crossed-out">$${data.precio}</span>`}
+						</td>
+						<td class="text-center">
+							<div class="d-flex justify-content-center gap-2">
+								<a class="btn btn-dark" onClick="decreaseItem(${i})">
+									<img src="/img/decrease.svg">
 								</a>
-							</td>
-						</tr>`;
-					} else {
-						table.lastElementChild.innerHTML += `<tr>
-							<td class="text-center p-0">
-								<img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_150,h_150,c_fill,q_90/${item.urlImagen}" alt="Imagen de ${item.nombre}" />
-							</td>
-							<td class="text-center" scope="row">
-								${item.nombre}
-							</td>
-							<td class="text-center">
-								<span class="badge bg-dark fs-6">$${item.precioFinal}</span>
-								<br>
-								<span class="mt-2 crossed-out">$${item.precio}</span>
-							</td>
-							<td class="text-center">
-								<div class="d-flex justify-content-center gap-2">
-									<a class="btn btn-dark" onClick="decreaseItem(${i})">
-										<img src="/img/decrease.svg">
-									</a>
-									<input type="number" class="form-control item-counter" value="${item.cantidad}" onChange="changeCantidadItem(${i})">
-									<a class="btn btn-dark" onClick="increaseItem(${i})">
-										<img src="/img/increase.svg">
-									</a>
-								</div>
-								<p class="mb-0 mt-2 p-0">Disponibles: ${item.disponibilidad}</p>
-							</td>
-							<td class="text-center p-0">
-								<a class="btn btn-danger">
-									<img src="/img/eliminar.svg" onClick="deleteItem(${i})">
+								<input type="number" class="form-control item-counter" value="${item.cantidad}" onChange="changeCantidadItem(${i})">
+								<a class="btn btn-dark" onClick="increaseItem(${i})">
+									<img src="/img/increase.svg">
 								</a>
-							</td>
-						</tr>`;
-					}
-					i++;
+							</div>
+							<p class="mb-0 mt-2 p-0">Disponibles: ${data.disponibilidad}</p>
+						</td>
+						<td class="text-center p-0">
+							<button type="button" class="btn btn-danger">
+								<img src="/img/eliminar.svg" onClick="deleteItem(${i})">
+							</button>
+						</td>
+					</tr>`;
 				} catch (error) {
 					console.error(error);
 					shoppingCart.splice(i, 1);
 					corregidos++;
-					i++;
 				}
+				i++;
 			}
-
 			if (corregidos > 0) {
 				showAlert("Eliminanos " + corregidos + "producto(s) del carrito ya que no se encuentran disponibles", "Error");
 			}
-			localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
 		}
 
+		localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
 		return showShoppingCart(div);
 	} catch (error) {
 		showAlert(error.response.data, "Error");
 	}
 }
 
-carrito.addEventListener("click", (event) => {
-	event.preventDefault();
+
+carrito.addEventListener("click", mostrarCarrito);
+
+document.querySelector("#clearCarrito").addEventListener("click", (event) => {
+	// Eliminación de carrito de localStorage
+	localStorage.removeItem('shopping-cart');
 	mostrarCarrito();
 });
-document.querySelector("#clearCarrito").addEventListener("click", (event) => {
-	event.preventDefault();
-
-	clearCarrito();
-})
