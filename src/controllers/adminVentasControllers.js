@@ -36,6 +36,25 @@ export const renderPage = async(req, res) => {
     }
 };
 
-export const searchById = async(req, res) =>{
-
+export const  renderVentasDet = async(req, res) =>{
+    try{
+        const { id } =  req.params;
+        const [rows] = await pool.query("SELECT ventas_detalle.idVenta, productos.nombre, ventas_detalle.cantidad FROM ventas_detalle LEFT JOIN productos ON ventas_detalle.idProducto = productos. codigo WHERE ventas_detalle.idVenta = ?", [id]);
+        res.render("admin/ventasDetalles.html", {
+            title: "Detalles de las Venta",
+            ventasDetalles: rows,
+            navLinks: [
+                { class: "nav-link", link: "/", title: "Inicio" },
+				{ class: "nav-link", link: "/admin/productos/", title: "Productos" },
+				{ class: "nav-link active", link: "/admin/ventas/", title: "Ventas" },
+				{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
+				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
+            ],
+            scripts: [
+                "/js/bootstrap.bundle.min.js"
+            ]
+        })
+    }catch(error){
+        console.log(error + " El error esta aquí");;
+    }
 }

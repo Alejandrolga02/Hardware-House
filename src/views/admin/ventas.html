@@ -34,10 +34,6 @@
 			<input type="number" id="totalFin" name="totalFin" class="form-control" placeholder="Fecha" />
 		</div>
 		<div class="d-flex flex-wrap justify-content-end gap-2">
-			<button class="btn btn-success" id="btnAgregar">
-				<img src="/img/agregar.svg" alt="Icono de agregar">
-				Agregar
-			</button>
 			<button class="btn btn-warning" id="btnConsultar">
 				<img src="/img/consultar.svg" alt="Icono de consultar">
 				Consultar
@@ -78,7 +74,7 @@
 							<%= element.tipoPago %>
 						</td>
 						<td class="text-center">
-							<a href="/admin/productos/update/<%= element.codigo %>" class="btn btn-dark m-1">
+							<a href="/admin/ventas/detalles/<%= element.id %>" class="btn btn-dark m-1">
 								<img src="/img/editar.svg" alt="Icono de editar">
 							</a>
 						</td>

@@ -1,0 +1,58 @@
+<%- include ('partials/header.html') %>
+
+<main class="container-lg mh py-4">
+	<div class="d-flex justify-content-start">
+		<a class="btn btn-back d-flex justify-content-between align-items-center" href="/admin/ventas">
+			<img src="/img/regresar.svg">
+			Regresar
+		</a>
+		<h1 class="text-start mb-0 ms-2">Detalles de las Venta</h1>
+	</div>
+	<form class="mt-3 border border-3 p-3 rounded bg-white" id="form">
+		<div class="scrollable">
+			<table id="results" class="table table-light table-hover table-bordered mt-2 mb-0 align-middle">
+				<thead>
+					<tr>
+						<th scope="col" width="5%" class="text-center">Id de la Venta</th>
+						<th scope="col" width="30%" class="text-center">Producto</th>
+						<th scope="col" width="30%" class="text-center">Cantidad</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% ventasDetalles.forEach(element=> { %>
+					<tr>
+						<th class="text-center" scope="row">
+							<%= element.idVenta %>
+						</th>
+						<td class="text-center">
+							<%= element.nombre %>
+						</td>
+						<td class="text-center">
+							<%= element.cantidad %>
+						</td>
+					</tr>
+					<% }); %>
+				</tbody>
+			</table>
+		</div>
+	</form>
+
+	<div class="modal fade" id="alertModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="alertTitle">Modal title</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p id="alertMessage">Modal body text goes here.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
+
+<%- include('partials/footer.html') %>
