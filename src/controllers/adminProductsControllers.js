@@ -2,7 +2,7 @@ import { pool } from "../db.js";
 import cloudinary from '../cloudinary.js';
 import fs from "fs";
 import { escape } from 'mysql2';
-let query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
+let query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
 let form = {};
 
 //Función para mostrar todos los productos.
@@ -11,7 +11,7 @@ export const renderProducts = async (req, res) => {
 		form.counter -= 1;
 		if (form.counter === 0) {
 			form = {};
-			query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
+			query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
 		}
 
 		const [rows] = await pool.query(query);
@@ -51,7 +51,7 @@ export const searchProducts = async (req, res) => {
 			return res.status(400).send("Añade contenido a la consulta");
 		}
 
-		query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id WHERE ";
+		query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id WHERE ";
 
 		let i = 0;
 		for (const [key, value] of Object.entries(searchProduct)) {

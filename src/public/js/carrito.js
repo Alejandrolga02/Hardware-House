@@ -131,9 +131,10 @@ function changeCantidadItem(index) {
 	shoppingCart = JSON.parse(shoppingCart);
 
 	shoppingCart[index].cantidad = document.querySelectorAll(".item-counter")[index].value;
+	let disponibilidad = parseInt(document.querySelectorAll(".disponibilidadItem")[index].innerText);
 
-	if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
-		shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
+	if (shoppingCart[index].cantidad > disponibilidad) {
+		shoppingCart[index].cantidad = disponibilidad;
 	} else if (shoppingCart[index].cantidad <= 0) {
 		deleteItem(index);
 	}
@@ -260,7 +261,7 @@ async function mostrarCarrito() {
 									<img src="/img/increase.svg">
 								</a>
 							</div>
-							<p class="mb-0 mt-2 p-0">Disponibles: ${data.disponibilidad}</p>
+							<p class="mb-0 mt-2 p-0">Disponibles: <span class="disponibilidadItem">${data.disponibilidad}</span></p>
 						</td>
 						<td class="text-center p-0">
 							<button type="button" class="btn btn-danger">
@@ -313,6 +314,7 @@ document.querySelector("#completarCompra").addEventListener("click", async () =>
 		carritoModal.hide(document.getElementById("shopping-cart-modal"));
 		showAlert("Muchas gracias", "Venta Realizada con exito");
 	} catch (error) {
+		carritoModal.hide(document.getElementById("shopping-cart-modal"));
 		showAlert(error.response.data, "Error");
 	}
 });
