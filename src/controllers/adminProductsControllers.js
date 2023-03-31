@@ -45,6 +45,8 @@ export const searchProducts = async (req, res) => {
 	try {
 		let searchProduct = req.body;
 
+		console.log(Object.keys(searchProduct).length);
+
 		if (Object.keys(searchProduct).length === 0) {
 			return res.status(400).send("Añade contenido a la consulta");
 		}

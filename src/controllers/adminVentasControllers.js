@@ -35,3 +35,7 @@ export const renderPage = async(req, res) => {
         console.log(error + " Error al mostrar");
     }
 };
+
+export const searchById = async(req, res) =>{
+
+}
