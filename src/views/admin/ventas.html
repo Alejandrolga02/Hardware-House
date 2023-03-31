@@ -10,49 +10,29 @@
 	</div>
 	<form class="mt-3 border border-3 p-3 rounded bg-white" id="form">
 		<div class="row mb-0 mb-md-2">
-			<div class="col-12 col-md-6 mb-2 mb-md-0">
-				<label for="codigo" class="form-label">Código</label>
-				<input type="text" id="codigo" name="codigo" value="<%= form.codigo %>" class="form-control" placeholder="Introduzca un código" required />
-			</div>
-			<div class="col-12 col-md-6 mb-2 mb-md-0">
-				<label for="precio" class="form-label">Precio</label>
-				<div class="input-group">
-					<span class="input-group-text">$</span>
-					<input type="text" id="precio" name="precio" value="<%= form.precio %>" class="form-control" placeholder="Introduzca un precio" required />
-				</div>
-			</div>
+			<label for="id" class="form-label">Id</label>
+			<input type="text" id="id" name="id" value="<%= form.id %>" class="form-control" placeholder="Introduzca un Id" />
 		</div>
 		<div class="mb-2">
-			<label for="nombre" class="form-label">Nombre</label>
-			<input type="text" id="nombre" name="nombre" class="form-control" value="<%= form.nombre %>" placeholder="Introduzca un nombre" required />
+			<label for="fechaFij" class="form-label">Fecha fija</label>
+			<input type="date" id="fechaFij" name="fechaFij" class="form-control" placeholder="Fecha" />
 		</div>
 		<div class="mb-2">
-			<label for="descripcion" class="form-label">Descripción</label>
-			<textarea class="form-control" id="descripcion" name="descripcion" rows="5" placeholder="Introduzca una descripción" required><%= form.descripcion %></textarea>
+			<label for="fechaIni" class="form-label">Fecha Inicial</label>
+			<input type="date" id="fechaIni" name="fechaIni" class="form-control" placeholder="Fecha" />
 		</div>
-		<div class="row mb-0 mb-md-2">
-			<div class="col-12 col-md-6 mb-2 mb-md-0">
-				<label for="idCategoria" class="form-label">Categoria</label>
-				<select class="form-select" name="idCategoria" id="idCategoria">
-					<option value="0" <% if (form.idCategoria === undefined) { %> selected <% } %> disabled>Selecciona una categoria</option>
-					<% categorias.forEach(element=> { %>
-					<option value="<%= element.id %>" <% if (form.idCategoria === element.id) { %> selected <% } %>>
-						<%= element.nombre %>
-					</option>
-					<% }) %>
-				</select>
-			</div>
-			<div class="col-12 col-md-6 mb-2 mb-md-0">
-				<label for="disponibilidad" class="form-label">Disponibilidad</label>
-				<input type="text" id="disponibilidad" name="disponibilidad" value="<%= form.disponibilidad %>" class="form-control" placeholder="Introduzca un nombre" required />
-			</div>
+		<div class="mb-2">
+			<label for="fechaIni" class="form-label">Fecha Final</label>
+			<input type="date" id="fechaFin" name="fechaFin" class="form-control" placeholder="Fecha" />
 		</div>
-		<div class="mb-2 d-flex flex-column">
-			<label for="urlImagen" class="form-label">Imagen</label>
-			<img id="imgPreview" src="#" height="200" class="d-none align-self-center my-2" alt="Imagen introducida" />
-			<input class="form-control" type="file" accept="image/png,image/jpeg" id="urlImagen" name="urlImagen" required />
+		<div class="mb-2">
+			<label for="totalIni" class="form-label">Total Inicial</label>
+			<input type="number" id="totalIni" name="totalIni" class="form-control" placeholder="Fecha" />
 		</div>
-
+		<div class="mb-2">
+			<label for="totalFin" class="form-label">Total Final</label>
+			<input type="number" id="totalFin" name="totalFin" class="form-control" placeholder="Fecha" />
+		</div>
 		<div class="d-flex flex-wrap justify-content-end gap-2">
 			<button class="btn btn-success" id="btnAgregar">
 				<img src="/img/agregar.svg" alt="Icono de agregar">
@@ -72,47 +52,32 @@
 			<table id="results" class="table table-light table-hover table-bordered mt-2 mb-0 align-middle">
 				<thead>
 					<tr>
-						<th scope="col" width="5%" class="text-center">Código</th>
-						<th scope="col" width="30%" class="text-center">Nombre</th>
-						<th scope="col" width="30%" class="text-center">Descripción</th>
-						<th scope="col" width="15%" class="text-center">Precio</th>
-						<th scope="col" width="15%" class="text-center">Imagen</th>
-						<th scope="col" width="5%" class="text-center">Disponibles</th>
-						<th scope="col" width="5%" class="text-center">Categoria</th>
+						<th scope="col" width="5%" class="text-center">Id</th>
+						<th scope="col" width="30%" class="text-center">Usuario</th>
+						<th scope="col" width="30%" class="text-center">Fecha</th>
+						<th scope="col" width="15%" class="text-center">Total</th>
+						<th scope="col" width="15%" class="text-center">Tipo Pago</th>
 						<th scope="col" width="5%" class="text-center">Acciones</th>
 					</tr>
 				</thead>
 				<tbody>
-					<% products.forEach(element=> { %>
+					<% ventas.forEach(element=> { %>
 					<tr>
 						<th class="text-center" scope="row">
-							<%= element.codigo %>
+							<%= element.id %>
 						</th>
 						<td class="text-center">
-							<%= element.nombre %>
+							<%= element.usuario %>
 						</td>
 						<td class="text-center">
-							<%= element.descripcion %>
+							<%= element.fecha %>
 						</td>
-						<td class="text-center">$<%= element.precio %>
-						</td>
-						<td class="text-center p-0"><img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_120,h_120,c_fill,q_90/<%= element.urlImagen %>" alt="Imagen de <%= element.nombre %>" /></td>
-						<td class="text-center">
-							<%= element.disponibilidad %>
+						<td class="text-center">$<%= element.total %>
 						</td>
 						<td class="text-center">
-							<%= element.categoria %>
+							<%= element.tipoPago %>
 						</td>
 						<td class="text-center">
-							<% if (element.estado === 1) { %>
-							<a href="/admin/productos/delete/<%= element.codigo %>" class="btn btn-primary m-1">
-								<img src="/img/activado.svg" alt="Icono de activado">
-							</a>
-							<% } else { %>
-							<a href="/admin/productos/delete/<%= element.codigo %>" class="btn btn-danger m-1">
-								<img src="/img/desactivado.svg" alt="Icono de desactivado">
-							</a>
-							<% } %>
 							<a href="/admin/productos/update/<%= element.codigo %>" class="btn btn-dark m-1">
 								<img src="/img/editar.svg" alt="Icono de editar">
 							</a>
@@ -141,3 +106,5 @@
 		</div>
 	</div>
 </main>
+
+<%- include('partials/footer.html') %>
