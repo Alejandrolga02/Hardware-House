@@ -63,4 +63,50 @@ async function insertPromotion(event) {
     }
 }
 
+async function lookUpPromotion(event) {
+	try {
+		event.preventDefault();
+
+		let promocion = getInputs();
+
+		let nuevabusqueda = {};
+
+		if (promocion.codigo) {
+			nuevabusqueda.codigo = promocion.codigo;
+		}
+
+		if (promocion.nombre) {
+			nuevabusqueda.nombre = promocion.nombre;
+		}
+
+		if (promocion.fechaInicio) {
+			nuevabusqueda.fechaInicio = promocion.fechaInicio;
+		}
+
+		if (promocion.fechaFin) {
+			nuevabusqueda.fechaFin = promocion.fechaFin;
+		}
+
+		if (promocion.porcentajeDescuento !== "0") {
+			nuevabusqueda.porcentajeDescuento = promocion.porcentajeDescuento;
+		}
+
+		if (promocion.idCategoria) {
+			nuevabusqueda.idCategoria = promocion.porcentajeDescuento;
+		}
+
+		await axios.post('/admin/promociones/', nuevabusqueda, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		});
+
+		window.location.pathname = window.location.pathname;
+	} catch (error) {
+		// Captura de error y mandar retroalimentación al usuario
+		showAlert(error.response.data, "Error");
+	}
+}
+
 btnAgregar.addEventListener("click", insertPromotion);
+btnConsultar.addEventListener("click", lookUpPromotion);
