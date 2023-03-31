@@ -28,12 +28,14 @@ import adminAuth from "./routes/adminAuth.js";
 import adminIndex from "./routes/adminIndex.js";
 import client from "./routes/clients.js";
 import session from './session.js';
+import adminVentas from "./routes/adminVentas.js";
 session.clearSession();
 
 const apiPaths = {
 	adminProductos: '/admin/productos',
 	adminCategorias: '/admin/categorias',
 	adminPromociones: '/admin/promociones',
+	adminVentas: '/admin/ventas',
 	adminAuth: '/admin/auth',
 	adminIndex: '/admin',
 	client: '/'
@@ -46,6 +48,7 @@ app.use(apiPaths.adminIndex, adminIndex);
 app.use(apiPaths.adminProductos, adminProductos);
 app.use(apiPaths.adminCategorias, adminCategorias);
 app.use(apiPaths.adminPromociones, adminPromociones);
+app.use(apiPaths.adminVentas, adminVentas);
 app.use(apiPaths.adminAuth, adminAuth);
 app.use(apiPaths.client, client);
 

@@ -1,3 +1,4 @@
+import { escape } from "mysql2";
 import { pool } from "../db.js";
 
 //Función para validar que la cadena no cuente con caracteres especiales
@@ -39,7 +40,7 @@ export const renderClientIndex = async (req, res) => {
 			scripts: [
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
-				"/js/productos.js"
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -58,7 +59,9 @@ export const renderClientAboutUs = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
+				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -95,7 +98,7 @@ export const renderClientProducts = async (req, res) => {
 			scripts: [
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
-				"/js/productos.js"
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -150,6 +153,7 @@ export const renderClientContactUs = async (req, res) => {
 			scripts: [
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -166,6 +170,7 @@ export const postContactUs = async (req, res) => {
 			scripts: [
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {
@@ -175,56 +180,89 @@ export const postContactUs = async (req, res) => {
 
 export const completePurchase = async (req, res) => {
 	try {
+		// Obtencion de datos
 		let { productsList, idUsuario, tipoPago } = req.body;
+
+		// Conversion de string obtenido a array
+		productsList = JSON.parse(productsList);
+		idUsuario = Number.parseInt(idUsuario);
 
 		let total = 0;
 
+		// Se envió algo que no es un carrito
+		if (typeof productsList !== "object") {
+			return res.status(400).send("Tu carrito de compras es invalido");
+		}
+
+		// Carrito vacio
+		if (productsList.length <= 0) {
+			return res.status(400).send("Tu carrito de compras está vacio");
+		}
+
+		// idUsuario
+		if (typeof idUsuario !== "number" || idUsuario < 0) {
+			return res.status(400).send("Tu usuario es invalido");
+		}
+
+		// Tipo valido valido
+		if (typeof tipoPago !== "string" || tipoPago.length <= 3) {
+			return res.status(400).send("Tu método de pago es invalido");
+		}
+
+		let [[{ idVenta }]] = await pool.query("SELECT MAX(id) + 1 AS idVenta FROM ventas");
+
+		let ventasDetalle = "INSERT INTO ventas_detalle(idVenta, idProducto, cantidad) VALUES "
 		for (const product of productsList) {
-			let [[result]] = await pool.query("SELECT * FROM productos WHERE codigo = ?", product.codigo);
-			console.log(result);
-			if (product.cantidad > result.disponibilidad) {
-				return res.status(400).send("El producto que intentas comprar no cuenta con el stock suficiente");
+			// Consulta para obtener informacion del producto
+			let [[result]] = await pool.query("SELECT * FROM productos WHERE codigo = ?", [product.codigo]);
+
+			// Validacion que el producto exista
+			if (result === undefined || result === null) {
+				return res.status(400).send("Un producto que intentas comprar no existe");
 			}
 
-			const [[promociones]] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [product.idCategoria]);
+			// Validar cantidad de producto
+			if (product.cantidad <= 0) {
+				return res.status(400).send("Un producto que intentas comprar tiene una cantidad invalida");
+			}
+
+			// Validacion de stock
+			if (product.cantidad > result.disponibilidad) {
+				return res.status(400).send("Un producto que intentas comprar no cuenta con el stock suficiente");
+			}
+
+			const [[promociones]] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [result.idCategoria]);
 
 			if (promociones) {
-				product.precioFinal = parseFloat(product.precio - (product.precio * (parseFloat(promociones.porcentajeDescuento) / 100)))
+				product.precioFinal = parseFloat(parseFloat(result.precio) - (parseFloat(result.precio) * (parseFloat(promociones.porcentajeDescuento) / 100)))
 			} else {
-				product.precioFinal = product.precio;
+				product.precioFinal = parseFloat(result.precio);
 			}
 
-			let newVenta = {
-				idVenta: 0,
-				idProducto: product.codigo,
-				cantidad: product.cantidad,
-			}
-
-			await pool.query("INSERT INTO ventas_detalle set ?", [newVenta]);	//Se realiza la inserción.
-
-			total += product.precioFinal;
+			ventasDetalle += `(LAST_INSERT_ID(), ${escape(product.codigo)}, ${product.cantidad}),`;
+			total += parseFloat(product.precioFinal);
 		}
 
-		const newPurchase = {
-			id: 0,
-			idVendedor: 1,
-			idComprador: 1,
-			total
-		}
+		await pool.query("START TRANSACTION");
 
-		const rows = await pool.query("INSERT INTO ventas set fecha = CURRENT_TIMESTAMP() AND ?", [newPurchase]);	//Se realiza la inserción.
+		await pool.query("INSERT INTO ventas set fecha = CURRENT_TIMESTAMP, ?", [{
+			total,
+			idUsuario,
+			tipoPago
+		}]);	//Se realiza la inserción.
 
-		res.render("admin/productos.html", {
-			title: "Admin - Productos",
-			products: rows,
-			categorias,
-			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
-			]
-		});
+		// Elimina coma final de la linea 243
+		ventasDetalle = ventasDetalle.slice(0, -1);
+		await pool.query(ventasDetalle);
+
+		await pool.query("COMMIT");
+
+		return res.status(200).send("Venta realizada con exito");
+
 	} catch (error) {
 		console.log(error);
+		await pool.query("ROLLBACK");
+		return res.status(400).send("Sucedio un error con el servidor");
 	}
 };
 
@@ -239,7 +277,9 @@ export const renderNotFound = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"/js/bootstrap.bundle.min.js"
+				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
+				"/js/bootstrap.bundle.min.js",
+				"/js/carrito.js"
 			]
 		});
 	} catch (error) {

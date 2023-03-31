@@ -14,23 +14,23 @@
 				<label for="codigo" class="form-label">Código</label>
 				<input type="text" id="codigo" name="codigo" class="form-control" placeholder="Introduzca un código" required />
 			</div>
-            <div class="mb-2">
+			<div class="mb-2">
 				<label for="nombre" class="form-label">Nombre</label>
 				<input type="text" id="nombre" name="nombre" class="form-control" placeholder="Introduzca un nombre" required />
 			</div>
-            <div class="col-12 col-md-6 mb-2 mb-md-0">
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
 				<label for="fechaInicio" class="form-label">Fecha inicio</label>
-				<input type="date" id="fechaInicio" name="fechaInicio" class="form-control"required />
+				<input type="date" id="fechaInicio" name="fechaInicio" class="form-control" required />
 			</div>
-            <div class="col-12 col-md-6 mb-2 mb-md-0">
+			<div class="col-12 col-md-6 mb-2 mb-md-0">
 				<label for="fechaFin" class="form-label">Fecha fin</label>
-				<input type="date" id="fechaFin" name="fechaFin" class="form-control"required />
+				<input type="date" id="fechaFin" name="fechaFin" class="form-control" required />
 			</div>
-            <div class="mb-2">
+			<div class="mb-2">
 				<label for="porcentajeDescuento" class="form-label">Porcentaje descuento</label>
 				<input type="text" id="porcentajeDescuento" name="porcentajeDescuento" class="form-control" placeholder="Introduzca un porcentaje" required />
 			</div>
-            <div class="mb-2">
+			<div class="mb-2">
 				<label for="idCategoria" class="form-label">Categoria</label>
 				<select class="form-select" name="idCategoria" id="idCategoria">
 					<option value="0" <% if (form.idCategoria === undefined) { %> selected <% } %> disabled>Selecciona una categoria</option>
@@ -62,10 +62,10 @@
 							<th scope="col" width="5%" class="text-center">Código</th>
 							<th scope="col" width="10%" class="text-center">Fecha inicio</th>
 							<th scope="col" width="10%" class="text-center">Fecha fin</th>
-                            <th scope="col" width="15%" class="text-center">Nombre</th>
+							<th scope="col" width="15%" class="text-center">Nombre</th>
 							<th scope="col" width="5%" class="text-center">Descuento</th>
 							<th scope="col" width="5%" class="text-center">Categoria</th>
-                            <th scope="col" width="5%" class="text-center">Acciones</th>
+							<th scope="col" width="5%" class="text-center">Acciones</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -74,32 +74,32 @@
 							<th class="text-center" scope="row">
 								<%= element.id %>
 							</th>
-                            <td class="text-center">
+							<td class="text-center">
 								<%= element.fechaInicio.toDateString() %>
 							</td>
-                            <td class="text-center">
+							<td class="text-center">
 								<%= element.fechaFin.toDateString() %>
 							</td>
 							<td class="text-center">
 								<%= element.nombre %>
 							</td>
-                            <td class="text-center">
+							<td class="text-center">
 								<%= element.porcentajeDescuento%>
 							</td>
-                            <td class="text-center">
+							<td class="text-center">
 								<%= element.idCategoria %>
 							</td>
-							<td class="d-flex justify-content-center align-items-center gap-2">
+							<td class="text-center">
 								<% if (element.estado === 1) { %>
-								<a href="/admin/categorias/delete/<%= element.id %>" class="btn btn-primary">
+								<a href="/admin/categorias/delete/<%= element.id %>" class="btn btn-primary m-1">
 									<img src="/img/activado.svg" alt="Icono de activado">
 								</a>
 								<% } else { %>
-								<a href="/admin/categorias/delete/<%= element.id %>" class="btn btn-danger">
+								<a href="/admin/categorias/delete/<%= element.id %>" class="btn btn-danger m-1">
 									<img src="/img/desactivado.svg" alt="Icono de desactivado">
 								</a>
 								<% } %>
-								<a href="/admin/categorias/update/<%= element.id %>" class="btn btn-dark">
+								<a href="/admin/categorias/update/<%= element.id %>" class="btn btn-dark m-1">
 									<img src="/img/editar.svg" alt="Icono de editar">
 								</a>
 							</td>
