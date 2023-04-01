@@ -1,6 +1,6 @@
 # Hardware House
 
-Proyecto de un E-Commerce en Nodejs con Express, Maquetado con ejs, base de datos MySQL con mysql2 y Imagenes subidas a cloudinary
+Proyecto para la materia Tecnologías y Aplicaciones en Internet de un E-Commerce creado con Nodejs con Express, Plantillas con ejs, MySQL, Bootstrap y Imagenes subidas a cloudinary.
 
 Este proyecto está conformado por dos partes, la primer parte es para el usuario donde este puede consultar los productos disponibles y comprarlos a través de un carrito.  
 Y la segunda es un panel de administrador donde puede agregar productos, categorias, promociones y consultar las ventas.
@@ -8,13 +8,14 @@ Y la segunda es un panel de administrador donde puede agregar productos, categor
 ## Enlace de proyecto en la nube
 
 -   [Cliente](http://alejandrolizarraga.tech/)
--   [Administrador](http://alejandrolizarraga.tech/admin/auth)
+-   [Administrador](http://alejandrolizarraga.tech/login)
 
 ## Tecnologias usadas
 
 -   [Nodejs](https://nodejs.org/en)
 -   [Git](https://git-scm.com/)
 -   [MySQL](https://www.mysql.com/)
+-   [Bootstrap](https://getbootstrap.com/)
 -   [Visual Studio Code](https://code.visualstudio.com/)
 -   [Cloudinary](https://cloudinary.com/)
 -   [AWS](https://aws.amazon.com/es/)
@@ -69,5 +70,3 @@ http://localhost/
 2. [Jesus Daniel Lopez Robles](https://gitlab.com/JesusLopez117)
 3. [Cesar Oswaldo Bernal Sanchez](https://gitlab.com/CesarUPSIN)
 4. [Guillermo Manuel Sanchez Lizarraga](https://gitlab.com/GuillermoSan02)
-5. [Marvin Alejandro Lopez Diaz](https://gitlab.com/MarvinLopezDiaz)
-6. [Jose Manuel Cerezo Arreola](https://gitlab.com/2018030209)
