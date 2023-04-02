@@ -4,20 +4,46 @@ import { scryptSync, randomBytes, timingSafeEqual } from 'crypto'
 
 export const login = async (req, res) => {
     try {
-        const { usuario, contrasena } = req.body;
+        // Obtencion de usuario y contraseña
+        let { usuario, contrasena } = req.body;
 
-        const [result] = await pool.query("SELECT * FROM usuarios WHERE usuario = ?", [usuario]);
-        const [salt, key] = result[0].contrasena.split(':');
-        const hashedBuffer = scryptSync(contrasena, salt, 64);
-        const keyBuffer = Buffer.from(key, 'hex');
+        // Validar usuario
+        if (typeof usuario !== 'string' || usuario.trim().length > 60) {
+            return res.status(400).send("Usuario o contraseña incorrectas");
+        }
 
-        if (result[0] === undefined) {
+        if (usuario.trim().length == 0) {
+            return res.status(400).send("El usuario es obligatorio");
+        }
+
+        // Validar contraseña
+        if (typeof contrasena !== 'string' || contrasena.trim().length > 60) {
+            return res.status(400).send("Usuario o contraseña incorrectas");
+        }
+
+        if (contrasena.trim().length == 0) {
+            return res.status(400).send("La contraseña es obligatoria");
+        }
+
+        // Eliminar espacios vacios a usuario y contraseña
+        usuario = usuario.trim();
+        contrasena = contrasena.trim();
+
+        // Consultar si usuario existe en la bd
+        const [[result]] = await pool.query("SELECT * FROM usuarios WHERE usuario = ?", [usuario]);
+
+        if (result === undefined) {
             res.status(400).send("Usuario o contraseña incorrectas");
         } else {
+            // Comparación de contraseña
+            const [salt, key] = result.contrasena.split(':');
+            const hashedBuffer = scryptSync(contrasena, salt, 64);
+            const keyBuffer = Buffer.from(key, 'hex');
+
             const match = timingSafeEqual(hashedBuffer, keyBuffer);
 
             if (match) {
-                session.setSession(result[0].id, true, true);
+                session.setSession(result.id, true, true);
 
                 res.status(200).send("Sesion iniciada correctamente");
             } else {
