@@ -1,0 +1,47 @@
+import jwt from 'jsonwebtoken';
+import { SECRET_OR_PRIVATE_KEY } from './config.js';
+import { pool } from './db.js';
+
+export const generarJWT = (id = '', esAdmin = false) => {
+	return new Promise((resolve, reject) => {
+		const payload = { id, esAdmin };
+
+		jwt.sign(payload, SECRET_OR_PRIVATE_KEY, {
+			expiresIn: "7d",
+		}, (err, token) => {
+			if (err) {
+				console.log(err);
+				reject('No se pudo generar el token');
+			} else {
+				resolve(token);
+			}
+		});
+	})
+}
+
+export const validarJWT = (req, res, next) => {
+	const token = req.header('token');
+
+	if (!token) {
+		return res.status(401).send('No se mandó token en la petición')
+	}
+
+	try {
+		const { id, esAdmin } = jwt.verify(token, SECRET_OR_PRIVATE_KEY);
+
+		// Encontrar usuario correspondiente al id
+		let [[user]] = pool.query("SELECT * FROM usuarios WHERE id = ?", [id]);
+
+		if (!user) {
+			return res.status(400).send("El usuario no existe");
+		}
+
+		req.id = id;
+		req.esAdmin = esAdmin;
+
+		next();
+	} catch (error) {
+		console.log(error);
+		return res.status(401).send("Token no válido")
+	}
+}

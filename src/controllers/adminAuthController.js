@@ -1,4 +1,5 @@
 import { pool } from "../db.js";
+import { generarJWT } from "../jwt.js";
 import session from '../session.js'
 import { scryptSync, randomBytes, timingSafeEqual } from 'crypto'
 
@@ -45,7 +46,11 @@ export const login = async (req, res) => {
             if (match) {
                 session.setSession(result.id, true, true);
 
-                res.status(200).send("Sesion iniciada correctamente");
+                const token = await generarJWT(result.id, result.esAdmin);
+                res.status(200).json({
+                    token,
+                    message: "Sesion iniciada correctamente",
+                });
             } else {
                 res.status(400).send("Usuario o contraseña incorrectas");
             }
