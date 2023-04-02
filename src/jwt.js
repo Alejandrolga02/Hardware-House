@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { SECRET_OR_PRIVATE_KEY } from './config.js';
 import { pool } from './db.js';
 
-export const generarJWT = (id = '', esAdmin = false) => {
+export const generarJWT = (id = '', esAdmin = 0) => {
 	return new Promise((resolve, reject) => {
 		const payload = { id, esAdmin };
 
@@ -42,6 +42,21 @@ export const validarJWT = (req, res, next) => {
 		next();
 	} catch (error) {
 		console.log(error);
-		return res.status(401).send("Token no válido")
+		return res.status(401).send("Token no válido");
+	}
+}
+
+export const validarAdmin = (req, res, next) => {
+	try {
+		const { isAdmin } = req.body;
+
+		if (isAdmin !== 1) {
+			return res.status("401").send("Necesitas ser administrador para acceder");
+		}
+
+		next();
+	} catch (error) {
+		console.log(error);
+		return res.status("500").send("Sucedió un error, comunicate con el administrador");
 	}
 }
