@@ -46,6 +46,29 @@ export const validarJWT = (req, res, next) => {
 	}
 }
 
+export const checkLogged = (req, res, next) => {
+	const token = req.header('token');
+
+	if (!token) {
+		next();
+	}
+
+	try {
+		const { esAdmin } = jwt.verify(token, SECRET_OR_PRIVATE_KEY);
+
+		if (esAdmin === 1) {
+			return res.redirect('/admin/');
+		} else if (esAdmin === 0) {
+			return res.redirect('/');
+		} else {
+			return res.status(400).send('Estatus desconocido');
+		}
+	} catch (error) {
+		console.log(error);
+		return res.status(401).send("Token no válido");
+	}
+}
+
 export const validarAdmin = (req, res, next) => {
 	try {
 		const { isAdmin } = req.body;
