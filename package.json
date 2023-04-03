@@ -49,6 +49,7 @@
 	"homepage": "https://gitlab.com/gadaca/hardware-house#readme",
 	"dependencies": {
 		"cloudinary": "^1.35.0",
+		"cookie-parser": "^1.4.6",
 		"dotenv": "^16.0.3",
 		"ejs": "^3.1.8",
 		"express": "^4.18.2",

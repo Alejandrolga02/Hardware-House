@@ -10,7 +10,7 @@ export const generarJWT = (id = '', esAdmin = 0) => {
 
 		// Creacion del JTW
 		jwt.sign(payload, SECRET_OR_PRIVATE_KEY, {
-			expiresIn: "3d",
+			expiresIn: "2d",
 		}, (err, token) => {
 			if (err) {
 				console.log(err);
@@ -31,7 +31,7 @@ export const validarJWT = async (req, res, next) => {
 
 	// Token no enviado
 	if (!token) {
-		return res.status(401).send('No se mandó token en la petición')
+		return res.status(401).send('No se mandó token en la petición');
 	}
 
 	try {

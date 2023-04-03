@@ -7,7 +7,7 @@ const router = Router();
 // Autentificacion
 router.get("/login", checkLogged, renderLogin);
 router.post('/login', login);
-router.get("/logout", logout);
+router.get("/logout", validarJWT, logout);
 
 // Crear usuarios
 router.post("/register", register);
