@@ -1,5 +1,6 @@
 export const renderIndex = async (req, res) => {
 	try {
+		let { token } = req;
 		res.render("admin/menu.html", {
 			title: "Admin - Menu Principal",
 			navLinks: [
@@ -9,9 +10,8 @@ export const renderIndex = async (req, res) => {
 				{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
 				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
 			],
-			scripts: [
-				"/js/bootstrap.bundle.min.js",
-			]
+			url: '/admin/',
+			token
 		});
 	} catch (error) {
 		console.log(error);

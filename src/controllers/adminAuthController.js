@@ -49,6 +49,7 @@ export const login = async (req, res) => {
                 const token = await generarJWT(result.id, result.esAdmin);
                 res.status(200).json({
                     token,
+                    isAdmin: result.esAdmin,
                     message: "Sesion iniciada correctamente",
                 });
             } else {
@@ -69,10 +70,9 @@ export const renderLogin = async (req, res) => {
                 { class: "nav-link active", link: "/", title: "Iniciar Sesión" },
             ],
             scripts: [
-                "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-                "/js/bootstrap.bundle.min.js",
                 "/js/login.js"
-            ]
+            ],
+            token: undefined,
         });
     } catch (error) {
         console.log(error);

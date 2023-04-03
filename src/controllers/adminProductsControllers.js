@@ -30,8 +30,6 @@ export const renderProducts = async (req, res) => {
 				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/admin-productos.js"
 			]
 		});

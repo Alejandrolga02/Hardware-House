@@ -1,14 +1,14 @@
-import {pool} from '../db.js';
+import { pool } from '../db.js';
 
 let form = {};
 
-export const renderPromotions = async(req, res) => {
+export const renderPromotions = async (req, res) => {
     try {
 
         form.counter -= 1;
-		if (form.counter === 0) {
-			form = {};
-		}
+        if (form.counter === 0) {
+            form = {};
+        }
 
         const [rows] = await pool.query("SELECT id, fechaInicio, fechaFin, nombre, porcentajeDescuento, idCategoria FROM promociones");
         const [categorias] = await pool.query("SELECT * FROM categorias");
@@ -25,8 +25,6 @@ export const renderPromotions = async(req, res) => {
                 { class: "nav-link active", link: "/admin/promociones/", title: "Promociones" },
             ],
             scripts: [
-                "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-                "/js/bootstrap.bundle.min.js",
                 "/js/admin-promotions.js"
             ]
         });
@@ -35,9 +33,9 @@ export const renderPromotions = async(req, res) => {
     }
 };
 
-export const createPromotions = async(req, res)=> {
+export const createPromotions = async (req, res) => {
     try {
-        let { codigo, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria} = req.body;
+        let { codigo, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria } = req.body;
 
         if (false) {
             res.status(400).send("Los datos no son del tipo correcto");

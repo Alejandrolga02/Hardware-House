@@ -38,8 +38,6 @@ export const renderClientIndex = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
 			]
 		});
@@ -59,8 +57,6 @@ export const renderClientAboutUs = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
 			]
 		});
@@ -96,8 +92,6 @@ export const renderClientProducts = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
 			]
 		});
@@ -151,8 +145,6 @@ export const renderClientContactUs = async (req, res) => {
 				{ class: "nav-link active", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
 			]
 		});
@@ -168,8 +160,6 @@ export const postContactUs = async (req, res) => {
 			products: rows,
 			categorias,
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
 			]
 		});

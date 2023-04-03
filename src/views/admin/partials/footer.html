@@ -2,9 +2,31 @@
 	<h5 class="text-white text-center m-0">Todos los derechos reservados - Hardware House</h5>
 </footer>
 
-<% scripts.forEach(element => { %>
+<% if (token) { %>
+<script>
+	// Obtener el token de autorización de la variable pasada desde el servidor
+	const token = '<%= token %>';
+
+	// Hacer una solicitud GET a una ruta protegida con el encabezado de autorización
+	fetch('<%= url %>', {
+			headers: {
+				'Authorization': `Bearer ${token}`
+			}
+		})
+		.then(response => response.json())
+		.then(data => {
+			// Manipular los datos recibidos
+			document.getElementById('content').textContent = JSON.stringify(data);
+		})
+		.catch(error => console.error(error));
+</script>
+<% } %>
+
+<% try {
+scripts.forEach(element=> { %>
 <script src="<%= element %>"></script>
-<% }) %>
+<% })
+} catch (error) {} %>
 
 </body>
 
