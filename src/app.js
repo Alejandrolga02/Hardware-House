@@ -27,9 +27,7 @@ import adminPromociones from "./routes/adminPromociones.js";
 import adminAuth from "./routes/adminAuth.js";
 import adminIndex from "./routes/adminIndex.js";
 import client from "./routes/clients.js";
-import session from './session.js';
 import adminVentas from "./routes/adminVentas.js";
-session.clearSession();
 
 const apiPaths = {
 	adminProductos: '/admin/productos',

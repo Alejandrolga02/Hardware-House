@@ -1,13 +1,12 @@
 import { Router } from "express";
-import { 
+import {
     createCategories,
-    renderCategories 
+    renderCategories
 } from "../controllers/adminCategoriesController.js";
-import session from '../session.js';
 
 const router = Router();
 
-router.get("/", session.checkAdmin, renderCategories)
-router.post("/add", session.checkAdmin, createCategories);
+router.get("/", renderCategories)
+router.post("/add", createCategories);
 
 export default router;

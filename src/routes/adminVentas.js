@@ -1,5 +1,4 @@
 import { Router } from "express";
-import session from '../session.js';
 import {
     renderPage,
     renderVentasDet
@@ -8,8 +7,8 @@ import {
 const router = Router();
 
 //Administración de las ventas
-router.get("/", session.checkAdmin, renderPage);
-router.get("/detalles/:id", session.checkAdmin, renderVentasDet);
+router.get("/", renderPage);
+router.get("/detalles/:id", renderVentasDet);
 
 
 export default router;

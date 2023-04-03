@@ -1,6 +1,5 @@
 import { pool } from "../db.js";
 import { generarJWT } from "../jwt.js";
-import session from '../session.js'
 import { scryptSync, randomBytes, timingSafeEqual } from 'crypto'
 
 export const login = async (req, res) => {
@@ -44,8 +43,6 @@ export const login = async (req, res) => {
             const match = timingSafeEqual(hashedBuffer, keyBuffer);
 
             if (match) {
-                session.setSession(result.id, true, true);
-
                 const token = await generarJWT(result.id, result.esAdmin);
                 res.status(200).json({
                     token,
@@ -80,8 +77,7 @@ export const renderLogin = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        session.clearSession();
-        res.redirect("/admin/auth");
+        res.redirect("/login");
     } catch (error) {
         console.log(error.message);
     }
