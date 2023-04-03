@@ -44,8 +44,12 @@ export const login = async (req, res) => {
 
             if (match) {
                 const token = await generarJWT(result.id, result.esAdmin);
+
+                res.cookie('token', token, {
+                    httpOnly: true,
+                })
+
                 res.status(200).json({
-                    token,
                     isAdmin: result.esAdmin,
                     message: "Sesion iniciada correctamente",
                 });

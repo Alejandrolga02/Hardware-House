@@ -3,6 +3,7 @@ import path from "path";
 import morgan from "morgan";
 import ejs from "ejs";
 import { fileURLToPath } from "url";
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -19,6 +20,7 @@ app.engine("html", ejs.renderFile);
 // middlewares
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // routes
 import adminProductos from "./routes/adminProductos.js";
