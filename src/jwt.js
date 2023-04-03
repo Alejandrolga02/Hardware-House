@@ -60,3 +60,21 @@ export const validarAdmin = (req, res, next) => {
 		return res.status("500").send("Sucedió un error, comunicate con el administrador");
 	}
 }
+
+export const validarUser = (req, res, next) => {
+	try {
+		const { isAdmin } = req.body;
+
+		if (isAdmin === 1) {
+			return res.status("401").send("Un administrador no puede realizar esta acción");
+		} else if (isAdmin === 0) {
+			return next();
+		} else {
+			return res.status("401").send("Necesitas ser cliente para acceder");
+		}
+
+	} catch (error) {
+		console.log(error);
+		return res.status("500").send("Sucedió un error, comunicate con el administrador");
+	}
+}
