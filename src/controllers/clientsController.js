@@ -109,25 +109,25 @@ export const getProduct = async (req, res) => {
 		const [resultado] = await pool.query("SELECT codigo, nombre, precio, urlImagen, disponibilidad, idCategoria FROM productos WHERE estado = 1 AND codigo = ?", [codigo]);
 		const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [resultado[0].idCategoria]);
 
-		if (resultado[0]) {
-			let producto = {
-				codigo: resultado[0].codigo,
-				nombre: resultado[0].nombre,
-				precio: parseFloat(resultado[0].precio),
-				urlImagen: resultado[0].urlImagen,
-				disponibilidad: parseInt(resultado[0].disponibilidad),
-			}
-
-			if (promociones[0]) {
-				producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)));
-			} else {
-				producto.precioFinal = producto.precio;
-			}
-
-			return res.json(producto);
-		} else {
+		if (!resultado[0]) {
 			return res.status(400).send("El producto no existe o está deshabilitado");
 		}
+
+		let producto = {
+			codigo: resultado[0].codigo,
+			nombre: resultado[0].nombre,
+			precio: parseFloat(resultado[0].precio),
+			urlImagen: resultado[0].urlImagen,
+			disponibilidad: parseInt(resultado[0].disponibilidad),
+		}
+
+		if (promociones[0]) {
+			producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)));
+		} else {
+			producto.precioFinal = producto.precio;
+		}
+
+		return res.json(producto);
 	} catch (error) {
 		console.log(error);
 		return res.status(400).send("El producto no existe o está deshabilitado");

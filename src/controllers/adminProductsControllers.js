@@ -81,7 +81,7 @@ const deleteTempImage = (filePath) => {
 //Función para validar que la cadena no cuente con caracteres especiales
 const validateString = (cadena) => {
 	try {
-		let regex = new RegExp(/^[A-Za-z0-9\s]+$/g);
+		let regex = new RegExp(/^[A-Za-z0-9-\s]+$/g);
 		return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
 	} catch (error) {
 		console.log(error);
@@ -263,7 +263,6 @@ export const updateProducts = async (req, res) => {
 
 		if (req.files === undefined) {	// Comprobación de subida de archivo.
 			if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
-				deleteTempImage(photo.tempFilePath);
 				return res.status(400).send("Los datos no son del tipo correcto");
 			}
 

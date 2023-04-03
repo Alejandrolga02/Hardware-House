@@ -108,13 +108,13 @@ export const validarAdmin = (req, res, next) => {
 
 export const validarCliente = (req, res, next) => {
 	try {
-		// Obtiene isAdmin del body
-		const { isAdmin } = req.body;
+		// Obtiene esAdmin del body
+		const { esAdmin } = req.body;
 
-		if (isAdmin === 1) {
+		if (esAdmin === 1) {
 			// Si es admin te da error
 			req.body.descuento = 10;
-		} else if (isAdmin === 0) {
+		} else if (esAdmin === 0) {
 			// Si es cliente te deja avanzar
 			req.body.descuento = 0;
 		} else {

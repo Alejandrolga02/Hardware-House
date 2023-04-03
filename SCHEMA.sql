@@ -161,6 +161,21 @@ BEGIN
     UPDATE productos SET disponibilidad = disponibilidad - NEW.cantidad WHERE codigo = NEW.idProducto;
 END;
 
+
+-- -----------------------------------------------------
+-- Trigger `HardwareHouse`.`actualiza_estado`
+-- -----------------------------------------------------
+CREATE TRIGGER `actualiza_estado`
+AFTER UPDATE ON `productos`
+FOR EACH ROW
+BEGIN
+  IF NEW.disponibilidad = 0 AND NEW.estado = 1 THEN
+    UPDATE productos
+    SET estado = 0
+    WHERE codigo = NEW.codigo;
+  END IF;
+END;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
