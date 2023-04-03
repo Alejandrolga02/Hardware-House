@@ -27,7 +27,7 @@ export const generarJWT = (id = '', esAdmin = 0) => {
 // Funcion para validar Json Web Token
 export const validarJWT = (req, res, next) => {
 	// Obtencion del token
-	const token = req.header('token');
+	const token = req.headers.authorization.split(' ')[1];
 
 	// Token no enviado
 	if (!token) {
@@ -60,7 +60,7 @@ export const validarJWT = (req, res, next) => {
 // Funcion para checar si un usuario no ha iniciado sesion
 export const checkLogged = (req, res, next) => {
 	// Obtencion de token
-	const token = req.header('token');
+	const token = req.headers.authorization?.split(' ')[1];
 
 	// Si no hay token deja avanzar al siguiente middleware
 	if (!token) {

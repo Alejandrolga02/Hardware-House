@@ -36,7 +36,6 @@ const apiPaths = {
 	adminCategorias: '/admin/categorias',
 	adminPromociones: '/admin/promociones',
 	adminVentas: '/admin/ventas',
-	adminAuth: '/admin/auth',
 	adminIndex: '/admin',
 	client: '/'
 }
@@ -49,7 +48,7 @@ app.use(apiPaths.adminProductos, adminProductos);
 app.use(apiPaths.adminCategorias, adminCategorias);
 app.use(apiPaths.adminPromociones, adminPromociones);
 app.use(apiPaths.adminVentas, adminVentas);
-app.use(apiPaths.adminAuth, adminAuth);
+app.use(apiPaths.client, adminAuth);
 app.use(apiPaths.client, client);
 
 
