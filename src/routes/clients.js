@@ -9,6 +9,7 @@ import {
 	completePurchase,
 	renderNotFound
 } from "../controllers/clientsController.js";
+import { validarCliente, validarJWT } from "../jwt.js";
 
 const router = Router();
 
@@ -16,7 +17,7 @@ const router = Router();
 router.get("/", renderClientIndex);
 router.get("/empresa", renderClientAboutUs);
 router.get("/productos", renderClientProducts);
-router.post("/productos/get", getProduct);
+router.post("/productos/get", validarJWT, validarCliente, getProduct);
 router.get("/contactos", renderClientContactUs);
 router.post("/contactos", postContactUs);
 router.post("/buy", completePurchase);
