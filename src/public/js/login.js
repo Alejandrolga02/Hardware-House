@@ -50,7 +50,7 @@ loginForm.addEventListener("submit", async (event) => {
 		showAlert(data.message, "Mensaje");
 		localStorage.setItem('token', `Bearer ${data.token}`);
 
-		setTimeout(() => {
+		setTimeout(async () => {
 			if (data.isAdmin === 1) {
 				window.location.pathname = '/admin/'
 			} else {

@@ -10,7 +10,7 @@ export const generarJWT = (id = '', esAdmin = 0) => {
 
 		// Creacion del JTW
 		jwt.sign(payload, SECRET_OR_PRIVATE_KEY, {
-			expiresIn: "7d",
+			expiresIn: "3d",
 		}, (err, token) => {
 			if (err) {
 				console.log(err);
@@ -25,9 +25,9 @@ export const generarJWT = (id = '', esAdmin = 0) => {
 }
 
 // Funcion para validar Json Web Token
-export const validarJWT = (req, res, next) => {
+export const validarJWT = async (req, res, next) => {
 	// Obtencion del token
-	const token = req.headers.authorization.split(' ')[1];
+	const token = req.headers.authorization?.split(' ')[1];
 
 	// Token no enviado
 	if (!token) {
@@ -39,7 +39,7 @@ export const validarJWT = (req, res, next) => {
 		const { id, esAdmin } = jwt.verify(token, SECRET_OR_PRIVATE_KEY);
 
 		// Encontrar usuario correspondiente al id
-		let [[user]] = pool.query("SELECT * FROM usuarios WHERE id = ?", [id]);
+		let [[user]] = await pool.query("SELECT * FROM usuarios WHERE id = ?", [id]);
 
 		// Usuario no encotrado
 		if (!user) {
@@ -47,8 +47,8 @@ export const validarJWT = (req, res, next) => {
 		}
 
 		// Asignacion de valores
-		req.id = id;
-		req.esAdmin = esAdmin;
+		req.body.id = id;
+		req.body.esAdmin = esAdmin;
 
 		next();
 	} catch (error) {
@@ -90,18 +90,18 @@ export const checkLogged = (req, res, next) => {
 export const validarAdmin = (req, res, next) => {
 	try {
 		// Obtiene isAdmin del body
-		const { isAdmin } = req.body;
+		const { esAdmin } = req.body;
 
 		// Si el rol es distinto a admin te manda un error
-		if (isAdmin !== 1) {
-			return res.status("401").send("Necesitas ser administrador para acceder");
+		if (esAdmin !== 1) {
+			return res.status(401).send("Necesitas ser administrador para acceder");
 		}
 
 		// Si eres admin te deja avanzar
 		next();
 	} catch (error) {
 		console.log(error);
-		return res.status("500").send("Sucedió un error, comunicate con el administrador");
+		return res.status(500).send("Sucedió un error, comunicate con el administrador");
 	}
 }
 
@@ -112,17 +112,17 @@ export const validarCliente = (req, res, next) => {
 
 		if (isAdmin === 1) {
 			// Si es admin te da error
-			return res.status("401").send("Un administrador no puede realizar esta acción");
+			return res.status(401).send("Un administrador no puede realizar esta acción");
 		} else if (isAdmin === 0) {
 			// Si es cliente te deja avanzar
 			return next();
 		} else {
 			// Si es otro rol te manda el mensaje
-			return res.status("401").send("Necesitas ser cliente para acceder");
+			return res.status(401).send("Necesitas ser cliente para acceder");
 		}
 
 	} catch (error) {
 		console.log(error);
-		return res.status("500").send("Sucedió un error, comunicate con el administrador");
+		return res.status(500).send("Sucedió un error, comunicate con el administrador");
 	}
 }

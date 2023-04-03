@@ -72,7 +72,6 @@ export const renderLogin = async (req, res) => {
             scripts: [
                 "/js/login.js"
             ],
-            token: undefined,
         });
     } catch (error) {
         console.log(error);
