@@ -81,7 +81,8 @@ export const renderLogin = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        res.redirect("/login");
+        res.clearCookie('token');
+        res.redirect("/");
     } catch (error) {
         console.log(error.message);
     }

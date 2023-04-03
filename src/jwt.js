@@ -28,11 +28,10 @@ export const generarJWT = (id = '', esAdmin = 0) => {
 export const validarJWT = async (req, res, next) => {
 	// Obtencion del token
 	const token = req.cookies.token;
-	console.log(token);
 
 	// Token no enviado
 	if (!token) {
-		return res.status(401).send('No se mandó token en la petición');
+		return res.redirect('/login');
 	}
 
 	try {
@@ -44,7 +43,8 @@ export const validarJWT = async (req, res, next) => {
 
 		// Usuario no encotrado
 		if (!user) {
-			return res.status(400).send("El usuario no existe");
+			res.clearCookie('token');
+			return res.redirect("/");
 		}
 
 		// Asignacion de valores
