@@ -113,15 +113,16 @@ export const validarCliente = (req, res, next) => {
 
 		if (isAdmin === 1) {
 			// Si es admin te da error
-			return res.status(401).send("Un administrador no puede realizar esta acción");
+			req.body.descuento = 10;
 		} else if (isAdmin === 0) {
 			// Si es cliente te deja avanzar
-			return next();
+			req.body.descuento = 0;
 		} else {
 			// Si es otro rol te manda el mensaje
 			return res.status(401).send("Necesitas ser cliente para acceder");
 		}
 
+		return next();
 	} catch (error) {
 		console.log(error);
 		return res.status(500).send("Sucedió un error, comunicate con el administrador");
