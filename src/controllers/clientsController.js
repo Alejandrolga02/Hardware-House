@@ -242,7 +242,6 @@ export const completePurchase = async (req, res) => {
 		// Elimina coma final de venta detalle
 		ventasDetalle = ventasDetalle.slice(0, -1);
 		await pool.query(ventasDetalle);
-
 		await pool.query("COMMIT");
 
 		return res.status(200).send("Venta realizada con exito");
