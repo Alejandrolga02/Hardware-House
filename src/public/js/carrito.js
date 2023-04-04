@@ -248,8 +248,8 @@ async function mostrarCarrito() {
 						</td>
 						<td class="text-center">
 							${data.precioFinal === data.precio
-							? `<span class="badge bg-dark fs-6 m-0">$${data.precioFinal}</span>`
-							: `<span class="badge bg-dark fs-6">$${data.precioFinal}</span><br><span class="mt-2 crossed-out">$${data.precio}</span>`}
+							? `<span class="badge bg-dark fs-6 m-0">$${data.precioFinal.toFixed(2).replace(".00", "")}</span>`
+							: `<span class="badge bg-dark fs-6">$${data.precioFinal.toFixed(2).replace(".00", "")}</span><br><span class="mt-2 crossed-out">$${data.precio.toFixed(2).replace(".00", "")}</span>`}
 						</td>
 						<td class="text-center">
 							<div class="d-flex justify-content-center gap-2">
@@ -302,7 +302,6 @@ document.querySelector("#completarCompra").addEventListener("click", async () =>
 
 		let { data } = await axios.post('/buy', {
 			productsList,
-			idUsuario: 5,
 			tipoPago: 'Efectivo'
 		}, {
 			headers: {

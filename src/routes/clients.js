@@ -20,7 +20,7 @@ router.get("/productos", renderClientProducts);
 router.post("/productos/get", validarJWT, validarCliente, getProduct);
 router.get("/contactos", renderClientContactUs);
 router.post("/contactos", postContactUs);
-router.post("/buy", completePurchase);
+router.post("/buy", validarJWT, validarCliente, completePurchase);
 
 router.use(renderNotFound);
 

@@ -171,11 +171,11 @@ export const postContactUs = async (req, res) => {
 export const completePurchase = async (req, res) => {
 	try {
 		// Obtencion de datos
-		let { productsList, idUsuario, tipoPago } = req.body;
+		let { productsList, id, tipoPago } = req.body;
 
 		// Conversion de string obtenido a array
 		productsList = JSON.parse(productsList);
-		idUsuario = Number.parseInt(idUsuario);
+		const idUsuario = Number.parseInt(id);
 
 		let total = 0;
 
@@ -190,7 +190,7 @@ export const completePurchase = async (req, res) => {
 		}
 
 		// idUsuario
-		if (typeof idUsuario !== "number" || idUsuario < 0) {
+		if (typeof idUsuario !== "number" || idUsuario < 0 || isNaN(idUsuario)) {
 			return res.status(400).send("Tu usuario es invalido");
 		}
 
@@ -198,8 +198,6 @@ export const completePurchase = async (req, res) => {
 		if (typeof tipoPago !== "string" || tipoPago.length <= 3) {
 			return res.status(400).send("Tu método de pago es invalido");
 		}
-
-		let [[{ idVenta }]] = await pool.query("SELECT MAX(id) + 1 AS idVenta FROM ventas");
 
 		let ventasDetalle = "INSERT INTO ventas_detalle(idVenta, idProducto, cantidad) VALUES "
 		for (const product of productsList) {
@@ -213,7 +211,7 @@ export const completePurchase = async (req, res) => {
 
 			// Validar cantidad de producto
 			if (product.cantidad <= 0) {
-				return res.status(400).send("Un producto que intentas comprar tiene una cantidad invalida");
+				return res.status(400).send("Un producto que intentas comprar no cuenta con stock");
 			}
 
 			// Validacion de stock
@@ -229,7 +227,7 @@ export const completePurchase = async (req, res) => {
 				product.precioFinal = parseFloat(result.precio);
 			}
 
-			ventasDetalle += `(LAST_INSERT_ID(), ${escape(product.codigo)}, ${product.cantidad}),`;
+			ventasDetalle += `(LAST_INSERT_ID(), ${escape(product.codigo)}, ${escape(product.cantidad)}),`;
 			total += parseFloat(product.precioFinal);
 		}
 
@@ -241,7 +239,7 @@ export const completePurchase = async (req, res) => {
 			tipoPago
 		}]);	//Se realiza la inserción.
 
-		// Elimina coma final de la linea 243
+		// Elimina coma final de venta detalle
 		ventasDetalle = ventasDetalle.slice(0, -1);
 		await pool.query(ventasDetalle);
 
