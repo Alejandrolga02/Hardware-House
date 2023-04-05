@@ -31,7 +31,7 @@ export const validarJWT = async (req, res, next) => {
 
 	// Token no enviado
 	if (!token) {
-		return res.redirect('/login');
+		return res.redirect("/login");
 	}
 
 	try {
