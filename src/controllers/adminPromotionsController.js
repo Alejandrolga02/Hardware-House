@@ -10,7 +10,7 @@ export const renderPromotions = async (req, res) => {
             form = {};
         }
 
-        const [rows] = await pool.query("SELECT id, fechaInicio, fechaFin, nombre, porcentajeDescuento, idCategoria FROM promociones");
+        const [rows] = await pool.query("SELECT id, fechaInicio, fechaFin, nombre, porcentajeDescuento, idCategoria, estado FROM promociones");
         const [categorias] = await pool.query("SELECT * FROM categorias");
         res.render('admin/promociones.html', {
             title: "Admin - Promociones",
@@ -61,4 +61,22 @@ export const createPromotions = async (req, res) => {
         console.error(error);
         res.status(400).send("Sucedio un error");
     }
+};
+
+export const deletePromotions = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const [rows] = await pool.query("SELECT estado FROM promociones WHERE id = ?", [id]);
+		const estado = rows[0].estado;
+
+		if (estado == 1) {
+			const result = await pool.query("UPDATE promociones set estado = ? WHERE id = ?", [0, id]);
+		} else {
+			const result = await pool.query("UPDATE promociones set estado = ? WHERE id = ?", [1, id]);
+		}
+
+		res.redirect("/admin/promociones");
+	} catch (error) {
+		console.log(error);
+	}
 };
