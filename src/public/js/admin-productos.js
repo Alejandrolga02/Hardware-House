@@ -80,39 +80,39 @@ async function lookUpProduct(event) {
 
 		let producto = getInputs();
 
-		let nuevabusqueda = {};
+		let searchProduct = {};
 
 		if (producto.codigo) {
-			nuevabusqueda.codigo = producto.codigo;
+			searchProduct.codigo = producto.codigo;
 		}
 
 		if (producto.nombre) {
-			nuevabusqueda.nombre = producto.nombre;
+			searchProduct.nombre = producto.nombre;
 		}
 
 		if (producto.descripcion) {
-			nuevabusqueda.descripcion = producto.descripcion;
+			searchProduct.descripcion = producto.descripcion;
 		}
 
 		if (producto.precio) {
 			if (isNaN(parseFloat(producto.precio)) || parseFloat(producto.precio) <= 0) return showAlert("Introduzca un precio valido", "Error");
 
-			nuevabusqueda.precio = producto.precio;
+			searchProduct.precio = producto.precio;
 		}
 
 		if (producto.idCategoria !== "0") {
 			if (isNaN(parseFloat(producto.idCategoria)) || parseFloat(producto.idCategoria) <= 0) return showAlert("Introduzca una categoría valida", "Error");
 
-			nuevabusqueda.idCategoria = producto.idCategoria;
+			searchProduct.idCategoria = producto.idCategoria;
 		}
 
 		if (producto.disponibilidad) {
 			if (isNaN(parseFloat(producto.disponibilidad)) || parseFloat(producto.disponibilidad) <= 0) return showAlert("Introduzca una categoría valida", "Error");
 
-			nuevabusqueda.disponibilidad = producto.disponibilidad;
+			searchProduct.disponibilidad = producto.disponibilidad;
 		}
 
-		await axios.post('/admin/productos/', nuevabusqueda, {
+		await axios.post('/admin/productos/', { searchProduct }, {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			}

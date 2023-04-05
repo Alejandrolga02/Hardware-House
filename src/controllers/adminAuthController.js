@@ -65,10 +65,13 @@ export const login = async (req, res) => {
 
 export const renderLogin = async (req, res) => {
     try {
-        res.render("admin/login.html", {
-            title: "Admin - Login",
+        res.render("login.html", {
+            title: "Iniciar sesion",
             navLinks: [
-                { class: "nav-link active", link: "/", title: "Iniciar Sesión" },
+                { class: "nav-link active", link: "/", title: "Inicio" },
+                { class: "nav-link", link: "/empresa", title: "Empresa" },
+                { class: "nav-link", link: "/productos", title: "Productos" },
+                { class: "nav-link", link: "/contactos", title: "Contactos" },
             ],
             scripts: [
                 "/js/login.js"
