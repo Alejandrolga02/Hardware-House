@@ -48,6 +48,7 @@ export const validarJWT = async (req, res, next) => {
 		}
 
 		// Asignacion de valores
+		req.body.isLogged = true;
 		req.body.id = id;
 		req.body.esAdmin = esAdmin;
 
@@ -65,12 +66,17 @@ export const checkLogged = (req, res, next) => {
 
 	// Si no hay token deja avanzar al siguiente middleware
 	if (!token) {
+		req.body.isLogged = false;
+		req.body.esAdmin = 0;
 		return next();
 	}
 
 	try {
 		// Validar token
 		const { esAdmin } = jwt.verify(token, SECRET_OR_PRIVATE_KEY);
+
+		req.body.isLogged = true;
+		req.body.esAdmin = esAdmin;
 
 		if (esAdmin === 1) {
 			// Si es admin te redirecciona a el menu

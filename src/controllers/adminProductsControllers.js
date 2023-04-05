@@ -38,12 +38,26 @@ export const renderProducts = async (req, res) => {
 	}
 };
 
+function filterSearchProduct(obj) {
+	const result = {};
+	// Expresión regular que extrae el contenido entre corchetes
+	const regex = /\[(.*?)\]/;
+	for (const key in obj) {
+		if (key.startsWith('searchProduct')) {
+			const match = key.match(regex); // buscamos el contenido entre corchetes
+			if (match) {
+				result[match[1]] = obj[key]; // agregamos la propiedad al objeto resultado
+			}
+		}
+	}
+	return result;
+}
+
 // Función para buscar productos
 export const searchProducts = async (req, res) => {
 	try {
-		let searchProduct = req.body;
-
-		console.log(Object.keys(searchProduct).length);
+		let body = req.body;
+		let searchProduct = filterSearchProduct(body);
 
 		if (Object.keys(searchProduct).length === 0) {
 			return res.status(400).send("Añade contenido a la consulta");
