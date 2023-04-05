@@ -95,7 +95,7 @@ export const validarAdmin = (req, res, next) => {
 
 		// Si el rol es distinto a admin te manda un error
 		if (esAdmin !== 1) {
-			return res.status(401).send("Necesitas ser administrador para acceder");
+			return res.redirect("/");
 		}
 
 		// Si eres admin te deja avanzar

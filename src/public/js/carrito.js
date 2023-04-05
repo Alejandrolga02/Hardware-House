@@ -18,12 +18,26 @@ function showAlert(message, title) {
 	}
 }
 
-function showShoppingCart(fragment) {
+function showShoppingCart(fragment, empty = false) {
 	// Funcion para mostrar carrito al usuario
 	try {
 		const modalToggle = document.getElementById("shopping-cart-modal");
 		document.getElementById("shopping-cart-body").innerHTML = "";
 		document.getElementById("shopping-cart-body").appendChild(fragment);
+
+		if (empty) {
+			document.getElementById("shopping-cart-footer").innerHTML = `<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>`;
+		} else {
+			document.getElementById("shopping-cart-footer").innerHTML = `<button class="btn btn-danger" onClick="clearCarrito()">
+				<span>Vaciar carrito</span>
+				<img src="/img/carritoDelete.svg" alt="Icono de vaciar carrito">
+			</button>
+			<button class="btn btn-success" onClick="completarCompra()">
+				<span>Completar compra</span>
+				<img src="/img/carrito.svg" alt="Icono de carrito">
+			</button>`;
+		}
+
 		carritoModal.show(modalToggle);
 	} catch (error) {
 		console.log(error);
@@ -81,12 +95,18 @@ function increaseItem(index) {
 	let shoppingCart = localStorage.getItem("shopping-cart");
 	shoppingCart = JSON.parse(shoppingCart);
 
+	if (isNaN(shoppingCart[index].cantidad)) {
+		shoppingCart[index].cantidad = 1;
+		document.querySelectorAll(".item-counter")[index].value = shoppingCart[index].cantidad;
+		return localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
+	}
+
 	if (shoppingCart[index].cantidad <= 0) {
 		// Si item es menor o igual a cero se borra
 		return deleteItem(index);
 	}
 
-	if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
+	if (shoppingCart[index].cantidad >= shoppingCart[index].disponibilidad) {
 		// Si el item es mayor que lo disponible te lo asigna a lo disponible
 		shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
 	} else {
@@ -105,10 +125,15 @@ function decreaseItem(index) {
 	let shoppingCart = localStorage.getItem("shopping-cart");
 	shoppingCart = JSON.parse(shoppingCart);
 
+	if (isNaN(shoppingCart[index].cantidad)) {
+		shoppingCart[index].cantidad = 2;
+		document.querySelectorAll(".item-counter")[index].value = shoppingCart[index].cantidad;
+		return localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
+	}
+
 	if (shoppingCart[index].cantidad <= 1) {
 		// Si el item es menor a 1 lo elimina
 		return deleteItem(index);
-
 	}
 
 	if (shoppingCart[index].cantidad > shoppingCart[index].disponibilidad) {
@@ -126,24 +151,33 @@ function decreaseItem(index) {
 }
 
 function changeCantidadItem(index) {
-	// Obtención de carrito de localStorage
-	let shoppingCart = localStorage.getItem("shopping-cart");
-	shoppingCart = JSON.parse(shoppingCart);
+	try {
+		// Obtención de carrito de localStorage
+		let shoppingCart = localStorage.getItem("shopping-cart");
+		shoppingCart = JSON.parse(shoppingCart);
 
-	shoppingCart[index].cantidad = document.querySelectorAll(".item-counter")[index].value;
-	let disponibilidad = parseInt(document.querySelectorAll(".disponibilidadItem")[index].innerText);
+		if (isNaN(shoppingCart[index].cantidad)) {
+			shoppingCart[index].cantidad = 1;
+			return localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
+		}
 
-	if (shoppingCart[index].cantidad > disponibilidad) {
-		shoppingCart[index].cantidad = disponibilidad;
-	} else if (shoppingCart[index].cantidad <= 0) {
-		deleteItem(index);
+		shoppingCart[index].cantidad = parseInt(document.querySelectorAll(".item-counter")[index].value);
+
+		if (shoppingCart[index].cantidad >= shoppingCart[index].disponibilidad) {
+			shoppingCart[index].cantidad = shoppingCart[index].disponibilidad;
+		} else if (shoppingCart[index].cantidad <= 0) {
+			return deleteItem(index);
+		}
+
+		document.querySelectorAll(".item-counter")[index].setAttribute("value", shoppingCart[index].cantidad);
+		document.querySelectorAll(".item-counter")[index].value = shoppingCart[index].cantidad;
+
+		// Guardar carrito en el localStorage
+		localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
+	} catch (error) {
+		console.log(error);
+		showAlert("Sucedio un error", "Error")
 	}
-
-	document.querySelectorAll(".item-counter")[index].setAttribute("value", shoppingCart[index].cantidad);
-	document.querySelectorAll(".item-counter")[index].value = shoppingCart[index].cantidad;
-
-	// Guardar carrito en el localStorage
-	localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
 }
 
 // Funcion para agregar productos al carrito
@@ -156,7 +190,8 @@ async function addProductToCart(codigo) {
 		let shoppingCart = localStorage.getItem("shopping-cart");
 		shoppingCart = JSON.parse(shoppingCart);
 
-		if (shoppingCart === null || shoppingCart.length === 0) shoppingCart = []; // Si el carrito es nulo
+		// Si el carrito es nulo lo declara como arreglo
+		if (shoppingCart === null || shoppingCart.length === 0) shoppingCart = [];
 
 		// For para verificar si existe el articulo en el carrito
 		let found = false;
@@ -182,11 +217,12 @@ async function addProductToCart(codigo) {
 			shoppingCart.push(producto);
 		}
 
+		// Guardar carrito
 		localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
-		carrito.classList.add("shake");
 
+		// Retroalimentacion al usuario
 		showProductsToast("Producto añadido al carrito con exito", "Carrito de compras");
-
+		carrito.classList.add("shake");
 		setTimeout(() => {
 			carrito.classList.remove("shake");
 		}, 800);
@@ -197,49 +233,70 @@ async function addProductToCart(codigo) {
 }
 
 async function mostrarCarrito() {
+	// Obtener información del localStorage
+	let shoppingCart = localStorage.getItem("shopping-cart");
+
+	const div = document.createElement('div');
+
 	try {
-		// Obtener información del localStorage
-		let shoppingCart = localStorage.getItem("shopping-cart");
 		shoppingCart = JSON.parse(shoppingCart);
+	} catch (error) {
+		localStorage.setItem("shopping-cart", '[]');
+		return mostrarCarrito();
+	}
 
-		const div = document.createElement('div');
-
+	try {
 		if (shoppingCart === null || shoppingCart.length === 0) { // Validar si el carro está vacio
 			div.innerHTML = `<p class="fs-3">Carrito vacio</p><p class="fs-5">Añade productos al carrito para poder continuar</p>`;
-		} else {
-			div.innerHTML = `<table class="table table-light table-hover mt-2 mb-0 align-middle">
-				<thead>
-					<tr>
-						<th scope="col" style="min-width: 125px" class="text-center">Imagen</th>
-						<th scope="col" style="min-width: 200px" class="text-center">Nombre</th>
-						<th scope="col" style="min-width: 100px" class="text-center">Precio</th>
-						<th scope="col" style="min-width: 200px" class="text-center">Cantidad</th>
-						<th scope="col" style="min-width: 100px" class="text-center">Acciones</th>
-					</tr>
-				</thead>
-				<tbody id="shoppingCartContent" class="table-group-divider">
-				</tbody>
-			</table>`;
-			let table = div.lastElementChild;
+			localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
+			return showShoppingCart(div, true);
+		}
 
-			// For para obtener informacion de cada item del inventario
-			let i = 0;
-			let corregidos = 0;
-			for (const item of shoppingCart) {
-				try {
-					let { data } = await axios.post('/productos/get', {
-						codigo: item.codigo
-					}, {
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded'
-						}
-					});
+		div.innerHTML = `
+		<div class="mb-3">
+			<label for="tipoPago" class="form-label">Método de pago</label>
+			<select class="form-select" id="tipoPago">
+				<option disabled selected>Seleccione un método de pago</option>
+				<option value="Transferencia">Transferencia</option>
+				<option value="Débito">Débito</option>
+				<option value="Crédito">Crédito</option>
+			</select>
+		</div>
+		
+		<table class="table table-light table-hover mt-2 mb-0 align-middle">
+			<thead>
+				<tr>
+					<th scope="col" style="min-width: 125px" class="text-center">Imagen</th>
+					<th scope="col" style="min-width: 200px" class="text-center">Nombre</th>
+					<th scope="col" style="min-width: 100px" class="text-center">Precio</th>
+					<th scope="col" style="min-width: 200px" class="text-center">Cantidad</th>
+					<th scope="col" style="min-width: 100px" class="text-center">Acciones</th>
+				</tr>
+			</thead>
+			<tbody id="shoppingCartContent" class="table-group-divider">
+			</tbody>
+		</table>`;
+		let table = div.lastElementChild;
 
-					if (data.disponibilidad < item.cantidad) {
-						item.cantidad = data.disponibilidad;
+		// For para obtener informacion de cada item del inventario
+		let i = 0;
+		let erroneos = [];
+		for (const item of shoppingCart) {
+			try {
+				let { data } = await axios.post('/productos/get', {
+					codigo: item.codigo
+				}, {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
 					}
+				});
 
-					table.lastElementChild.innerHTML += `<tr>
+				if (data.disponibilidad < item.cantidad) {
+					item.cantidad = data.disponibilidad;
+				}
+				item.disponibilidad = data.disponibilidad;
+
+				table.lastElementChild.innerHTML += `<tr>
 						<td class="text-center p-0">
 							<img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_150,h_150,c_fill,q_90/${data.urlImagen}" alt="Imagen de ${data.nombre}" />
 						</td>
@@ -248,15 +305,15 @@ async function mostrarCarrito() {
 						</td>
 						<td class="text-center">
 							${data.precioFinal === data.precio
-							? `<span class="badge bg-dark fs-6 m-0">$${data.precioFinal.toFixed(2).replace(".00", "")}</span>`
-							: `<span class="badge bg-dark fs-6">$${data.precioFinal.toFixed(2).replace(".00", "")}</span><br><span class="mt-2 crossed-out">$${data.precio.toFixed(2).replace(".00", "")}</span>`}
+						? `<span class="badge bg-dark fs-6 m-0">$${data.precioFinal.toFixed(2).replace(".00", "")}</span>`
+						: `<span class="badge bg-dark fs-6">$${data.precioFinal.toFixed(2).replace(".00", "")}</span><br><span class="mt-2 crossed-out">$${data.precio.toFixed(2).replace(".00", "")}</span>`}
 						</td>
 						<td class="text-center">
 							<div class="d-flex justify-content-center gap-2">
 								<a class="btn btn-dark" onClick="decreaseItem(${i})">
 									<img src="/img/decrease.svg">
 								</a>
-								<input type="number" class="form-control item-counter" value="${item.cantidad}" onChange="changeCantidadItem(${i})">
+								<input type="number" class="form-control item-counter" min="0" max="${data.disponibilidad}" value="${item.cantidad}" onChange="changeCantidadItem(${i})">
 								<a class="btn btn-dark" onClick="increaseItem(${i})">
 									<img src="/img/increase.svg">
 								</a>
@@ -269,40 +326,59 @@ async function mostrarCarrito() {
 							</button>
 						</td>
 					</tr>`;
-				} catch (error) {
-					console.error(error);
-					shoppingCart.splice(i, 1);
-					corregidos++;
+			} catch (error) {
+				console.error(error);
+				erroneos.push(i);
+			}
+			i++;
+		}
+
+		// Elimina los elementos en orden inverso para no afectar los indices
+		for (let i = erroneos.length - 1; i >= 0; i--) {
+			shoppingCart.splice(erroneos[i], 1);
+		}
+
+		if (erroneos.length > 0) {
+			div.innerHTML = `<div class="alert alert-warning alert-dismissible fade show" role="alert">
+				Eliminamos ${erroneos.length} productos del carrito ya que no estaban disponibles.
+				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+			</div>` + div.innerHTML;
+		}
+
+		if (shoppingCart === null || shoppingCart.length === 0) { // Validar si el carro está vacio
+			div.innerHTML = `
+				${erroneos.length > 0
+					? `<div class="alert alert-warning alert-dismissible fade show" role="alert">
+						Eliminamos ${erroneos.length} productos del carrito ya que no estaban disponibles.
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>`
+					: ``
 				}
-				i++;
-			}
-			if (corregidos > 0) {
-				showAlert("Eliminanos " + corregidos + "producto(s) del carrito ya que no se encuentran disponibles", "Error");
-			}
+				<p class="fs-3">Carrito vacio</p><p class="fs-5">Añade productos al carrito para poder continuar</p>
+			`;
+			localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
+			return showShoppingCart(div, true);
 		}
 
 		localStorage.setItem("shopping-cart", JSON.stringify(shoppingCart));
 		return showShoppingCart(div);
 	} catch (error) {
-		showAlert(error.response.data, "Error");
+		if (error.name === 'SyntaxError') {
+
+		} else {
+			showAlert("Sucedio un error", "Error")
+		}
 	}
 }
 
-carrito.addEventListener("click", mostrarCarrito);
-
-document.querySelector("#clearCarrito").addEventListener("click", () => {
-	// Eliminación de carrito de localStorage
-	localStorage.removeItem('shopping-cart');
-	mostrarCarrito();
-});
-
-document.querySelector("#completarCompra").addEventListener("click", async () => {
+async function completarCompra() {
 	try {
 		let productsList = localStorage.getItem("shopping-cart");
+		let tipoPago = document.querySelector("#tipoPago").value;
 
-		let { data } = await axios.post('/buy', {
+		await axios.post('/buy', {
 			productsList,
-			tipoPago: 'Efectivo'
+			tipoPago
 		}, {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
@@ -316,4 +392,12 @@ document.querySelector("#completarCompra").addEventListener("click", async () =>
 		carritoModal.hide(document.getElementById("shopping-cart-modal"));
 		showAlert(error.response.data, "Error");
 	}
-});
+}
+
+function clearCarrito() {
+	// Eliminación de carrito de localStorage
+	localStorage.removeItem('shopping-cart');
+	mostrarCarrito();
+}
+
+carrito.addEventListener("click", mostrarCarrito);
