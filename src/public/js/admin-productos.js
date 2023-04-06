@@ -100,7 +100,7 @@ async function lookUpProduct(event) {
 			searchProduct.precio = producto.precio;
 		}
 
-		if (producto.idCategoria !== "0") {
+		if (producto.idCategoria !== 0) {
 			if (isNaN(parseFloat(producto.idCategoria)) || parseFloat(producto.idCategoria) <= 0) return showAlert("Introduzca una categoría valida", "Error");
 
 			searchProduct.idCategoria = producto.idCategoria;
