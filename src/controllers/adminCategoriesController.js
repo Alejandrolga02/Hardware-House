@@ -1,8 +1,17 @@
 import { pool } from '../db.js';
+import { escape } from 'mysql2';
+let query = "SELECT *FROM categorias";
+let form = {};
 
 export const renderCategories = async (req, res) => {
     try {
-        const [rows] = await pool.query("SELECT id, nombre, estado FROM categorias");
+        form.counter -= 1;
+		if (form.counter === 0) {
+			form = {};
+			query = "SELECT *FROM categorias";
+		}
+
+        const [rows] = await pool.query(query);
         res.render('admin/categorias.html', {
             title: "Admin - Categorias",
             categories: rows,
@@ -24,7 +33,7 @@ export const renderCategories = async (req, res) => {
 
 export const createCategories = async (req, res) => {
     try {
-        let { codigo, nombre } = req.body;
+        let { id, nombre } = req.body;
 
         if (false) {
             res.status(400).send("Los datos no son del tipo correcto");
@@ -34,7 +43,7 @@ export const createCategories = async (req, res) => {
         }
 
         const newCategorie = {
-            id: codigo.trim(),
+            id: id.trim(),
             nombre: nombre.trim(),
             estado: 1
         }
@@ -47,6 +56,50 @@ export const createCategories = async (req, res) => {
         console.error(error);
         res.status(400).send("Sucedio un error");
     }
+};
+
+function filterSearchCategorie(obj) {
+	const result = {};
+
+    const regex = /\[(.*?)\]/;
+	for (const key in obj) {
+		if (key.startsWith('searchCategorie')) {
+			const match = key.match(regex);
+			if (match) {
+				result[match[1]] = obj[key];
+			}
+		}
+	}
+	return result;
+}
+
+export const searchCategories = async (req, res) => {
+	try {
+		let body = req.body;
+		let searchCategorie = filterSearchCategorie(body);
+
+		if (Object.keys(searchCategorie).length === 0) {
+			return res.status(400).send("Añade contenido a la consulta");
+		}
+
+		query = "SELECT *FROM categorias WHERE ";
+
+		let i = 0;
+		for (const [key, value] of Object.entries(searchCategorie)) {
+			if (i === Object.keys(searchCategorie).length - 1) {
+				query += `categorias.${key} LIKE ${escape("%" + value + "%")}`;
+			} else {
+				query += `categorias.${key} LIKE ${escape("%" + value + "%")} AND `;
+			}
+
+			form[key] = value;
+			i++;
+		}
+		form.counter = 2;
+		return res.status(200).send("Query creado exitosamente");
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 export const deleteCategories = async (req, res) => {

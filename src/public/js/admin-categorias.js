@@ -15,7 +15,7 @@ function showAlert(message, title) {
 
 const getInputs = () => {
     return {
-        codigo: form['codigo'].value.trim(),
+        id: form['id'].value.trim(),
         nombre: form['nombre'].value.trim()
     };
 };
@@ -23,14 +23,14 @@ const getInputs = () => {
 async function insertCategorie(event) {
     event.preventDefault();
     try {
-        let { codigo, nombre } = getInputs();
+        let { id, nombre } = getInputs();
 
-        if (!codigo || !nombre) {
+        if (!id || !nombre) {
             return showAlert("Existen campos vacios", "Error");
         }
 
         await axios.post('/admin/categorias/add', {
-            codigo,
+            id,
             nombre
         }, {
             headers: {
@@ -57,31 +57,30 @@ async function insertCategorie(event) {
 
 async function lookUpCategorie(event) {
     try {
-        event.preventDefault();
+		event.preventDefault();
 
-        let { codigo } = getInputs();
-        if (codigo === "") return showAlert("Introduzca un código", "Error");
+		let categoria = getInputs();
 
-        const dbref = ref(db);
-        const snapshot = await get(child(dbref, "categorias/" + codigo));
+		let searchCategorie = {};
 
-        if (snapshot.exists()) {
-            let nombre = snapshot.val().nombre;
+		if (categoria.id) {
+			searchCategorie.id = categoria.id;
+		}
 
-            fillInputs({ codigo, nombre });
-        }
-        else {
-            showAlert("No se encontró el registro", "Error");
-        }
-    }
-    catch (error) {
-        if (error.code === "PERMISSION_DENIED") {
-            showAlert("No estás autenticado", "Error");
-        }
-        else {
-            console.error(error);
-        }
-    }
+		if (categoria.nombre) {
+			searchCategorie.nombre = categoria.nombre;
+		}
+        
+		await axios.post('/admin/categorias/', { searchCategorie }, {
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		});
+
+		window.location.pathname = window.location.pathname;
+	} catch (error) {
+		showAlert(error.response.data, "Error");
+	}
 }
 
 btnAgregar.addEventListener("click", insertCategorie);
