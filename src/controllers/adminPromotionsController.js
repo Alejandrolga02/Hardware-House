@@ -1,16 +1,16 @@
-import {pool} from '../db.js';
+import { pool } from '../db.js';
 
 let form = {};
 
-export const renderPromotions = async(req, res) => {
+export const renderPromotions = async (req, res) => {
     try {
 
         form.counter -= 1;
-		if (form.counter === 0) {
-			form = {};
-		}
+        if (form.counter === 0) {
+            form = {};
+        }
 
-        const [rows] = await pool.query("SELECT id, fechaInicio, fechaFin, nombre, porcentajeDescuento, idCategoria FROM promociones");
+        const [rows] = await pool.query("SELECT id, fechaInicio, fechaFin, nombre, porcentajeDescuento, idCategoria, estado FROM promociones");
         const [categorias] = await pool.query("SELECT * FROM categorias");
         res.render('admin/promociones.html', {
             title: "Admin - Promociones",
@@ -25,19 +25,18 @@ export const renderPromotions = async(req, res) => {
                 { class: "nav-link active", link: "/admin/promociones/", title: "Promociones" },
             ],
             scripts: [
-                "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-                "/js/bootstrap.bundle.min.js",
                 "/js/admin-promotions.js"
-            ]
+            ],
+            isLogged: req.body.isLogged
         });
     } catch (error) {
         console.log(error);
     }
 };
 
-export const createPromotions = async(req, res)=> {
+export const createPromotions = async (req, res) => {
     try {
-        let { codigo, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria} = req.body;
+        let { codigo, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria } = req.body;
 
         if (false) {
             res.status(400).send("Los datos no son del tipo correcto");
@@ -62,5 +61,23 @@ export const createPromotions = async(req, res)=> {
     catch (error) {
         console.error(error);
         res.status(400).send("Sucedio un error");
+    }
+};
+
+export const deletePromotions = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const [rows] = await pool.query("SELECT estado FROM promociones WHERE id = ?", [id]);
+        const estado = rows[0].estado;
+
+        if (estado == 1) {
+            const result = await pool.query("UPDATE promociones set estado = ? WHERE id = ?", [0, id]);
+        } else {
+            const result = await pool.query("UPDATE promociones set estado = ? WHERE id = ?", [1, id]);
+        }
+
+        res.redirect("/admin/promociones");
+    } catch (error) {
+        console.log(error);
     }
 };

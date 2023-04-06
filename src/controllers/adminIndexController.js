@@ -9,9 +9,7 @@ export const renderIndex = async (req, res) => {
 				{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
 				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
 			],
-			scripts: [
-				"/js/bootstrap.bundle.min.js",
-			]
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);

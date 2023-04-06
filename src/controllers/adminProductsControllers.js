@@ -2,6 +2,7 @@ import { pool } from "../db.js";
 import cloudinary from '../cloudinary.js';
 import fs from "fs";
 import { escape } from 'mysql2';
+import fileUpload from "express-fileupload";
 let query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
 let form = {};
 
@@ -30,22 +31,35 @@ export const renderProducts = async (req, res) => {
 				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/admin-productos.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
 	}
 };
 
+function filterSearchProduct(obj) {
+	const result = {};
+	// Expresión regular que extrae el contenido entre corchetes
+	const regex = /\[(.*?)\]/;
+	for (const key in obj) {
+		if (key.startsWith('searchProduct')) {
+			const match = key.match(regex); // buscamos el contenido entre corchetes
+			if (match) {
+				result[match[1]] = obj[key]; // agregamos la propiedad al objeto resultado
+			}
+		}
+	}
+	return result;
+}
+
 // Función para buscar productos
 export const searchProducts = async (req, res) => {
 	try {
-		let searchProduct = req.body;
-
-		console.log(Object.keys(searchProduct).length);
+		let body = req.body;
+		let searchProduct = filterSearchProduct(body);
 
 		if (Object.keys(searchProduct).length === 0) {
 			return res.status(400).send("Añade contenido a la consulta");
@@ -83,7 +97,7 @@ const deleteTempImage = (filePath) => {
 //Función para validar que la cadena no cuente con caracteres especiales
 const validateString = (cadena) => {
 	try {
-		let regex = new RegExp(/^[A-Za-z0-9\s]+$/g);
+		let regex = new RegExp(/^[A-Za-z0-9-áéíóúÁÉÍÓÚ\s]+$/g);
 		return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
 	} catch (error) {
 		console.log(error);
@@ -105,19 +119,19 @@ const validateData = (product) => {
 			return true;
 		}
 
-		if (isNaN(product.precio) || (parseFloat(product.precio) <= 0)) {
+		if (isNaN(product.precio) || product.precio <= 0 || product.precio > 99999999.99) {
 			return true;
 		}
 
-		if (isNaN(product.disponibilidad) || (parseInt(product.disponibilidad) <= 0)) {
+		if (isNaN(product.disponibilidad) || product.disponibilidad < 0 || product.disponibilidad > 100000000) {
 			return true;
 		}
 
-		if (isNaN(product.idCategoria) || (parseInt(product.idCategoria) <= 0)) {
+		if (isNaN(product.idCategoria) || product.idCategoria <= 0 || product.idCategoria > 100000000) {
 			return true;
 		}
 
-		if (isNaN(product.estado) || (parseInt(product.estado) < 0)) {
+		if (isNaN(product.estado) || product.estado < 0 || product.estado > 1) {
 			return true;
 		}
 
@@ -130,9 +144,9 @@ const validateData = (product) => {
 //Función para validar la existencia del mismo codigo
 const validateCode = async (codigo) => {
 	try {
-		const [productos] = await pool.query("SELECT productos.codigo FROM productos WHERE codigo = ?", [codigo]);
+		const [[productos]] = await pool.query("SELECT productos.codigo FROM productos WHERE codigo = ?", [codigo]);
 
-		return productos[0] === null;
+		return productos !== undefined;
 	} catch (error) {
 		console.log(error);
 	}
@@ -166,11 +180,15 @@ export const createProducts = async (req, res) => {
 			codigo: req.body.codigo,
 			nombre: req.body.nombre,
 			descripcion: req.body.descripcion,
-			precio: req.body.precio,
+			precio: parseFloat(req.body.precio),
 			urlImagen: photo,
 			estado: 1,
-			disponibilidad: req.body.disponibilidad,
-			idCategoria: req.body.idCategoria
+			disponibilidad: parseInt(req.body.disponibilidad),
+			idCategoria: parseInt(req.body.idCategoria)
+		}
+
+		if (newProduct.disponibilidad == 0) {
+			newProduct.estado = 0;
 		}
 
 		const resData = validateData(newProduct);
@@ -230,10 +248,9 @@ export const editProducts = async (req, res) => {
 				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/admin-edit-product.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -257,21 +274,24 @@ export const updateProducts = async (req, res) => {
 		const newProduct = {
 			nombre: req.body.nombre,
 			descripcion: req.body.descripcion,
-			precio: req.body.precio,
-			estado: req.body.estado,
-			disponibilidad: req.body.disponibilidad,
-			idCategoria: req.body.idCategoria
+			precio: parseFloat(req.body.precio),
+			estado: parseInt(req.body.estado),
+			disponibilidad: parseInt(req.body.disponibilidad),
+			idCategoria: parseInt(req.body.idCategoria)
+		}
+
+		if (newProduct.disponibilidad == 0) {
+			newProduct.estado = 0;
 		}
 
 		const resData = validateData(newProduct);
 
 		if (req.files === undefined) {	// Comprobación de subida de archivo.
 			if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
-				deleteTempImage(photo.tempFilePath);
 				return res.status(400).send("Los datos no son del tipo correcto");
 			}
 
-			const product = await pool.query("UPDATE productos set ? WHERE codigo = ?", [newProduct, codigo]);
+			await pool.query("UPDATE productos set ? WHERE codigo = ?", [newProduct, codigo]);
 			return res.redirect("/admin/productos");
 
 		} else {
@@ -318,13 +338,19 @@ export const updateProducts = async (req, res) => {
 export const deleteProducts = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const [rows] = await pool.query("SELECT estado FROM productos WHERE codigo = ?", [id]);
-		const estado = rows[0].estado;	//obtención del estado.
+		const [[resultado]] = await pool.query("SELECT estado, disponibilidad FROM productos WHERE codigo = ?", [id]);
+		const { estado, disponibilidad } = resultado;	//obtención del estado.
+
 
 		if (estado == 1) {	//Se realiza el cambio del estado.
-			const result = await pool.query("UPDATE productos set estado = ? WHERE codigo = ?", [0, id]);
+			await pool.query("UPDATE productos set estado = ? WHERE codigo = ?", [0, id]);
 		} else {
-			const result = await pool.query("UPDATE productos set estado = ? WHERE codigo = ?", [1, id]);
+
+			if (disponibilidad <= 0) {
+				return res.status(400).send("No puedes activar un producto sin disponibilidad");
+			}
+
+			await pool.query("UPDATE productos set estado = ? WHERE codigo = ?", [1, id]);
 		}
 
 		res.redirect("/admin/productos");
@@ -332,3 +358,8 @@ export const deleteProducts = async (req, res) => {
 		console.log(error);
 	}
 };
+
+export const parametrosImagen = fileUpload({
+	useTempFiles: true,
+	limits: { fileSize: 2 * 1024 * 1024 }	//Se tiene un limite de 2mb por archivo
+});

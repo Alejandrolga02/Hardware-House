@@ -19,6 +19,10 @@
 	<link rel="preload" href="/js/bootstrap.bundle.min.js" as="script" />
 	<link rel="preload" href="/css/estilos.css" as="style" />
 
+	<!-- Importar funcionalidades -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="/js/bootstrap.bundle.min.js"></script>
+
 	<!-- Importar estilos y scripts -->
 	<link rel="stylesheet" href="/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="/css/estilos.css" />
@@ -29,7 +33,7 @@
 		<h5 class="text-white my-2 text-center"><%= title %></h5>
 	</header>
 
-	<nav class="navbar navbar-expand-lg bg-navbar navbar-dark">
+	<nav class="navbar navbar-expand-lg bg-navbar navbar-dark sticky-top">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="/admin/">Hardware House</a>
 			<button class="navbar-toggler bg-navbar" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,8 +46,8 @@
 					<% }); %>
 				</div>
 				<div class="navbar-nav">
-					<% if (!title.includes("Login")) { %>
-					<a class="nav-link align-self-start align-self-lg-end p-0" href="/admin/auth/logout">
+					<% if (isLogged) { %>
+					<a class="nav-link p-0 align-self-start align-self-lg-end" href="/logout">
 						<img src="/img/cerrar-sesion.svg" alt="Icono de cerrar sesión">
 					</a>
 					<% } %>

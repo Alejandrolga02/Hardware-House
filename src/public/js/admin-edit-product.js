@@ -19,13 +19,13 @@ function showAlert(message, title) {
 // Obtener variables del formulario
 const getInputs = () => {
 	return {
-		codigo: form['codigo'].value.trim(),
-		precio: form['precio'].value.trim(),
-		nombre: form['nombre'].value.trim(),
-		descripcion: form['descripcion'].value.trim(),
-		idCategoria: form['idCategoria'].value.trim(),
-		disponibilidad: form['disponibilidad'].value.trim(),
-		estado: form['estado'].value.trim(),
+		codigo: form['codigo'].value.trim().substring(0, 20),
+		nombre: form['nombre'].value.trim().substring(0, 60),
+		descripcion: form['descripcion'].value.trim().substring(0, 200),
+		precio: parseFloat(form['precio'].value.trim()),
+		idCategoria: parseInt(form['idCategoria'].value.trim()),
+		disponibilidad: parseInt(form['disponibilidad'].value.trim()),
+		estado: parseInt(form['estado'].value.trim()),
 	};
 };
 
@@ -44,10 +44,10 @@ async function updateProduct(event) {
 
 		// Validación de campos
 		if (!codigo || !nombre || !descripcion || !estado) return showAlert("Existen campos vacios", "Error");
-		if (isNaN(parseFloat(precio)) || parseFloat(precio) <= 0 ||
-			isNaN(parseInt(idCategoria)) || parseInt(idCategoria) <= 0 ||
-			isNaN(parseInt(disponibilidad)) || parseInt(disponibilidad) < 0 ||
-			isNaN(parseInt(estado)) || parseInt(estado) < 0) return showAlert("Introduzca valores validos", "Error");
+		if (isNaN(precio) || precio <= 0 || precio > 99999999.99 ||
+			isNaN(idCategoria) || idCategoria <= 0 || idCategoria > 100000000 ||
+			isNaN(disponibilidad) || disponibilidad < 0 || disponibilidad > 100000000 ||
+			isNaN(estado) || estado < 0 || estado > 1) return showAlert("Introduzca valores validos", "Error");
 
 		// Creación de objeto a mandar petición
 		let productoModificado = {

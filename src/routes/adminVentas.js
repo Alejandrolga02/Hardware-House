@@ -1,15 +1,14 @@
 import { Router } from "express";
-import session from '../session.js';
 import {
     renderPage,
     renderVentasDet
 } from "../controllers/adminVentasControllers.js";
+import { validarAdmin, validarJWT } from "../jwt.js";
 
 const router = Router();
 
 //Administración de las ventas
-router.get("/", session.checkAdmin, renderPage);
-router.get("/detalles/:id", session.checkAdmin, renderVentasDet);
-
+router.get("/", validarJWT, validarAdmin, renderPage);
+router.get("/detalles/:id", validarJWT, validarAdmin, renderVentasDet);
 
 export default router;

@@ -42,7 +42,7 @@ cp .env.example .env
 
 4. Crear la base de datos en mysql a partir del schema.sql
 
-5. Guardar las credenciales de la base de datos en el .env
+5. Configuar las credenciales de la base de datos en el .env
 
 ```
 DB_HOST = "your_db_host"
@@ -52,13 +52,27 @@ DB_PORT = "db_port"
 DB_NAME = "HardwareHouse"
 ```
 
-6. Iniciar el proyecto
+6. Crear una cuenta en [Cloudinary](https://cloudinary.com/) y configurar las credenciales en el .env
+
+```
+CLOUDINARY_CLOUD_NAME = "your_cloud_name"
+CLOUDINARY_API_KEY = "your_api_key"
+CLOUDINARY_API_SECRET = "your_api_secret"
+```
+
+7. Configurar la llave privada que genera los JSON Web Tokens en el .env y mantenla segura ya que de eso dependen las sesiones en tu servidor
+
+```
+SECRET_OR_PRIVATE_KEY = "your_secret_or_private_key"
+```
+
+8. Iniciar el proyecto
 
 ```
 npm run dev
 ```
 
-7. Accedemos a la pagina
+9. Accedemos a la pagina
 
 ```
 http://localhost/

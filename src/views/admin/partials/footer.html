@@ -2,9 +2,11 @@
 	<h5 class="text-white text-center m-0">Todos los derechos reservados - Hardware House</h5>
 </footer>
 
-<% scripts.forEach(element => { %>
+<% try {
+scripts.forEach(element=> { %>
 <script src="<%= element %>"></script>
-<% }) %>
+<% })
+} catch (error) {} %>
 
 </body>
 

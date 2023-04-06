@@ -4,7 +4,7 @@ import { pool } from "../db.js";
 //Función para validar que la cadena no cuente con caracteres especiales
 const validateString = (cadena) => {
 	try {
-		let regex = new RegExp(/^[A-Za-z0-9\s]+$/g);
+		let regex = new RegExp(/^[A-Za-z0-9-áéíóúÁÉÍÓÚ\s]+$/g);
 		return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
 	} catch (error) {
 		console.log(error);
@@ -22,9 +22,9 @@ export const renderClientIndex = async (req, res) => {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
 
 			if (promociones[0]) {
-				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)))
+				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)))
 			} else {
-				item.precioFinal = item.precio;
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.body.descuento) / 100)));
 			}
 		}
 
@@ -38,10 +38,9 @@ export const renderClientIndex = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -59,10 +58,9 @@ export const renderClientAboutUs = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -80,9 +78,9 @@ export const renderClientProducts = async (req, res) => {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
 
 			if (promociones[0]) {
-				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)))
+				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)))
 			} else {
-				item.precioFinal = item.precio;
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.body.descuento) / 100)));
 			}
 		}
 
@@ -96,10 +94,9 @@ export const renderClientProducts = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -115,25 +112,25 @@ export const getProduct = async (req, res) => {
 		const [resultado] = await pool.query("SELECT codigo, nombre, precio, urlImagen, disponibilidad, idCategoria FROM productos WHERE estado = 1 AND codigo = ?", [codigo]);
 		const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [resultado[0].idCategoria]);
 
-		if (resultado[0]) {
-			let producto = {
-				codigo: resultado[0].codigo,
-				nombre: resultado[0].nombre,
-				precio: parseFloat(resultado[0].precio),
-				urlImagen: resultado[0].urlImagen,
-				disponibilidad: parseInt(resultado[0].disponibilidad),
-			}
-
-			if (promociones[0]) {
-				producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)));
-			} else {
-				producto.precioFinal = producto.precio;
-			}
-
-			return res.json(producto);
-		} else {
+		if (!resultado[0]) {
 			return res.status(400).send("El producto no existe o está deshabilitado");
 		}
+
+		let producto = {
+			codigo: resultado[0].codigo,
+			nombre: resultado[0].nombre,
+			precio: parseFloat(resultado[0].precio),
+			urlImagen: resultado[0].urlImagen,
+			disponibilidad: parseInt(resultado[0].disponibilidad),
+		}
+
+		if (promociones[0]) {
+			producto.precioFinal = parseFloat(producto.precio - (producto.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)));
+		} else {
+			producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(req.body.descuento) / 100)));
+		}
+
+		return res.json(producto);
 	} catch (error) {
 		console.log(error);
 		return res.status(400).send("El producto no existe o está deshabilitado");
@@ -151,10 +148,9 @@ export const renderClientContactUs = async (req, res) => {
 				{ class: "nav-link active", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -168,8 +164,6 @@ export const postContactUs = async (req, res) => {
 			products: rows,
 			categorias,
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
 			]
 		});
@@ -181,11 +175,16 @@ export const postContactUs = async (req, res) => {
 export const completePurchase = async (req, res) => {
 	try {
 		// Obtencion de datos
-		let { productsList, idUsuario, tipoPago } = req.body;
+		let { productsList, id, tipoPago, descuento } = req.body;
 
-		// Conversion de string obtenido a array
-		productsList = JSON.parse(productsList);
-		idUsuario = Number.parseInt(idUsuario);
+		try {
+			// Conversion de string obtenido a array
+			productsList = JSON.parse(productsList);
+		} catch (error) {
+			return res.status(400).send("Tu carrito de compras es invalido");
+		}
+
+		const idUsuario = Number.parseInt(id);
 
 		let total = 0;
 
@@ -200,7 +199,7 @@ export const completePurchase = async (req, res) => {
 		}
 
 		// idUsuario
-		if (typeof idUsuario !== "number" || idUsuario < 0) {
+		if (typeof idUsuario !== "number" || idUsuario < 0 || isNaN(idUsuario)) {
 			return res.status(400).send("Tu usuario es invalido");
 		}
 
@@ -208,8 +207,6 @@ export const completePurchase = async (req, res) => {
 		if (typeof tipoPago !== "string" || tipoPago.length <= 3) {
 			return res.status(400).send("Tu método de pago es invalido");
 		}
-
-		let [[{ idVenta }]] = await pool.query("SELECT MAX(id) + 1 AS idVenta FROM ventas");
 
 		let ventasDetalle = "INSERT INTO ventas_detalle(idVenta, idProducto, cantidad) VALUES "
 		for (const product of productsList) {
@@ -223,7 +220,7 @@ export const completePurchase = async (req, res) => {
 
 			// Validar cantidad de producto
 			if (product.cantidad <= 0) {
-				return res.status(400).send("Un producto que intentas comprar tiene una cantidad invalida");
+				return res.status(400).send("Un producto que intentas comprar no cuenta con stock");
 			}
 
 			// Validacion de stock
@@ -234,12 +231,12 @@ export const completePurchase = async (req, res) => {
 			const [[promociones]] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [result.idCategoria]);
 
 			if (promociones) {
-				product.precioFinal = parseFloat(parseFloat(result.precio) - (parseFloat(result.precio) * (parseFloat(promociones.porcentajeDescuento) / 100)))
+				product.precioFinal = parseFloat(result.precio - (result.precio * ((parseFloat(promociones.porcentajeDescuento) + parseFloat(descuento)) / 100)));
 			} else {
-				product.precioFinal = parseFloat(result.precio);
+				product.precioFinal = parseFloat(result.precio - (result.precio * (parseFloat(descuento) / 100)));
 			}
 
-			ventasDetalle += `(LAST_INSERT_ID(), ${escape(product.codigo)}, ${product.cantidad}),`;
+			ventasDetalle += `(LAST_INSERT_ID(), ${escape(product.codigo)}, ${escape(product.cantidad)}),`;
 			total += parseFloat(product.precioFinal);
 		}
 
@@ -251,10 +248,9 @@ export const completePurchase = async (req, res) => {
 			tipoPago
 		}]);	//Se realiza la inserción.
 
-		// Elimina coma final de la linea 243
+		// Elimina coma final de venta detalle
 		ventasDetalle = ventasDetalle.slice(0, -1);
 		await pool.query(ventasDetalle);
-
 		await pool.query("COMMIT");
 
 		return res.status(200).send("Venta realizada con exito");
@@ -277,10 +273,9 @@ export const renderNotFound = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);

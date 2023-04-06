@@ -3,6 +3,7 @@ import path from "path";
 import morgan from "morgan";
 import ejs from "ejs";
 import { fileURLToPath } from "url";
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -19,6 +20,7 @@ app.engine("html", ejs.renderFile);
 // middlewares
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // routes
 import adminProductos from "./routes/adminProductos.js";
@@ -27,16 +29,13 @@ import adminPromociones from "./routes/adminPromociones.js";
 import adminAuth from "./routes/adminAuth.js";
 import adminIndex from "./routes/adminIndex.js";
 import client from "./routes/clients.js";
-import session from './session.js';
 import adminVentas from "./routes/adminVentas.js";
-session.clearSession();
 
 const apiPaths = {
 	adminProductos: '/admin/productos',
 	adminCategorias: '/admin/categorias',
 	adminPromociones: '/admin/promociones',
 	adminVentas: '/admin/ventas',
-	adminAuth: '/admin/auth',
 	adminIndex: '/admin',
 	client: '/'
 }
@@ -49,7 +48,7 @@ app.use(apiPaths.adminProductos, adminProductos);
 app.use(apiPaths.adminCategorias, adminCategorias);
 app.use(apiPaths.adminPromociones, adminPromociones);
 app.use(apiPaths.adminVentas, adminVentas);
-app.use(apiPaths.adminAuth, adminAuth);
+app.use(apiPaths.client, adminAuth);
 app.use(apiPaths.client, client);
 
 

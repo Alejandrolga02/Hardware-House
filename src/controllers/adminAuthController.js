@@ -1,25 +1,58 @@
 import { pool } from "../db.js";
-import session from '../session.js'
+import { generarJWT } from "../jwt.js";
 import { scryptSync, randomBytes, timingSafeEqual } from 'crypto'
 
 export const login = async (req, res) => {
     try {
-        const { usuario, contrasena } = req.body;
+        // Obtencion de usuario y contraseña
+        let { usuario, contrasena } = req.body;
 
-        const [result] = await pool.query("SELECT * FROM usuarios WHERE usuario = ?", [usuario]);
-        const [salt, key] = result[0].contrasena.split(':');
-        const hashedBuffer = scryptSync(contrasena, salt, 64);
-        const keyBuffer = Buffer.from(key, 'hex');
+        // Validar usuario
+        if (typeof usuario !== 'string' || usuario.trim().length > 60) {
+            return res.status(400).send("Usuario o contraseña incorrectas");
+        }
 
-        if (result[0] === undefined) {
+        if (usuario.trim().length == 0) {
+            return res.status(400).send("El usuario es obligatorio");
+        }
+
+        // Validar contraseña
+        if (typeof contrasena !== 'string' || contrasena.trim().length > 60) {
+            return res.status(400).send("Usuario o contraseña incorrectas");
+        }
+
+        if (contrasena.trim().length == 0) {
+            return res.status(400).send("La contraseña es obligatoria");
+        }
+
+        // Eliminar espacios vacios a usuario y contraseña
+        usuario = usuario.trim();
+        contrasena = contrasena.trim();
+
+        // Consultar si usuario existe en la bd
+        const [[result]] = await pool.query("SELECT * FROM usuarios WHERE usuario = ?", [usuario]);
+
+        if (result === undefined) {
             res.status(400).send("Usuario o contraseña incorrectas");
         } else {
+            // Comparación de contraseña
+            const [salt, key] = result.contrasena.split(':');
+            const hashedBuffer = scryptSync(contrasena, salt, 64);
+            const keyBuffer = Buffer.from(key, 'hex');
+
             const match = timingSafeEqual(hashedBuffer, keyBuffer);
 
             if (match) {
-                session.setSession(result[0].id, true, true);
+                const token = await generarJWT(result.id);
 
-                res.status(200).send("Sesion iniciada correctamente");
+                res.cookie('token', token, {
+                    httpOnly: true,
+                })
+
+                res.status(200).json({
+                    isAdmin: result.esAdmin,
+                    message: "Sesion iniciada correctamente",
+                });
             } else {
                 res.status(400).send("Usuario o contraseña incorrectas");
             }
@@ -32,16 +65,18 @@ export const login = async (req, res) => {
 
 export const renderLogin = async (req, res) => {
     try {
-        res.render("admin/login.html", {
-            title: "Admin - Login",
+        res.render("login.html", {
+            title: "Iniciar sesion",
             navLinks: [
-                { class: "nav-link active", link: "/", title: "Iniciar Sesión" },
+                { class: "nav-link active", link: "/", title: "Inicio" },
+                { class: "nav-link", link: "/empresa", title: "Empresa" },
+                { class: "nav-link", link: "/productos", title: "Productos" },
+                { class: "nav-link", link: "/contactos", title: "Contactos" },
             ],
             scripts: [
-                "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-                "/js/bootstrap.bundle.min.js",
                 "/js/login.js"
-            ]
+            ],
+            isLogged: req.body.isLogged
         });
     } catch (error) {
         console.log(error);
@@ -50,8 +85,8 @@ export const renderLogin = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        session.clearSession();
-        res.redirect("/admin/auth");
+        res.clearCookie('token');
+        res.redirect("/");
     } catch (error) {
         console.log(error.message);
     }

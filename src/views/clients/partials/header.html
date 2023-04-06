@@ -19,6 +19,10 @@
 	<link rel="preload" href="/js/bootstrap.bundle.min.js" as="script" />
 	<link rel="preload" href="/css/estilos.css" as="style" />
 
+	<!-- Importar funcionalidades -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="/js/bootstrap.bundle.min.js"></script>
+
 	<!-- Importar estilos y scripts -->
 	<link rel="stylesheet" href="/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="/css/estilos.css" />
@@ -29,7 +33,7 @@
 		<h5 class="text-white my-2 text-center"><%= title %></h5>
 	</header>
 
-	<nav class="navbar navbar-expand-lg bg-navbar navbar-dark">
+	<nav class="navbar navbar-expand-lg bg-navbar navbar-dark sticky-top">
 		<div class="container-fluid">
 			<a class="navbar-brand" href="/">Hardware House</a>
 			<button class="navbar-toggler bg-navbar" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,10 +46,18 @@
 					<% }); %>
 				</div>
 				<div class="navbar-nav">
-					<a class="nav-link p-0 align-self-start align-self-lg-end position-relative" id="shopping-cart">
+					<% if (isLogged) { %>
+					<a class="nav-link p-0 align-self-start align-self-lg-end me-3" id="shopping-cart">
 						<img src="/img/shopping-cart.svg">
-						<!-- <strong><span class="bg-dark text-warning position-absolute top-0 start-50" id="shopping-cart-counter">0</span></strong> -->
 					</a>
+					<a class="nav-link p-0 align-self-start align-self-lg-end" href="/logout">
+						<img src="/img/cerrar-sesion.svg" alt="Icono de cerrar sesión">
+					</a>
+					<% } else { %>
+					<a class="nav-link p-0 align-self-start align-self-lg-end position-relative" href="/login">
+						<img src="/img/user.svg">
+					</a>
+					<% } %>
 				</div>
 			</div>
 		</div>

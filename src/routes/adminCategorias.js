@@ -1,13 +1,17 @@
 import { Router } from "express";
-import { 
+import {
     createCategories,
-    renderCategories 
+    renderCategories,
+    deleteCategories,
+    searchCategories
 } from "../controllers/adminCategoriesController.js";
-import session from '../session.js';
+import { validarAdmin, validarJWT } from "../jwt.js";
 
 const router = Router();
 
-router.get("/", session.checkAdmin, renderCategories)
-router.post("/add", session.checkAdmin, createCategories);
+router.get("/", validarJWT, validarAdmin, renderCategories)
+router.post("/", validarJWT, validarAdmin, searchCategories);
+router.post("/add", validarJWT, validarAdmin, createCategories);
+router.get("/delete/:id", validarJWT, validarAdmin, deleteCategories);
 
 export default router;
