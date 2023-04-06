@@ -427,6 +427,7 @@ async function completarCompra() {
 		carritoModal.hide(document.getElementById("shopping-cart-modal"));
 		showAlert("Muchas gracias", "Venta Realizada con exito");
 	} catch (error) {
+		localStorage.removeItem('shopping-cart');
 		carritoModal.hide(document.getElementById("shopping-cart-modal"));
 		showAlert(error.response.data, "Error");
 	}
