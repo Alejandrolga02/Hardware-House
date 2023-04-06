@@ -15,26 +15,26 @@ function showAlert(message, title) {
 
 const getInputs = () => {
     return {
-        codigo: form['codigo'].value.trim(),
+        id: form['codigo'].value.trim(),
         nombre: form['nombre'].value.trim(),
         fechaInicio: form['fechaInicio'].value.trim(),
         fechaFin: form['fechaFin'].value.trim(),
-        porcentajeDescuento: form['porcentajeDescuento'].value.trim(),
-        idCategoria: form['idCategoria'].value.trim()
+        porcentajeDescuento: parseFloat(form['porcentajeDescuento'].value.trim()),
+        idCategoria: parseInt(form['idCategoria'].value.trim())
     };
 };
 
 async function insertPromotion(event) {
     event.preventDefault();
     try {
-        let { codigo, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria} = getInputs();
+        let { id, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria} = getInputs();
 
-        if (!codigo || !nombre || !fechaInicio || !fechaFin || !porcentajeDescuento) {
+        if (!id || !nombre || !fechaInicio || !fechaFin || !porcentajeDescuento) {
             return showAlert("Existen campos vacios", "Error");
         }
 
         await axios.post('/admin/promociones/add', {
-            codigo,
+            id,
             nombre,
             fechaInicio,
             fechaFin,
@@ -71,8 +71,8 @@ async function lookUpPromotion(event) {
 
 		let nuevabusqueda = {};
 
-		if (promocion.codigo) {
-			nuevabusqueda.codigo = promocion.codigo;
+		if (promocion.id) {
+			nuevabusqueda.id = promocion.id;
 		}
 
 		if (promocion.nombre) {
@@ -80,22 +80,26 @@ async function lookUpPromotion(event) {
 		}
 
 		if (promocion.fechaInicio) {
-			nuevabusqueda.fechaInicio = promocion.fechaInicio;
+			nuevabusqueda.  fechaInicio = promocion.fechaInicio;
 		}
 
 		if (promocion.fechaFin) {
 			nuevabusqueda.fechaFin = promocion.fechaFin;
 		}
 
-		if (promocion.porcentajeDescuento !== "0") {
+		if (promocion.porcentajeDescuento) {
+			if (isNaN(parseFloat(promocion.porcentajeDescuento)) || parseFloat(promocion.porcentajeDescuento) <= 0) return showAlert("Introduzca un porcentaje valido", "Error");
+
 			nuevabusqueda.porcentajeDescuento = promocion.porcentajeDescuento;
 		}
 
-		if (promocion.idCategoria) {
-			nuevabusqueda.idCategoria = promocion.porcentajeDescuento;
+		if (promocion.idCategoria !== 0) {
+            if (isNaN(parseFloat(promocion.idCategoria)) || parseFloat(promocion.idCategoria) <= 0) return showAlert("Introduzca una categoría valida", "Error");
+
+			nuevabusqueda.idCategoria = promocion.idCategoria;
 		}
 
-		await axios.post('/admin/promociones/', nuevabusqueda, {
+		await axios.post('/admin/promociones/', { nuevabusqueda }, {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded'
 			}
@@ -103,7 +107,6 @@ async function lookUpPromotion(event) {
 
 		window.location.pathname = window.location.pathname;
 	} catch (error) {
-		// Captura de error y mandar retroalimentación al usuario
 		showAlert(error.response.data, "Error");
 	}
 }
