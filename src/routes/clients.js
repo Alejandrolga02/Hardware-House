@@ -9,17 +9,17 @@ import {
 	completePurchase,
 	renderNotFound
 } from "../controllers/clientsController.js";
-import { validarCliente, validarJWT } from "../jwt.js";
+import { isLogged, validarCliente, validarJWT } from "../jwt.js";
 
 const router = Router();
 
 // Administración Productos
-router.get("/", renderClientIndex);
-router.get("/empresa", renderClientAboutUs);
-router.get("/productos", renderClientProducts);
+router.get("/", isLogged, validarCliente, renderClientIndex);
+router.get("/empresa", isLogged, validarCliente, renderClientAboutUs);
+router.get("/productos", isLogged, validarCliente, renderClientProducts);
 router.post("/productos/get", validarJWT, validarCliente, getProduct);
-router.get("/contactos", renderClientContactUs);
-router.post("/contactos", postContactUs);
+router.get("/contactos", isLogged, validarCliente, renderClientContactUs);
+router.post("/contactos", isLogged, validarCliente, postContactUs);
 router.post("/buy", validarJWT, validarCliente, completePurchase);
 
 router.use(renderNotFound);

@@ -43,7 +43,7 @@ export const login = async (req, res) => {
             const match = timingSafeEqual(hashedBuffer, keyBuffer);
 
             if (match) {
-                const token = await generarJWT(result.id, result.esAdmin);
+                const token = await generarJWT(result.id);
 
                 res.cookie('token', token, {
                     httpOnly: true,

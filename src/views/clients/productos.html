@@ -12,9 +12,9 @@
 
 					<b class="d-block my-0 text-end position-absolute bottom-0 end-0">
 						<% if (element.precioFinal === element.precio) { %>
-						<span class="badge bg-dark fs-6 me-3 my-3">$<%= element.precioFinal %></span>
+						<span class="badge bg-dark fs-6 me-3 my-3">$<%= element.precioFinal.replace(".00","") %></span>
 						<% } else { %>
-						<span class="crossed-out">$<%= element.precio %></span>
+						<span class="crossed-out">$<%= element.precio.replace(".00","") %></span>
 						<span class="badge bg-dark ms-2 me-3 my-3 fs-6">$<%= element.precioFinal.toFixed(2).replace(".00","") %></span>
 						<% } %>
 					</b>
