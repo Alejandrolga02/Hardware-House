@@ -107,15 +107,15 @@ const validateString = (cadena) => {
 //Función para validar. Recibe el objeto
 const validateData = (product) => {
 	try {
-		if (!validateString(product.codigo) || (product.codigo == " ")) {	//Convierte en false en 'true'
+		if (!validateString(product.codigo) || (product.codigo == " ") || product.codigo.length > 20) {	//Convierte en false en 'true'
 			return true;
 		}
 
-		if (!validateString(product.nombre) || (product.nombre == " ")) {
+		if (!validateString(product.nombre) || (product.nombre == " ") || product.nombre.length > 60) {
 			return true;
 		}
 
-		if (product.descripcion === "" || typeof product.descripcion !== "string") {
+		if (product.descripcion === "" || typeof product.descripcion !== "string" || product.descripcion.length > 200) {
 			return true;
 		}
 
