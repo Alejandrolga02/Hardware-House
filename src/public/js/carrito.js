@@ -275,14 +275,24 @@ async function mostrarCarrito() {
 
 	div.innerHTML = `
 	<div id="shopping-cart-alerts"></div>
-	<div class="mb-3">
-		<label for="tipoPago" class="form-label">Método de pago</label>
-		<select class="form-select" id="tipoPago">
-			<option disabled selected>Seleccione un método de pago</option>
-			<option value="Transferencia">Transferencia</option>
-			<option value="Débito">Débito</option>
-			<option value="Crédito">Crédito</option>
-		</select>
+
+	<div class="row mb-0 mb-md-2">
+		<div class="col-12 col-md-6 mb-2 mb-md-0">
+			<label for="tipoPago" class="form-label">Método de pago</label>
+			<select class="form-select" id="tipoPago">
+				<option disabled selected>Seleccione un método de pago</option>
+				<option value="Transferencia">Transferencia</option>
+				<option value="Débito">Débito</option>
+				<option value="Crédito">Crédito</option>
+			</select>
+		</div>
+		<div class="col-12 col-md-6 mb-2 mb-md-0">
+			<label for="precio" class="form-label">Total</label>
+			<div class="input-group">
+				<span class="input-group-text">$</span>
+				<input type="text" id="shopping-cart-total" class="form-control" disabled required />
+			</div>
+		</div>
 	</div>
 	
 	<table class="table table-light table-hover mt-2 mb-0 align-middle">
@@ -303,6 +313,7 @@ async function mostrarCarrito() {
 	// For para obtener informacion de cada item del inventario
 	let i = 0;
 	let erroneos = [];
+	let total = 0;
 	for (const item of shoppingCart) {
 		try {
 			let { data } = await axios.post('/productos/get', {
@@ -321,6 +332,7 @@ async function mostrarCarrito() {
 				item.cantidad = data.disponibilidad;
 			}
 			item.disponibilidad = data.disponibilidad;
+			total += parseFloat(data.precioFinal);
 
 			tableContent.innerHTML += `<tr>
 				<td class="text-center p-0">
@@ -358,6 +370,9 @@ async function mostrarCarrito() {
 		}
 		i++;
 	}
+
+	// Poner total correspondiente
+	div.querySelector("#shopping-cart-total").value = total;
 
 	// Elimina los elementos en orden inverso para no afectar los indices
 	for (let i = erroneos.length - 1; i >= 0; i--) {
