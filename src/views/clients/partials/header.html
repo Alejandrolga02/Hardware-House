@@ -46,10 +46,18 @@
 					<% }); %>
 				</div>
 				<div class="navbar-nav">
-					<a class="nav-link p-0 align-self-start align-self-lg-end position-relative" id="shopping-cart">
+					<% if (isLogged) { %>
+					<a class="nav-link p-0 align-self-start align-self-lg-end me-3" id="shopping-cart">
 						<img src="/img/shopping-cart.svg">
-						<!-- <strong><span class="bg-dark text-warning position-absolute top-0 start-50" id="shopping-cart-counter">0</span></strong> -->
 					</a>
+					<a class="nav-link p-0 align-self-start align-self-lg-end" href="/logout">
+						<img src="/img/cerrar-sesion.svg" alt="Icono de cerrar sesión">
+					</a>
+					<% } else { %>
+					<a class="nav-link p-0 align-self-start align-self-lg-end position-relative" href="/login">
+						<img src="/img/user.svg">
+					</a>
+					<% } %>
 				</div>
 			</div>
 		</div>

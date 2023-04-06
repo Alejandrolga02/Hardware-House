@@ -151,7 +151,7 @@ export const isLogged = async (req, res, next) => {
 	if (!token) {
 		req.body.isLogged = false;
 		req.body.esAdmin = 0;
-		next();
+		return next();
 	}
 
 	try {
@@ -175,6 +175,7 @@ export const isLogged = async (req, res, next) => {
 		next();
 	} catch (error) {
 		console.log(error);
-		return res.status(401).send("Token no válido");
+		res.clearCookie('token');
+		return res.redirect("/");
 	}
 }

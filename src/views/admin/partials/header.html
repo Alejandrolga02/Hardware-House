@@ -46,8 +46,8 @@
 					<% }); %>
 				</div>
 				<div class="navbar-nav">
-					<% if (!title.includes("Login")) { %>
-					<a class="nav-link align-self-start align-self-lg-end p-0" href="/logout">
+					<% if (isLogged) { %>
+					<a class="nav-link p-0 align-self-start align-self-lg-end" href="/logout">
 						<img src="/img/cerrar-sesion.svg" alt="Icono de cerrar sesión">
 					</a>
 					<% } %>

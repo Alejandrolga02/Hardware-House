@@ -76,6 +76,7 @@ export const renderLogin = async (req, res) => {
             scripts: [
                 "/js/login.js"
             ],
+            isLogged: req.body.isLogged
         });
     } catch (error) {
         console.log(error);

@@ -32,7 +32,8 @@ export const renderProducts = async (req, res) => {
 			],
 			scripts: [
 				"/js/admin-productos.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -248,7 +249,8 @@ export const editProducts = async (req, res) => {
 			],
 			scripts: [
 				"/js/admin-edit-product.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);

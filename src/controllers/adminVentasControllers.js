@@ -26,6 +26,7 @@ export const renderPage = async (req, res) => {
                 { class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
                 { class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
             ],
+            isLogged: req.body.isLogged
         });
     } catch (error) {
         console.log(error + " Error al mostrar");
@@ -46,6 +47,7 @@ export const renderVentasDet = async (req, res) => {
                 { class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
                 { class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
             ],
+            isLogged: req.body.isLogged
         })
     } catch (error) {
         console.log(error + " El error esta aquí");;

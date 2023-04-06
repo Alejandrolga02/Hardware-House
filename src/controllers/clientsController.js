@@ -39,7 +39,8 @@ export const renderClientIndex = async (req, res) => {
 			],
 			scripts: [
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -58,7 +59,8 @@ export const renderClientAboutUs = async (req, res) => {
 			],
 			scripts: [
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -93,7 +95,8 @@ export const renderClientProducts = async (req, res) => {
 			],
 			scripts: [
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -146,7 +149,8 @@ export const renderClientContactUs = async (req, res) => {
 			],
 			scripts: [
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -173,8 +177,13 @@ export const completePurchase = async (req, res) => {
 		// Obtencion de datos
 		let { productsList, id, tipoPago, descuento } = req.body;
 
-		// Conversion de string obtenido a array
-		productsList = JSON.parse(productsList);
+		try {
+			// Conversion de string obtenido a array
+			productsList = JSON.parse(productsList);
+		} catch (error) {
+			return res.status(400).send("Tu carrito de compras es invalido");
+		}
+
 		const idUsuario = Number.parseInt(id);
 
 		let total = 0;
@@ -267,7 +276,8 @@ export const renderNotFound = async (req, res) => {
 				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
 				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
-			]
+			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);

@@ -1,6 +1,5 @@
 export const renderIndex = async (req, res) => {
 	try {
-
 		res.render("admin/menu.html", {
 			title: "Admin - Menu Principal",
 			navLinks: [
@@ -10,6 +9,7 @@ export const renderIndex = async (req, res) => {
 				{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
 				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
 			],
+			isLogged: req.body.isLogged
 		});
 	} catch (error) {
 		console.log(error);
