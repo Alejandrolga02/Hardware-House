@@ -273,8 +273,6 @@ export const renderNotFound = async (req, res) => {
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
 			scripts: [
-				"https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js",
-				"/js/bootstrap.bundle.min.js",
 				"/js/carrito.js"
 			],
 			isLogged: req.body.isLogged
