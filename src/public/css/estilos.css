@@ -156,3 +156,9 @@ input[type="number"] {
 .crossed-out {
 	text-decoration: line-through;
 }
+
+#imgPreview {
+	width: 300px;
+	height: 300px;
+	object-fit: cover;
+}

@@ -19,12 +19,12 @@ function showAlert(message, title) {
 // Variables input
 const getInputs = () => {
 	return {
-		codigo: form['codigo'].value.trim(),
-		precio: form['precio'].value.trim(),
-		nombre: form['nombre'].value.trim(),
-		descripcion: form['descripcion'].value.trim(),
-		idCategoria: form['idCategoria'].value.trim(),
-		disponibilidad: form['disponibilidad'].value.trim(),
+		codigo: form['codigo'].value.trim().substring(0, 20),
+		nombre: form['nombre'].value.trim().substring(0, 60),
+		descripcion: form['descripcion'].value.trim().substring(0, 200),
+		precio: parseFloat(form['precio'].value.trim()),
+		idCategoria: parseInt(form['idCategoria'].value.trim()),
+		disponibilidad: parseInt(form['disponibilidad'].value.trim()),
 	};
 };
 
@@ -42,9 +42,9 @@ async function insertProduct(event) {
 
 		const imageFormats = ["image/png", "image/jpeg"];
 		if (!codigo || !nombre || !descripcion || !imagen.value) return showAlert("Existen campos vacios", "Error");
-		if (isNaN(parseFloat(precio)) || parseFloat(precio) <= 0 ||
-			isNaN(parseInt(idCategoria)) || parseInt(idCategoria) <= 0 ||
-			isNaN(parseInt(disponibilidad)) || parseInt(disponibilidad) < 0) return showAlert("Introduzca valores validos", "Error");
+		if (isNaN(precio) || precio <= 0 || precio > 99999999.99 ||
+			isNaN(idCategoria) || idCategoria <= 0 || idCategoria > 100000000 ||
+			isNaN(disponibilidad) || disponibilidad < 0 || disponibilidad > 100000000) return showAlert("Introduzca valores validos", "Error");
 		if (!imageFormats.includes(imagen.files[0].type)) return showAlert("Sube una imagen en el campo", "Error");
 		if (imagen.files[0].size > 2000000) return showAlert("Las imagenes no deben pesar mas de 2MB", "Error");
 
@@ -121,6 +121,15 @@ async function lookUpProduct(event) {
 		window.location.pathname = window.location.pathname;
 	} catch (error) {
 		// Captura de error y mandar retroalimentación al usuario
+		showAlert(error.response.data, "Error");
+	}
+}
+
+async function deshabilitarProductos(codigo) {
+	try {
+		await axios.get(`/admin/productos/delete/${codigo}`);
+		window.location.reload();
+	} catch (error) {
 		showAlert(error.response.data, "Error");
 	}
 }
