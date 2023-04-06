@@ -96,7 +96,7 @@ const deleteTempImage = (filePath) => {
 //Función para validar que la cadena no cuente con caracteres especiales
 const validateString = (cadena) => {
 	try {
-		let regex = new RegExp(/^[A-Za-z0-9-áéíóú\s]+$/g);
+		let regex = new RegExp(/^[A-Za-z0-9-áéíóúÁÉÍÓÚ\s]+$/g);
 		return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
 	} catch (error) {
 		console.log(error);

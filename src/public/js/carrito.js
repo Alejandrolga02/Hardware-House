@@ -58,7 +58,7 @@ function showProductsToast(message, title) {
 function validateString(cadena) {
 	// Funcion para validar texto
 	try {
-		let regex = new RegExp(/^[A-Za-z0-9\s]+$/g);
+		let regex = new RegExp(/^[A-Za-z0-9-áéíóúÁÉÍÓÚ\s]+$/g);
 		return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
 	} catch (error) {
 		console.log(error);

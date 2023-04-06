@@ -4,7 +4,7 @@ import { pool } from "../db.js";
 //Función para validar que la cadena no cuente con caracteres especiales
 const validateString = (cadena) => {
 	try {
-		let regex = new RegExp(/^[A-Za-z0-9\s]+$/g);
+		let regex = new RegExp(/^[A-Za-z0-9-áéíóúÁÉÍÓÚ\s]+$/g);
 		return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
 	} catch (error) {
 		console.log(error);
@@ -22,9 +22,9 @@ export const renderClientIndex = async (req, res) => {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
 
 			if (promociones[0]) {
-				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)))
+				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)))
 			} else {
-				item.precioFinal = item.precio;
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.body.descuento) / 100)));
 			}
 		}
 
@@ -76,9 +76,9 @@ export const renderClientProducts = async (req, res) => {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
 
 			if (promociones[0]) {
-				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)))
+				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)))
 			} else {
-				item.precioFinal = item.precio;
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.body.descuento) / 100)));
 			}
 		}
 
@@ -122,9 +122,9 @@ export const getProduct = async (req, res) => {
 		}
 
 		if (promociones[0]) {
-			producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(promociones[0].porcentajeDescuento) / 100)));
+			producto.precioFinal = parseFloat(producto.precio - (producto.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)));
 		} else {
-			producto.precioFinal = producto.precio;
+			producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(req.body.descuento) / 100)));
 		}
 
 		return res.json(producto);
@@ -171,7 +171,7 @@ export const postContactUs = async (req, res) => {
 export const completePurchase = async (req, res) => {
 	try {
 		// Obtencion de datos
-		let { productsList, id, tipoPago } = req.body;
+		let { productsList, id, tipoPago, descuento } = req.body;
 
 		// Conversion de string obtenido a array
 		productsList = JSON.parse(productsList);
@@ -222,9 +222,9 @@ export const completePurchase = async (req, res) => {
 			const [[promociones]] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [result.idCategoria]);
 
 			if (promociones) {
-				product.precioFinal = parseFloat(parseFloat(result.precio) - (parseFloat(result.precio) * (parseFloat(promociones.porcentajeDescuento) / 100)))
+				product.precioFinal = parseFloat(result.precio - (result.precio * ((parseFloat(promociones.porcentajeDescuento) + parseFloat(descuento)) / 100)));
 			} else {
-				product.precioFinal = parseFloat(result.precio);
+				product.precioFinal = parseFloat(result.precio - (result.precio * (parseFloat(descuento) / 100)));
 			}
 
 			ventasDetalle += `(LAST_INSERT_ID(), ${escape(product.codigo)}, ${escape(product.cantidad)}),`;
