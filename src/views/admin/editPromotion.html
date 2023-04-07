@@ -6,7 +6,7 @@
 			<img src="/img/regresar.svg">
 			Regresar
 		</a>
-		<h1 class="text-start mb-0 ms-2">Editar promociones</h1>
+		<h1 class="text-start mb-0 ms-2">Editar promocion</h1>
 	</div>
 	<form class="mt-3 border border-3 p-3 rounded bg-white" id="form">
 		<div class="row mb-0 mb-md-2">
@@ -39,7 +39,7 @@
 				<label for="porcentajeDescuento" class="form-label">Porcentaje descuento</label>
 				<input type="text" id="porcentajeDescuento" name="porcentajeDescuento" value="<%= promotion.porcentajeDescuento%>" class="form-control" placeholder="Introduzca un porcentaje" required />
 			</div>
-			<div class="mb-2">
+			<div class="mb-2">      
 				<label for="idCategoria" class="form-label">Categoria</label>
 				<select class="form-select" name="idCategoria" id="idCategoria">
 					<% categorias.forEach(element=> { %>

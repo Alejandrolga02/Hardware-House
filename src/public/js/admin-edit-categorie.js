@@ -17,19 +17,21 @@ function showAlert(message, title) {
 // Obtener variables del formulario
 const getInputs = () => {
     return {
-        id: form['id'].value.trim().substring(0, 20),
-        nombre: form['nombre'].value.trim().substring(0, 60)
+        id: form['id'].value.trim(),
+        nombre: form['nombre'].value.trim(),
+        estado: parseInt(form['estado'].value.trim())
     };
 };
 
 async function updateCategorie(event) {
+    console.log("HOLA");
 	try {
 		event.preventDefault();
 
 		// Llamada a funcion para obtener datos del formulario
-		let { id, nombre} = getInputs();
+		let { id, nombre, estado} = getInputs();
 
-        if (!id || !nombre) {
+        if (!id || !nombre || !estado) {
             return showAlert("Existen campos vacios", "Error");
         }
 
@@ -37,8 +39,10 @@ async function updateCategorie(event) {
 		let categoriaModificada = {
 			id,
 			nombre,
+            estado
 		}
 
+        console.log(window.location.pathname);
         await axios.post(window.location.pathname, categoriaModificada, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -47,7 +51,7 @@ async function updateCategorie(event) {
 
 		showAlert("Se actualizó el registro con exito", "Resultado");
 
-		setTimeout(() => {
+        setTimeout(() => {
 			window.location.href = '/admin/categorias/';
 		}, 2000);
 
@@ -57,4 +61,4 @@ async function updateCategorie(event) {
 	}
 }
 
-btnActualizar.addEventListener("click", updateProduct)
+btnActualizar.addEventListener("click", updateCategorie)

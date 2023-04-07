@@ -137,6 +137,25 @@ export const searchCategories = async (req, res) => {
 	}
 };
 
+// export const updateCategories = async (req, res) => {
+// 	try {
+
+// 		let codigo = req.body.id;
+
+// 		const newCategorie = {
+// 			id: req.body.id,
+// 			nombre: req.body.nombre,
+// 			estado: parseInt(req.body.estado)
+// 		}
+
+// 		const categorie = await pool.query("UPDATE categorias set ? WHERE id = ?", [newCategorie, id]);
+// 		return res.redirect("/admin/categorias");
+// 	} catch (error) {
+// 		console.log(error);
+// 		return res.status(400).send("Sucedio un error");
+// 	}
+// };
+
 export const deleteCategories = async (req, res) => {
 	try {
 		const { id } = req.params;
