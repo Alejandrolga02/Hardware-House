@@ -38,6 +38,42 @@ export const renderPromotions = async (req, res) => {
     }
 };
 
+export const editPromotions = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const [result] = await pool.query("SELECT * FROM promociones WHERE id = ?", [id]);
+		const [categorias] = await pool.query("SELECT * FROM categorias");
+
+		if (result.length === 0) {
+			return res.redirect("/admin/promociones/");
+		}
+
+		if (categorias.length === 0) {
+			return res.redirect("/admin/categorias/");
+		}
+
+		res.render("admin/editPromotion.html", {
+			title: "Editar Promocion",
+			promotion: result[0],
+            categorias,
+			navLinks: [
+				{ class: "nav-link", link: "/", title: "Inicio" },
+				{ class: "nav-link", link: "/admin/productos/", title: "Productos" },
+				{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
+				{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
+				{ class: "nav-link active", link: "/admin/promociones/", title: "Promociones" },
+			],
+			scripts: [
+				"/js/admin-edit-promotion.js"
+			],
+			isLogged: req.body.isLogged
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+
 function filterSearchPromotion(obj) {
 	const result = {};
 

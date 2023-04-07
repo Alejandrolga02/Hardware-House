@@ -17,29 +17,38 @@ function showAlert(message, title) {
 // Obtener variables del formulario
 const getInputs = () => {
     return {
-        id: form['id'].value.trim().substring(0, 20),
-        nombre: form['nombre'].value.trim().substring(0, 60)
+        id: form['codigo'].value.trim().substring(0, 20),
+        nombre: form['nombre'].value.trim().substring(0, 60),
+        fechaInicio: form['fechaInicio'].value.trim(),
+        fechaFin: form['fechaFin'].value.trim(),
+        porcentajeDescuento: parseFloat(form['porcentajeDescuento'].value.trim()),
+        idCategoria: parseInt(form['idCategoria'].value.trim())
     };
 };
 
-async function updateCategorie(event) {
+async function updatePromotion(event) {
 	try {
 		event.preventDefault();
 
 		// Llamada a funcion para obtener datos del formulario
-		let { id, nombre} = getInputs();
+        let { id, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria} = getInputs();
 
-        if (!id || !nombre) {
+		// Validación de campos
+		if (!id || !nombre || !fechaInicio || !fechaFin || !porcentajeDescuento) {
             return showAlert("Existen campos vacios", "Error");
         }
 
 		// Creación de objeto a mandar petición
-		let categoriaModificada = {
+		let promocionModificada = {
 			id,
 			nombre,
+			fechaInicio,
+			fechaFin,
+			porcentajeDescuento,
+			idCategoria
 		}
-
-        await axios.post(window.location.pathname, categoriaModificada, {
+	
+        await axios.post(window.location.pathname, promocionModificada, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -48,7 +57,7 @@ async function updateCategorie(event) {
 		showAlert("Se actualizó el registro con exito", "Resultado");
 
 		setTimeout(() => {
-			window.location.href = '/admin/categorias/';
+			window.location.href = '/admin/promociones/';
 		}, 2000);
 
 	} catch (error) {
@@ -57,4 +66,4 @@ async function updateCategorie(event) {
 	}
 }
 
-btnActualizar.addEventListener("click", updateProduct)
+btnActualizar.addEventListener("click", updatePromotion)
