@@ -59,6 +59,40 @@ export const createCategories = async (req, res) => {
 	}
 };
 
+export const editCategories = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const [result] = await pool.query("SELECT * FROM categorias WHERE id = ?", [id]);
+		//const [categorias] = await pool.query("SELECT * FROM categorias");
+
+		if (result.length === 0) {
+			return res.redirect("/admin/categorias/");
+		}
+
+		// if (categorias.length === 0) {
+		// 	return res.redirect("/admin/categorias/");
+		// }
+
+		res.render("admin/editCategorie.html", {
+			title: "Editar Categoria",
+			categorie: result[0],
+			navLinks: [
+				{ class: "nav-link", link: "/", title: "Inicio" },
+				{ class: "nav-link", link: "/admin/productos/", title: "Productos" },
+				{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
+				{ class: "nav-link active", link: "/admin/categorias/", title: "Categorias" },
+				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
+			],
+			scripts: [
+				"/js/admin-edit-categorie.js"
+			],
+			isLogged: req.body.isLogged
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 function filterSearchCategorie(obj) {
 	const result = {};
 
