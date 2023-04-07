@@ -134,10 +134,10 @@ const validateData = (product) => {
 		if (isNaN(product.estado) || product.estado < 0 || product.estado > 1) {
 			return true;
 		}
-
-		return false;
 	} catch (error) {
 		console.log(error);
+	} finally {
+		return false;
 	}
 }
 
@@ -281,6 +281,7 @@ export const updateProducts = async (req, res) => {
 		}
 
 		const newProduct = {
+			codigo,
 			nombre: req.body.nombre,
 			descripcion: req.body.descripcion,
 			precio: parseFloat(req.body.precio),

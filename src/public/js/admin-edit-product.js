@@ -43,7 +43,7 @@ async function updateProduct(event) {
 		let { codigo, precio, nombre, descripcion, idCategoria, disponibilidad, estado } = getInputs();
 
 		// Validación de campos
-		if (!codigo || !nombre || !descripcion || !estado) return showAlert("Existen campos vacios", "Error");
+		if (!codigo || !nombre || !descripcion) return showAlert("Existen campos vacios", "Error");
 		if (isNaN(precio) || precio <= 0 || precio > 99999999.99 ||
 			isNaN(idCategoria) || idCategoria <= 0 || idCategoria > 100000000 ||
 			isNaN(disponibilidad) || disponibilidad < 0 || disponibilidad > 100000000 ||
