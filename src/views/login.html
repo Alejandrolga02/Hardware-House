@@ -1,8 +1,6 @@
 <%- include('admin/partials/header.html') %>
 <main class="container mh p-4 d-flex justify-content-center align-items-center">
-	<!-- <form class="border border-3 p-3 rounded bg-white" id="loginForm"> -->
 	<form class="card" id="loginForm">
-		<!-- <h3 class="text-start mb-3">Iniciar sesión</h3> -->
 		<div class="card-header">
 			<h3 class="text-start m-1">Iniciar sesión</h3>
 		</div>
@@ -11,14 +9,14 @@
 				<label for="usuario" class="form-label">Usuario</label>
 				<div class="input-group">
 					<span class="input-group-text"><img src="/img/userSmall.svg" alt="Icono de Usuario"></span>
-					<input type="text" class="form-control" placeholder="Introduzca un usuario" id="usuario" name="usuario">
+					<input type="text" class="form-control" placeholder="Introduzca un usuario" id="usuario" name="usuario" maxlength="60">
 				</div>
 			</div>
 			<div class="mb-3">
 				<label for="contrasena" class="form-label">Contraseña</label>
 				<div class="input-group">
 					<span class="input-group-text"><img src="/img/password.svg" alt="Icono de contrasena"></span>
-					<input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Introduzca una contraseña">
+					<input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Introduzca una contraseña" maxlength="60">
 				</div>
 			</div>
 			<p class="m-0 text-center">¿No estás registrado aun?<br><a class="text-primary" href="/register">Haz click aquí</a></p>
