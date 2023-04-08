@@ -120,23 +120,28 @@ export const searchPromotions = async (req, res) => {
 
 export const createPromotions = async (req, res) => {
     try {
-        let { codigo, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria } = req.body;
+		const {id} = req.params;
+
+       // let { id, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria } = req.body;
 
         if (false) {
-            res.status(400).send("Los datos no son del tipo correcto");
+			res.status(400).send("Los datos no son del tipo correcto");
         }
         if (false) {
             res.status(400).send("Existe un registro con ese código");
         }
 
         const newPromotion = {
-            id: codigo.trim(),
-            nombre: nombre.trim(),
-            fechaInicio: fechaInicio.trim(),
-            fechaFin: fechaFin.trim(),
-            porcentajeDescuento: porcentajeDescuento.trim(),
-            idCategoria: idCategoria.trim()
+            id,
+            nombre: req.body.nombre,
+            fechaInicio: req.body.fechaInicio,
+            fechaFin: req.body.fechaFin,
+            porcentajeDescuento: parseFloat(req.body.porcentajeDescuento),
+			estado: 1,
+            idCategoria: parseInt(req.body.idCategoria)
         }
+
+		console.log(newPromotion);
 
         const rows = await pool.query("INSERT INTO promociones set ?", [newPromotion]);
 
@@ -160,7 +165,7 @@ const validateString = (cadena) => {
 
 const validateData = (product) => {
 	try {
-		if (!validateString(product.codigo) || (product.codigo == " ") || product.codigo.length > 20) {	//Convierte en false en 'true'
+		if (!validateString(product.id) || (product.id == " ") || product.id.length > 20) {	//Convierte en false en 'true'
 			return true;
 		}
 
@@ -208,7 +213,7 @@ export const updatePromotions = async (req, res) => {
 	try {
 		const {id} = req.params;
 
-        let codigo = req.body.codigo;
+        let codigo = req.body.id;
 
 
         console.log("id:", id); // Agregar este console.log

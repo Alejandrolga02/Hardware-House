@@ -15,7 +15,7 @@ function showAlert(message, title) {
 
 const getInputs = () => {
     return {
-        id: form['codigo'].value.trim(),
+        id: form['id'].value.trim().substring(0, 20),
         nombre: form['nombre'].value.trim(),
         fechaInicio: form['fechaInicio'].value.trim(),
         fechaFin: form['fechaFin'].value.trim(),
@@ -80,7 +80,7 @@ async function lookUpPromotion(event) {
 		}
 
 		if (promocion.fechaInicio) {
-			nuevabusqueda.  fechaInicio = promocion.fechaInicio;
+			nuevabusqueda.fechaInicio = promocion.fechaInicio;
 		}
 
 		if (promocion.fechaFin) {
@@ -98,6 +98,8 @@ async function lookUpPromotion(event) {
 
 			nuevabusqueda.idCategoria = promocion.idCategoria;
 		}
+
+        console.log(nuevabusqueda);
 
 		await axios.post('/admin/promociones/', { nuevabusqueda }, {
 			headers: {
