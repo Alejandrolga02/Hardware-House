@@ -17,12 +17,13 @@ function showAlert(message, title) {
 // Obtener variables del formulario
 const getInputs = () => {
     return {
-        id: form['codigo'].value.trim().substring(0, 20),
+        codigo: form['codigo'].value.trim().substring(0, 20),
         nombre: form['nombre'].value.trim().substring(0, 60),
         fechaInicio: form['fechaInicio'].value.trim(),
         fechaFin: form['fechaFin'].value.trim(),
         porcentajeDescuento: parseFloat(form['porcentajeDescuento'].value.trim()),
-        idCategoria: parseInt(form['idCategoria'].value.trim())
+        idCategoria: parseInt(form['idCategoria'].value.trim()),
+		estado: parseInt(form['estado'].value.trim()),
     };
 };
 
@@ -31,23 +32,24 @@ async function updatePromotion(event) {
 		event.preventDefault();
 
 		// Llamada a funcion para obtener datos del formulario
-        let { id, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria} = getInputs();
+        let { codigo, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria, estado} = getInputs();
 
 		// Validación de campos
-		if (!id || !nombre || !fechaInicio || !fechaFin || !porcentajeDescuento) {
+		if (!codigo || !nombre || !fechaInicio || !fechaFin || !porcentajeDescuento) {
             return showAlert("Existen campos vacios", "Error");
         }
 
 		// Creación de objeto a mandar petición
 		let promocionModificada = {
-			id,
+			codigo,
 			nombre,
 			fechaInicio,
 			fechaFin,
 			porcentajeDescuento,
-			idCategoria
+			idCategoria, 
+			estado
 		}
-	
+		
         await axios.post(window.location.pathname, promocionModificada, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'

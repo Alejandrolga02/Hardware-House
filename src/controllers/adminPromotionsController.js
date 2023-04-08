@@ -148,6 +148,112 @@ export const createPromotions = async (req, res) => {
     }
 };
 
+const validateString = (cadena) => {
+	try {
+		let regex = new RegExp(/^[A-Za-z0-9áéíóúÁÉÍÓÚ\s]+$/g);
+		return regex.test(cadena);	//Retorna 'true' si no contiene caracteres especiales
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+
+const validateData = (product) => {
+	try {
+		if (!validateString(product.codigo) || (product.codigo == " ") || product.codigo.length > 20) {	//Convierte en false en 'true'
+			return true;
+		}
+
+		if (!validateString(product.nombre) || (product.nombre == " ") || product.nombre.length > 60) {
+			return true;
+		}
+
+		if (product.fechaInicio === "" || typeof product.fechaInicio !== "string" || product.fechaInicio.length > 200) {
+			return true;
+		}
+
+        if (product.fechaFin === "" || typeof product.fechaFin !== "string" || product.fechaFin.length > 200) {
+			return true;
+		}
+
+		if (isNaN(product.porcentajeDescuento) || product.porcentajeDescuento <= 0 || product.porcentajeDescuento > 99999999.99) {
+			return true;
+		}
+
+		if (isNaN(product.idCategoria) || product.idCategoria <= 0 || product.idCategoria > 100000000) {
+			return true;
+		}
+
+		if (isNaN(product.estado) || product.estado < 0 || product.estado > 1) {
+			return true;
+		}
+	} catch (error) {
+		console.log(error);
+        return false;
+	}
+    return false;
+}
+
+const validateCode = async (codigo) => {
+	try {
+		const [[promociones]] = await pool.query("SELECT promociones.id FROM promociones WHERE id = ?", [codigo]);
+
+		return promociones !== undefined;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export const updatePromotions = async (req, res) => {
+	try {
+		const {id} = req.params;
+
+        let codigo = req.body.codigo;
+
+
+        console.log("id:", id); // Agregar este console.log
+		console.log("codigo:", codigo); // Agregar este console.log
+
+		if (parseInt(id) !== parseInt(codigo)) {
+			return res.status(400).send("No alterar los códigos");
+		}
+
+		if (!await validateCode(id)) {
+			return res.status(400).send("No existe ese registro a modificar");
+		}
+
+		const newPromotion = {
+            id,
+            nombre: req.body.nombre,
+            fechaInicio: req.body.fechaInicio,
+            fechaFin: req.body.fechaFin,
+            porcentajeDescuento: req.body.porcentajeDescuento,
+            idCategoria: req.body.idCategoria,
+            estado: parseInt(req.body.estado),
+        }
+
+		const resData = validateData(newPromotion);
+
+            if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
+                return res.status(400).send("Los datos no son del tipo correcto");
+            }
+
+            try {
+                await pool.query("UPDATE promociones set ? WHERE id = ?", [newPromotion, id]);
+                return res.redirect("/admin/promociones");
+            } catch (error) {
+                console.log(error);
+                return res.status(400).send("Sucedio un error al actualizar la promoción");
+            }
+              
+
+	} catch (error) {
+		console.log(error);
+		return res.status(400).send("Sucedio un error");
+	}
+};
+
+
 export const deletePromotions = async (req, res) => {
     try {
         const { id } = req.params;
