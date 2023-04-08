@@ -1,41 +1,40 @@
 import { pool } from '../db.js';
 import { escape } from 'mysql2';
 
-let query = "SELECT promociones.id, promociones.fechaInicio, promociones.fechaFin, promociones.nombre, promociones.porcentajeDescuento, promociones.estado, categorias.nombre AS categoria FROM promociones LEFT JOIN categorias ON promociones.idCategoria = categorias.id"
+let query = "SELECT promociones.id, DATE_FORMAT(promociones.fechaInicio, '%d/%m/%Y') AS fechaInicio, DATE_FORMAT(promociones.fechaFin, '%d/%m/%Y') AS fechaFin, promociones.nombre, promociones.porcentajeDescuento, promociones.estado, categorias.nombre AS categoria FROM promociones LEFT JOIN categorias ON promociones.idCategoria = categorias.id";
 let form = {};
 
 export const renderPromotions = async (req, res) => {
-    try {
+	try {
+		form.counter -= 1;
+		if (form.counter === 0) {
+			form = {};
+			query = "SELECT promociones.id, DATE_FORMAT(promociones.fechaInicio, '%d/%m/%Y') AS fechaInicio, DATE_FORMAT(promociones.fechaFin, '%d/%m/%Y') AS fechaFin, promociones.nombre, promociones.porcentajeDescuento, promociones.estado, categorias.nombre AS categoria FROM promociones LEFT JOIN categorias ON promociones.idCategoria = categorias.id";
+		}
 
-        form.counter -= 1;
-        if (form.counter === 0) {
-            form = {};
-            query = "SELECT promociones.id, promociones.fechaInicio, promociones.fechaFin, promociones.nombre, promociones.porcentajeDescuento, promociones.estado, categorias.nombre AS categoria FROM promociones LEFT JOIN categorias ON promociones.idCategoria = categorias.id";
-        }
+		const [rows] = await pool.query(query);
+		const [categorias] = await pool.query("SELECT * FROM categorias");
 
-        const [rows] = await pool.query(query);
-        const [categorias] = await pool.query("SELECT * FROM categorias");
-
-        res.render('admin/promociones.html', {
-            title: "Admin - Promociones",
-            promotions: rows,
-            categorias,
-            form,
-            navLinks: [
-                { class: "nav-link", link: "/", title: "Inicio" },
-                { class: "nav-link", link: "/admin/productos/", title: "Productos" },
-                { class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
-                { class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
-                { class: "nav-link active", link: "/admin/promociones/", title: "Promociones" },
-            ],
-            scripts: [
-                "/js/admin-promotions.js"
-            ],
-            isLogged: req.body.isLogged
-        });
-    } catch (error) {
-        console.log(error);
-    }
+		res.render('admin/promociones.html', {
+			title: "Admin - Promociones",
+			promotions: rows,
+			categorias,
+			form,
+			navLinks: [
+				{ class: "nav-link", link: "/", title: "Inicio" },
+				{ class: "nav-link", link: "/admin/productos/", title: "Productos" },
+				{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
+				{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
+				{ class: "nav-link active", link: "/admin/promociones/", title: "Promociones" },
+			],
+			scripts: [
+				"/js/admin-promotions.js"
+			],
+			isLogged: req.body.isLogged
+		});
+	} catch (error) {
+		console.log(error);
+	}
 };
 
 export const editPromotions = async (req, res) => {
@@ -55,7 +54,7 @@ export const editPromotions = async (req, res) => {
 		res.render("admin/editPromotion.html", {
 			title: "Editar Promocion",
 			promotion: result[0],
-            categorias,
+			categorias,
 			navLinks: [
 				{ class: "nav-link", link: "/", title: "Inicio" },
 				{ class: "nav-link", link: "/admin/productos/", title: "Productos" },
@@ -82,7 +81,7 @@ function filterSearchPromotion(obj) {
 		if (key.startsWith('nuevabusqueda')) {
 			const match = key.match(regex);
 			if (match) {
-				result[match[1]] = obj[key]; 
+				result[match[1]] = obj[key];
 			}
 		}
 	}
@@ -98,7 +97,7 @@ export const searchPromotions = async (req, res) => {
 			return res.status(400).send("Añade contenido a la consulta");
 		}
 
-		query = "SELECT promociones.id, promociones.fechaInicio, promociones.fechaFin, promociones.nombre, promociones.porcentajeDescuento, promociones.estado, categorias.nombre AS categoria FROM promociones LEFT JOIN categorias ON promociones.idCategoria = categorias.id WHERE ";
+		query = "SELECT promociones.id, DATE_FORMAT(promociones.fechaInicio, '%d/%m/%Y') AS fechaInicio, DATE_FORMAT(promociones.fechaFin, '%d/%m/%Y') AS fechaFin, promociones.nombre, promociones.porcentajeDescuento, promociones.estado, categorias.nombre AS categoria FROM promociones LEFT JOIN categorias ON promociones.idCategoria = categorias.id WHERE ";
 
 		let i = 0;
 		for (const [key, value] of Object.entries(searchPromotion)) {
@@ -119,38 +118,38 @@ export const searchPromotions = async (req, res) => {
 };
 
 export const createPromotions = async (req, res) => {
-    try {
-		const {id} = req.params;
+	try {
+		const { id } = req.params;
 
-       // let { id, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria } = req.body;
+		// let { id, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria } = req.body;
 
-        if (false) {
+		if (false) {
 			res.status(400).send("Los datos no son del tipo correcto");
-        }
-        if (false) {
-            res.status(400).send("Existe un registro con ese código");
-        }
+		}
+		if (false) {
+			res.status(400).send("Existe un registro con ese código");
+		}
 
-        const newPromotion = {
-            id,
-            nombre: req.body.nombre,
-            fechaInicio: req.body.fechaInicio,
-            fechaFin: req.body.fechaFin,
-            porcentajeDescuento: parseFloat(req.body.porcentajeDescuento),
+		const newPromotion = {
+			id,
+			nombre: req.body.nombre,
+			fechaInicio: req.body.fechaInicio,
+			fechaFin: req.body.fechaFin,
+			porcentajeDescuento: parseFloat(req.body.porcentajeDescuento),
 			estado: 1,
-            idCategoria: parseInt(req.body.idCategoria)
-        }
+			idCategoria: parseInt(req.body.idCategoria)
+		}
 
 		console.log(newPromotion);
 
-        const rows = await pool.query("INSERT INTO promociones set ?", [newPromotion]);
+		const rows = await pool.query("INSERT INTO promociones set ?", [newPromotion]);
 
-        res.status(200).send("Se insertaron con exito los datos");
-    }
-    catch (error) {
-        console.error(error);
-        res.status(400).send("Sucedio un error");
-    }
+		res.status(200).send("Se insertaron con exito los datos");
+	}
+	catch (error) {
+		console.error(error);
+		res.status(400).send("Sucedio un error");
+	}
 };
 
 const validateString = (cadena) => {
@@ -177,7 +176,7 @@ const validateData = (product) => {
 			return true;
 		}
 
-        if (product.fechaFin === "" || typeof product.fechaFin !== "string" || product.fechaFin.length > 200) {
+		if (product.fechaFin === "" || typeof product.fechaFin !== "string" || product.fechaFin.length > 200) {
 			return true;
 		}
 
@@ -194,9 +193,9 @@ const validateData = (product) => {
 		}
 	} catch (error) {
 		console.log(error);
-        return false;
+		return false;
 	}
-    return false;
+	return false;
 }
 
 const validateCode = async (codigo) => {
@@ -211,12 +210,12 @@ const validateCode = async (codigo) => {
 
 export const updatePromotions = async (req, res) => {
 	try {
-		const {id} = req.params;
+		const { id } = req.params;
 
-        let codigo = req.body.id;
+		let codigo = req.body.id;
 
 
-        console.log("id:", id); // Agregar este console.log
+		console.log("id:", id); // Agregar este console.log
 		console.log("codigo:", codigo); // Agregar este console.log
 
 		if (parseInt(id) !== parseInt(codigo)) {
@@ -228,29 +227,29 @@ export const updatePromotions = async (req, res) => {
 		}
 
 		const newPromotion = {
-            id,
-            nombre: req.body.nombre,
-            fechaInicio: req.body.fechaInicio,
-            fechaFin: req.body.fechaFin,
-            porcentajeDescuento: req.body.porcentajeDescuento,
-            idCategoria: req.body.idCategoria,
-            estado: parseInt(req.body.estado),
-        }
+			id,
+			nombre: req.body.nombre,
+			fechaInicio: req.body.fechaInicio,
+			fechaFin: req.body.fechaFin,
+			porcentajeDescuento: req.body.porcentajeDescuento,
+			idCategoria: req.body.idCategoria,
+			estado: parseInt(req.body.estado),
+		}
 
 		const resData = validateData(newPromotion);
 
-            if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
-                return res.status(400).send("Los datos no son del tipo correcto");
-            }
+		if (resData) {	// Validar que los datos sean del tipo deseado pasando la función
+			return res.status(400).send("Los datos no son del tipo correcto");
+		}
 
-            try {
-                await pool.query("UPDATE promociones set ? WHERE id = ?", [newPromotion, id]);
-                return res.redirect("/admin/promociones");
-            } catch (error) {
-                console.log(error);
-                return res.status(400).send("Sucedio un error al actualizar la promoción");
-            }
-              
+		try {
+			await pool.query("UPDATE promociones set ? WHERE id = ?", [newPromotion, id]);
+			return res.redirect("/admin/promociones");
+		} catch (error) {
+			console.log(error);
+			return res.status(400).send("Sucedio un error al actualizar la promoción");
+		}
+
 
 	} catch (error) {
 		console.log(error);
@@ -260,19 +259,19 @@ export const updatePromotions = async (req, res) => {
 
 
 export const deletePromotions = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const [rows] = await pool.query("SELECT estado FROM promociones WHERE id = ?", [id]);
-        const estado = rows[0].estado;
+	try {
+		const { id } = req.params;
+		const [rows] = await pool.query("SELECT estado FROM promociones WHERE id = ?", [id]);
+		const estado = rows[0].estado;
 
-        if (estado == 1) {
-            const result = await pool.query("UPDATE promociones set estado = ? WHERE id = ?", [0, id]);
-        } else {
-            const result = await pool.query("UPDATE promociones set estado = ? WHERE id = ?", [1, id]);
-        }
+		if (estado == 1) {
+			const result = await pool.query("UPDATE promociones set estado = ? WHERE id = ?", [0, id]);
+		} else {
+			const result = await pool.query("UPDATE promociones set estado = ? WHERE id = ?", [1, id]);
+		}
 
-        res.redirect("/admin/promociones");
-    } catch (error) {
-        console.log(error);
-    }
+		res.redirect("/admin/promociones");
+	} catch (error) {
+		console.log(error);
+	}
 };
