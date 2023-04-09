@@ -1,7 +1,7 @@
 import { pool } from "../db.js";
 import { generarJWT } from "../jwt.js";
 import { scryptSync, randomBytes, timingSafeEqual } from 'crypto';
-import estados from '../estados.js';
+import { estados } from '../estados.js';
 
 export const login = async (req, res) => {
     try {
