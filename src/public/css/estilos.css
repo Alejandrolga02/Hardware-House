@@ -162,3 +162,8 @@ input[type="number"] {
 	height: 300px;
 	object-fit: cover;
 }
+
+#registerForm {
+	width: 100%;
+	max-width: 920px;
+}

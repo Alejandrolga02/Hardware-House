@@ -11,8 +11,8 @@
 	<form class="mt-3 border border-3 p-3 rounded bg-white" id="form">
 		<div class="row mb-0 mb-md-2">
 			<div class="mb-2">
-				<label for="codigo" class="form-label">Código</label>
-				<input type="text" id="codigo" name="codigo" class="form-control" placeholder="Introduzca un código" required />
+				<label for="id" class="form-label">Código</label>
+				<input type="text" id="id" name="id" class="form-control" placeholder="Introduzca un código" required />
 			</div>
 			<div class="mb-2">
 				<label for="nombre" class="form-label">Nombre</label>
@@ -75,10 +75,10 @@
 								<%= element.id %>
 							</th>
 							<td class="text-center">
-								<%= element.fechaInicio.toDateString() %>
+								<%= element.fechaInicio %>
 							</td>
 							<td class="text-center">
-								<%= element.fechaFin.toDateString() %>
+								<%= element.fechaFin %>
 							</td>
 							<td class="text-center">
 								<%= element.nombre %>
@@ -87,7 +87,7 @@
 								<%= element.porcentajeDescuento%>
 							</td>
 							<td class="text-center">
-								<%= element.idCategoria %>
+								<%= element.categoria %>
 							</td>
 							<td class="text-center">
 								<% if (element.estado === 1) { %>

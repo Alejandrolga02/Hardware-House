@@ -12,27 +12,28 @@
 		<div class="row mb-0 mb-md-2">
 			<div class="col-12 col-md-6 mb-2 mb-md-0">
 				<label for="codigo" class="form-label">Código</label>
-				<input type="text" id="codigo" name="codigo" value="<%= form.codigo %>" class="form-control" placeholder="Introduzca un código" maxlength="20" required />
+				<input type="text" id="codigo" name="codigo" value="<%= form?.codigo %>" class="form-control" placeholder="Introduzca un código" maxlength="20" required />
 			</div>
 			<div class="col-12 col-md-6 mb-2 mb-md-0">
 				<label for="precio" class="form-label">Precio</label>
 				<div class="input-group">
 					<span class="input-group-text">$</span>
-					<input type="text" id="precio" name="precio" value="<%= form.precio %>" class="form-control" placeholder="Introduzca un precio" min="0" max="99999999.99" required />
+					<input type="text" id="precio" name="precio" value="<%= form?.precio %>" class="form-control" placeholder="Introduzca un precio" min="0" max="99999999.99" required />
 				</div>
 			</div>
 		</div>
 		<div class="mb-2">
 			<label for="nombre" class="form-label">Nombre</label>
-			<input type="text" id="nombre" name="nombre" class="form-control" value="<%= form.nombre %>" placeholder="Introduzca un nombre" maxlength="60" required />
+			<input type="text" id="nombre" name="nombre" class="form-control" value="<%= form?.nombre %>" placeholder="Introduzca un nombre" maxlength="60" required />
 		</div>
 		<div class="mb-2">
 			<label for="descripcion" class="form-label">Descripción</label>
-			<textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Introduzca una descripción" maxlength="200" required><%= form.descripcion %></textarea>
+			<textarea class="form-control" id="descripcion" name="descripcion" rows="4" placeholder="Introduzca una descripción" maxlength="200" required><%= form?.descripcion %></textarea>
 		</div>
 		<div class="row mb-0 mb-md-2">
 			<div class="col-12 col-md-6 mb-2 mb-md-0">
 				<label for="idCategoria" class="form-label">Categoria</label>
+				<% if (categorias && categorias.length > 0) { %>
 				<select class="form-select" name="idCategoria" id="idCategoria">
 					<option value="0" <% if (form.idCategoria === undefined) { %> selected <% } %> disabled>Selecciona una categoria</option>
 					<% categorias.forEach(element=> { %>
@@ -41,10 +42,15 @@
 					</option>
 					<% }) %>
 				</select>
+				<% } else { %>
+				<div class="d-grid gap-2">
+					<a class="btn btn-dark" href="/admin/categorias/">No existen categorias, agregalas aqui</a>
+				</div>
+				<% } %>
 			</div>
 			<div class="col-12 col-md-6 mb-2 mb-md-0">
 				<label for="disponibilidad" class="form-label">Disponibilidad</label>
-				<input type="number" id="disponibilidad" name="disponibilidad" value="<%= form.disponibilidad %>" class="form-control" placeholder="Introduzca una disponibilidad" min="0" max="100000000" required />
+				<input type="number" id="disponibilidad" name="disponibilidad" value="<%= form?.disponibilidad %>" class="form-control" placeholder="Introduzca una disponibilidad" min="0" max="100000000" required />
 			</div>
 		</div>
 		<div class="mb-2 d-flex flex-column">
@@ -53,7 +59,7 @@
 			<input class="form-control" type="file" accept="image/png,image/jpeg" id="urlImagen" name="urlImagen" required />
 		</div>
 
-		<div class="d-flex flex-wrap justify-content-end gap-2">
+		<div class="d-flex flex-wrap justify-content-end gap-2 mb-2">
 			<button class="btn btn-success" id="btnAgregar">
 				<img src="/img/agregar.svg" alt="Icono de agregar">
 				Agregar
@@ -68,7 +74,9 @@
 			</button>
 		</div>
 
-		<div class="scrollable mt-2">
+		<% try { %>
+		<% if (products.length > 0) { %>
+		<div class="scrollable mb-2">
 			<table id="results" class="table table-light table-hover mt-2 mb-0 align-middle">
 				<thead class="sticky-top">
 					<tr>
@@ -122,6 +130,22 @@
 				</tbody>
 			</table>
 		</div>
+		<% } else { %>
+		<div class="mb-2">
+			<div class="alert alert-primary d-flex align-items-center" role="alert">
+				<img src="/img/info.svg" alt="Icono de información" class="me-2">
+				<div> No existen registros de productos </div>
+			</div>
+		</div>
+		<% } %>
+		<% } catch (error) { %>
+		<div class="mb-2">
+			<div class="alert alert-primary d-flex align-items-center" role="alert">
+				<img src="/img/info.svg" alt="Icono de información" class="me-2">
+				<div> No existen registros de productos </div>
+			</div>
+		</div>
+		<% } %>
 	</form>
 
 	<div class="modal fade" id="alertModal" tabindex="-1">

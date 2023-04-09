@@ -15,12 +15,12 @@ export const renderProducts = async (req, res) => {
 			query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
 		}
 
-		const [rows] = await pool.query(query);
+		const [products] = await pool.query(query);
 		const [categorias] = await pool.query("SELECT * FROM categorias");
 
 		res.render("admin/productos.html", {
 			title: "Admin - Productos",
-			products: rows,
+			products,
 			categorias,
 			form,
 			navLinks: [
@@ -107,15 +107,15 @@ const validateString = (cadena) => {
 //Función para validar. Recibe el objeto
 const validateData = (product) => {
 	try {
-		if (!validateString(product.codigo) || (product.codigo == " ")) {	//Convierte en false en 'true'
+		if (!validateString(product.codigo) || (product.codigo == " ") || product.codigo.length > 20) {	//Convierte en false en 'true'
 			return true;
 		}
 
-		if (!validateString(product.nombre) || (product.nombre == " ")) {
+		if (!validateString(product.nombre) || (product.nombre == " ") || product.nombre.length > 60) {
 			return true;
 		}
 
-		if (product.descripcion === "" || typeof product.descripcion !== "string") {
+		if (product.descripcion === "" || typeof product.descripcion !== "string" || product.descripcion.length > 200) {
 			return true;
 		}
 
@@ -134,10 +134,10 @@ const validateData = (product) => {
 		if (isNaN(product.estado) || product.estado < 0 || product.estado > 1) {
 			return true;
 		}
-
-		return false;
 	} catch (error) {
 		console.log(error);
+	} finally {
+		return false;
 	}
 }
 
@@ -236,6 +236,15 @@ export const editProducts = async (req, res) => {
 		const { id } = req.params;	//obtención del id
 		const [result] = await pool.query("SELECT * FROM productos WHERE codigo = ?", [id]);	//Solicitud para la obtencion de datos.
 		const [categorias] = await pool.query("SELECT * FROM categorias");
+
+		if (result.length === 0) {
+			return res.redirect("/admin/productos/");
+		}
+
+		if (categorias.length === 0) {
+			return res.redirect("/admin/categorias/");
+		}
+
 		res.render("admin/editProduct.html", {
 			title: "Editar Producto",
 			product: result[0],
@@ -272,6 +281,7 @@ export const updateProducts = async (req, res) => {
 		}
 
 		const newProduct = {
+			codigo,
 			nombre: req.body.nombre,
 			descripcion: req.body.descripcion,
 			precio: parseFloat(req.body.precio),
@@ -339,6 +349,12 @@ export const deleteProducts = async (req, res) => {
 	try {
 		const { id } = req.params;
 		const [[resultado]] = await pool.query("SELECT estado, disponibilidad FROM productos WHERE codigo = ?", [id]);
+
+
+		if (!resultado) {
+			return res.redirect("/admin/productos");
+		}
+
 		const { estado, disponibilidad } = resultado;	//obtención del estado.
 
 

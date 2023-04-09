@@ -204,7 +204,11 @@ export const completePurchase = async (req, res) => {
 		}
 
 		// Tipo valido valido
-		if (typeof tipoPago !== "string" || tipoPago.length <= 3) {
+		if (typeof tipoPago !== "string") {
+			return res.status(400).send("Tu método de pago es invalido");
+		}
+
+		if (tipoPago !== "Transferencia" && tipoPago !== "Débito" && tipoPago !== "Crédito") {
 			return res.status(400).send("Tu método de pago es invalido");
 		}
 

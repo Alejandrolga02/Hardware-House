@@ -59,6 +59,40 @@ export const createCategories = async (req, res) => {
 	}
 };
 
+export const editCategories = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const [result] = await pool.query("SELECT * FROM categorias WHERE id = ?", [id]);
+		//const [categorias] = await pool.query("SELECT * FROM categorias");
+
+		if (result.length === 0) {
+			return res.redirect("/admin/categorias/");
+		}
+
+		// if (categorias.length === 0) {
+		// 	return res.redirect("/admin/categorias/");
+		// }
+
+		res.render("admin/editCategorie.html", {
+			title: "Editar Categoria",
+			categorie: result[0],
+			navLinks: [
+				{ class: "nav-link", link: "/", title: "Inicio" },
+				{ class: "nav-link", link: "/admin/productos/", title: "Productos" },
+				{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
+				{ class: "nav-link active", link: "/admin/categorias/", title: "Categorias" },
+				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
+			],
+			scripts: [
+				"/js/admin-edit-categorie.js"
+			],
+			isLogged: req.body.isLogged
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 function filterSearchCategorie(obj) {
 	const result = {};
 
@@ -103,11 +137,35 @@ export const searchCategories = async (req, res) => {
 	}
 };
 
+// export const updateCategories = async (req, res) => {
+// 	try {
+
+// 		let codigo = req.body.id;
+
+// 		const newCategorie = {
+// 			id: req.body.id,
+// 			nombre: req.body.nombre,
+// 			estado: parseInt(req.body.estado)
+// 		}
+
+// 		const categorie = await pool.query("UPDATE categorias set ? WHERE id = ?", [newCategorie, id]);
+// 		return res.redirect("/admin/categorias");
+// 	} catch (error) {
+// 		console.log(error);
+// 		return res.status(400).send("Sucedio un error");
+// 	}
+// };
+
 export const deleteCategories = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const [rows] = await pool.query("SELECT estado FROM categorias WHERE id = ?", [id]);
-		const estado = rows[0].estado;
+		const [[rows]] = await pool.query("SELECT estado FROM categorias WHERE id = ?", [id]);
+
+		if (!rows) {
+			return res.redirect("/admin/categorias/");
+		}
+
+		const { estado } = rows;
 
 		if (estado == 1) {
 			await pool.query("UPDATE categorias set estado = ? WHERE id = ?", [0, id]);

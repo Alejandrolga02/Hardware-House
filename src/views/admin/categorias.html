@@ -18,7 +18,7 @@
 				<label for="nombre" class="form-label">Nombre</label>
 				<input type="text" id="nombre" name="nombre" class="form-control" placeholder="Introduzca un nombre" required />
 			</div>
-			<div class="d-flex flex-wrap justify-content-end gap-2">
+			<div class="d-flex flex-wrap justify-content-end gap-2 mb-2">
 				<button class="btn btn-success" id="btnAgregar">
 					<img src="/img/agregar.svg" alt="Icono de agregar">
 					Agregar
@@ -32,6 +32,9 @@
 					Limpiar
 				</button>
 			</div>
+
+			<% try { 
+				if (categories.length > 0 || categories) { %>
 			<div class="scrollable mt-2">
 				<table id="results" class="table table-light table-hover mt-2 mb-0 align-middle">
 					<thead class="sticky-top">
@@ -42,7 +45,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<% categories.forEach(element=> { %>
+						<% categories.forEach(element => { %>
 						<tr>
 							<th class="text-center" scope="row">
 								<%= element.id %>
@@ -69,6 +72,24 @@
 					</tbody>
 				</table>
 			</div>
+			<% } else { %>
+			<div class="mb-2">
+				<div class="alert alert-primary d-flex align-items-center" role="alert">
+					<img src="/img/info.svg" alt="Icono de información" class="me-2">
+					<div> No existen registros de categorias </div>
+				</div>
+			</div>
+			<% } %>
+
+
+			<% } catch (error) { %>
+			<div class="mb-2">
+				<div class="alert alert-primary d-flex align-items-center" role="alert">
+					<img src="/img/info.svg" alt="Icono de información" class="me-2">
+					<div> No se encontraron registros de categorias </div>
+				</div>
+			</div>
+			<% } %>
 		</div>
 	</form>
 

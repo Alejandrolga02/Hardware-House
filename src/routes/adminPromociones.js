@@ -1,17 +1,21 @@
 import { Router } from "express";
-import { searchProducts } from "../controllers/adminProductsControllers.js";
 import {
     createPromotions,
     renderPromotions,
-    deletePromotions
+    editPromotions,
+    deletePromotions,
+    updatePromotions,
+    searchPromotions
 } from "../controllers/adminPromotionsController.js";
 import { validarAdmin, validarJWT } from "../jwt.js";
 
 const router = Router();
 
 router.get("/", validarJWT, validarAdmin, renderPromotions)
-//router.post("/", validarJWT, validarAdmin, searchPromotions);
+router.post("/", validarJWT, validarAdmin, searchPromotions);
 router.post("/add", validarJWT, validarAdmin, createPromotions);
+router.get("/update/:id", validarJWT, validarAdmin, editPromotions);
+router.post("/update/:id", validarJWT, validarAdmin, updatePromotions);
 router.get("/delete/:id", validarJWT, validarAdmin, deletePromotions);
 
 export default router;
