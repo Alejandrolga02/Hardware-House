@@ -92,6 +92,28 @@ export const logout = async (req, res) => {
     }
 }
 
+export const renderRegister = async (req, res) => {
+    try {
+        res.render("register.html", {
+            title: "Registrarse",
+            navLinks: [
+                { class: "nav-link active", link: "/", title: "Inicio" },
+                { class: "nav-link", link: "/empresa", title: "Empresa" },
+                { class: "nav-link", link: "/productos", title: "Productos" },
+                { class: "nav-link", link: "/contactos", title: "Contactos" },
+            ],
+            scripts: [
+                "js/estados.js",
+                "/js/register.js"
+            ],
+            isLogged: req.body.isLogged
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Sucedio un error");
+    }
+}
+
 export const register = async (req, res) => {
     try {
         let newUser = req.body;

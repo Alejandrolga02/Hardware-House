@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, renderLogin, logout, register } from "../controllers/adminAuthController.js";
+import { login, renderLogin, logout, register, renderRegister } from "../controllers/adminAuthController.js";
 import { checkLogged, validarJWT } from "../jwt.js";
 
 const router = Router();
@@ -10,6 +10,7 @@ router.post('/login', login);
 router.get("/logout", validarJWT, logout);
 
 // Crear usuarios
+router.get("/register", checkLogged, renderRegister);
 router.post("/register", register);
 
 export default router;
