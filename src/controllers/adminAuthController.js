@@ -167,10 +167,6 @@ const validateUser = newUser => {
         if (!municipio || municipio == "-1" || !estados[estado].municipios[municipio])
             return false;
 
-        // Contraseñas no coinciden
-        if (contrasena !== contrasenaC)
-            return false;
-
         return true;
     } catch (error) {
         console.log(error);
@@ -191,14 +187,32 @@ export const register = async (req, res) => {
         newUser.id = 0;
         newUser.esAdmin = 0;
 
+        newUser.municipio = estados[newUser.estado].municipios[newUser.municipio];
+        newUser.estado = estados[newUser.estado].nombre;
+
         const [[usuario]] = await pool.query("SELECT * FROM usuarios WHERE usuario = ?", [newUser.usuario]);
         const [[telefono]] = await pool.query("SELECT * FROM usuarios WHERE telefono = ?", [newUser.telefono]);
         const [[correo]] = await pool.query("SELECT * FROM usuarios WHERE correo = ?", [newUser.correo]);
-        if (!usuario || !telefono || !correo) {
+        if (usuario || telefono || correo) {
             res.status(400).send("Ya existe ese usuario");
         } else {
+            await pool.query("START TRANSACTION");
+
             await pool.query("INSERT INTO usuarios set ?", [newUser]);
-            res.status(200).send("Usuario creado con exito");
+            let [[{ id }]] = await pool.query("SELECT MAX(id) AS id FROM usuarios");
+
+            await pool.query("COMMIT");
+
+            const token = await generarJWT(id);
+
+            res.cookie('token', token, {
+                httpOnly: true,
+            })
+
+            res.status(200).json({
+                isAdmin: 0,
+                message: "Sesion iniciada correctamente",
+            });
         }
 
     } catch (error) {
