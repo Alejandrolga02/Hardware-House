@@ -32,17 +32,17 @@ registerForm.addEventListener("submit", async (event) => {
 	event.preventDefault();
 
 	// Obtencion de Informacion del formulario
-	const usuario = registerForm['usuario'].value.trim();
-	const contrasena = registerForm['contrasena'].value.trim();
-	const contrasenaC = registerForm['contrasenaC'].value.trim();
-	const nombre = registerForm['nombre'].value.trim();
-	const apellidos = registerForm['apellidos'].value.trim();
-	const correo = registerForm['correo'].value.trim();
-	const telefono = registerForm['telefono'].value.trim();
-	const calle = registerForm['calle'].value.trim();
-	const colonia = registerForm['colonia'].value.trim();
-	const numeroExterior = registerForm['numeroExterior'].value.trim();
-	const CP = registerForm['CP'].value.trim();
+	const usuario = registerForm['usuario'].value.trim().substring(0, 60);
+	const contrasena = registerForm['contrasena'].value.trim().substring(0, 60);
+	const contrasenaC = registerForm['contrasenaC'].value.trim().substring(0, 60);
+	const nombre = registerForm['nombre'].value.trim().substring(0, 60);
+	const apellidos = registerForm['apellidos'].value.trim().substring(0, 60);
+	const correo = registerForm['correo'].value.trim().substring(0, 240);
+	const telefono = registerForm['telefono'].value.trim().substring(0, 12);
+	const calle = registerForm['calle'].value.trim().substring(0, 120);
+	const colonia = registerForm['colonia'].value.trim().substring(0, 60);
+	const numeroExterior = registerForm['numeroExterior'].value.trim().substring(0, 6);
+	const CP = registerForm['CP'].value.trim().substring(0, 5);
 	const estado = estadoSelect.value;
 	const municipio = municipioSelect.value;
 
