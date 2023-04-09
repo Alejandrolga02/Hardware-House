@@ -1,4 +1,4 @@
-const estados = [
+export const estados = [
 	{
 		nombre: "Ciudad de México",
 		"municipios": [
