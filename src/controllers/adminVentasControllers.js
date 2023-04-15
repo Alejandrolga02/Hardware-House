@@ -13,7 +13,6 @@ export const renderPage = async (req, res) => {
         }
 
         const [rows] = await pool.query(query);
-        console.log(rows);
 
         res.render("admin/ventas.html", {
             title: "Admin - Ventas",
@@ -25,6 +24,9 @@ export const renderPage = async (req, res) => {
                 { class: "nav-link active", link: "/admin/ventas/", title: "Ventas" },
                 { class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
                 { class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
+            ],
+            scripts: [
+                "/js/admin-ventas.js"
             ],
             isLogged: req.body.isLogged
         });
@@ -56,5 +58,5 @@ export const renderVentasDet = async (req, res) => {
 
 //Función para buscar por Id.
 export const searchVentas = async (req, res) =>{
-    
+
 }
