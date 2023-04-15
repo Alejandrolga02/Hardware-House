@@ -13,6 +13,7 @@ export const renderPromotions = async (req, res) => {
 		}
 
 		const [rows] = await pool.query(query);
+		console.log(rows);
 		const [categorias] = await pool.query("SELECT * FROM categorias");
 
 		res.render('admin/promociones.html', {
