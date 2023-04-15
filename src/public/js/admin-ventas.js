@@ -78,3 +78,7 @@ async function lookUpVentas(event) {
 
 //Botones necesarios
 btnConsultar.addEventListener("click", lookUpVentas);
+form.addEventListener("reset", (event) => {
+    event.preventDefault();
+    window.location.pathname = window.location.pathname;
+});
