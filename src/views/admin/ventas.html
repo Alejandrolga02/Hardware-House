@@ -44,6 +44,8 @@
 			</button>
 		</div>
 
+		<% try { %>
+		<% if (ventas.lenght > 0) {%>
 		<div class="scrollable mt-2">
 			<table id="results" class="table table-light table-hover mt-2 mb-0 align-middle">
 				<thead class="sticky-top">
@@ -83,6 +85,22 @@
 				</tbody>
 			</table>
 		</div>
+		<% } else { %>
+			<div class="mb-2">
+				<div class="alert alert-primary d-flex align-items-center" role="alert">
+					<img src="/img/info.svg" alt="Icono de información" class="me-2">
+					<div> No existen registros de ventas </div>
+				</div>
+			</div>
+			<% } %>
+			<% } catch (error) { %>
+			<div class="mb-2">
+				<div class="alert alert-primary d-flex align-items-center" role="alert">
+					<img src="/img/info.svg" alt="Icono de información" class="me-2">
+					<div> No existen registros de ventas </div>
+				</div>
+			</div>
+			<% } %>
 	</form>
 
 	<div class="modal fade" id="alertModal" tabindex="-1">

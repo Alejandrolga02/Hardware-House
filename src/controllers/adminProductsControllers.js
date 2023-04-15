@@ -59,6 +59,7 @@ function filterSearchProduct(obj) {
 export const searchProducts = async (req, res) => {
 	try {
 		let body = req.body;
+		console.log(body);
 		let searchProduct = filterSearchProduct(body);
 
 		if (Object.keys(searchProduct).length === 0) {

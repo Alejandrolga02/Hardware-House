@@ -52,4 +52,9 @@ export const renderVentasDet = async (req, res) => {
     } catch (error) {
         console.log(error + " El error esta aquí");;
     }
+};
+
+//Función para buscar por Id.
+export const searchVentas = async (req, res) =>{
+    
 }
