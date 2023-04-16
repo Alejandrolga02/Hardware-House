@@ -9,7 +9,7 @@ export const renderIndex = async (req, res) => {
 				{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
 				{ class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);

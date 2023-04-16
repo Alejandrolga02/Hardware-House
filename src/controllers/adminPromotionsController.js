@@ -31,7 +31,7 @@ export const renderPromotions = async (req, res) => {
 			scripts: [
 				"/js/admin-promotions.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -66,7 +66,7 @@ export const editPromotions = async (req, res) => {
 			scripts: [
 				"/js/admin-edit-promotion.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 
 		console.log(result[0].id);

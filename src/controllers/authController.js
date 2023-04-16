@@ -77,7 +77,7 @@ export const renderLogin = async (req, res) => {
             scripts: [
                 "/js/login.js"
             ],
-            isLogged: req.body.isLogged
+            isLogged: req.user.isLogged
         });
     } catch (error) {
         console.log(error);
@@ -107,7 +107,7 @@ export const renderRegister = async (req, res) => {
                 "js/estados.js",
                 "/js/register.js"
             ],
-            isLogged: req.body.isLogged
+            isLogged: req.user.isLogged
         });
     } catch (error) {
         console.log(error);

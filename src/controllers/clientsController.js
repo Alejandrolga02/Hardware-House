@@ -22,9 +22,9 @@ export const renderClientIndex = async (req, res) => {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
 
 			if (promociones[0]) {
-				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)))
+				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.user.descuento)) / 100)))
 			} else {
-				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.body.descuento) / 100)));
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.user.descuento) / 100)));
 			}
 		}
 
@@ -40,7 +40,7 @@ export const renderClientIndex = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -60,7 +60,7 @@ export const renderClientAboutUs = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -78,9 +78,9 @@ export const renderClientProducts = async (req, res) => {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
 
 			if (promociones[0]) {
-				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)))
+				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.user.descuento)) / 100)))
 			} else {
-				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.body.descuento) / 100)));
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.user.descuento) / 100)));
 			}
 		}
 
@@ -96,7 +96,7 @@ export const renderClientProducts = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -125,9 +125,9 @@ export const getProduct = async (req, res) => {
 		}
 
 		if (promociones[0]) {
-			producto.precioFinal = parseFloat(producto.precio - (producto.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)));
+			producto.precioFinal = parseFloat(producto.precio - (producto.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.user.descuento)) / 100)));
 		} else {
-			producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(req.body.descuento) / 100)));
+			producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(req.user.descuento) / 100)));
 		}
 
 		return res.json(producto);
@@ -150,7 +150,7 @@ export const renderClientContactUs = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -175,7 +175,8 @@ export const postContactUs = async (req, res) => {
 export const completePurchase = async (req, res) => {
 	try {
 		// Obtencion de datos
-		let { productsList, id, tipoPago, descuento } = req.body;
+		let { productsList, tipoPago } = req.body;
+		let { id, descuento } = req.user;
 
 		try {
 			// Conversion de string obtenido a array
@@ -279,7 +280,7 @@ export const renderNotFound = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);

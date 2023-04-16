@@ -25,7 +25,7 @@ export const renderCategories = async (req, res) => {
 			scripts: [
 				"/js/admin-categorias.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -86,7 +86,7 @@ export const editCategories = async (req, res) => {
 			scripts: [
 				"/js/admin-edit-categorie.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
