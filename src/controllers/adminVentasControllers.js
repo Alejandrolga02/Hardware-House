@@ -128,3 +128,25 @@ export const searchVentasFecha = async (req, res) => {
         console.log(error);
     }
 }
+
+export const searchVentasTotales = async (req, res) =>{
+    try{
+        let body = req.body;
+        let searchVenta = filterSearchVenta(body);
+
+        console.log(searchVenta.totalIni);
+
+        //Se revisa que se hayan enviado datos.
+        if (Object.keys(searchVenta).length === 0) {
+            return res.status(400).send("Añada contenido a la consulta");
+        }
+
+        //Se prepara la query
+        query = `SELECT ventas.id, usuarios.usuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE total BETWEEN ${searchVenta.totalIni} AND ${searchVenta.totalFin};`;
+
+        form.counter = 2;
+        return res.status(200).send("Query creado exitosamente");
+    }catch(error){
+        console.log(error);
+    }
+}
