@@ -2,7 +2,9 @@
 
 //Declarar los elementos del DOM
 const form = document.querySelector('#form');
-const btnConsultar = document.querySelector('#btnConsultar');
+const btnConsultarIdUser = document.querySelector('#btnConsultarIdUser');
+const btnConsultarFecha = document.querySelector('#btnConsultarFecha');
+const btnConsultarTotales = document.querySelector('#btnConsultarTotales');
 const results = document.querySelector("#results");
 
 //FUNCIONES NECESARIAS
@@ -28,8 +30,37 @@ const getInputs = () =>{
     };
 };
 
+//Función para validar datos de fecha
+async function obtencionFecha(event){
+    try{
+        event.preventDefault();
+
+        let venta = getInputs();
+        let busqueda = {};
+
+        if (venta.fechaIni) {
+            busqueda.fechaIni = venta.fechaIni;
+        }
+
+        if (venta.fechaFin) {
+            busqueda.fechaFin = venta.fechaFin;
+        }
+
+        await axios.post('/admin/ventas/busqueda-fecha', { busqueda }, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        window.location.pathname = window.location.pathname;
+
+    }catch{
+        showAlert(error.response.data, "Error");
+    }
+}
+
 //Función para validar los datos.
-async function lookUpVentas(event) {
+async function obtencionIdUser(event) {
     try {
         event.preventDefault();
 
@@ -40,16 +71,8 @@ async function lookUpVentas(event) {
             busqueda.id = venta.id;
         }
 
-        if (venta.usuario) {
-            busqueda.usuario = venta.usuario;
-        }
-
-        if (venta.fechaIni) {
-            busqueda.fechaIni = venta.fechaIni;
-        }
-
-        if (venta.fechaFin) {
-            busqueda.fechaFin = venta.fechaFin;
+        if (venta.Usuario) {
+            busqueda.Usuario = venta.Usuario;
         }
 
         if (venta.totalIni) {
@@ -64,7 +87,7 @@ async function lookUpVentas(event) {
             busqueda.totalFin = venta.totalFin;
         }
 
-        await axios.post('/admin/ventas/', { busqueda }, {
+        await axios.post('/admin/ventas/busqueda-id', { busqueda }, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -77,8 +100,9 @@ async function lookUpVentas(event) {
 }
 
 //Botones necesarios
-btnConsultar.addEventListener("click", lookUpVentas);
+btnConsultarIdUser.addEventListener("click", obtencionIdUser);
 form.addEventListener("reset", (event) => {
     event.preventDefault();
     window.location.pathname = window.location.pathname;
 });
+btnConsultarFecha.addEventListener("click", obtencionFecha);
