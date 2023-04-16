@@ -29,6 +29,13 @@ export const validarJWT = async (req, res, next) => {
 	// Obtencion del token
 	const token = req.cookies.token;
 
+	// Inicializacion de req.user
+	req.user = {
+		isLogged: false,
+		esAdmin: 0,
+		descuento: 0,
+	};
+
 	// Token no enviado
 	if (!token) {
 		return res.redirect("/login");
@@ -64,10 +71,15 @@ export const checkLogged = async (req, res, next) => {
 	// Obtencion de token
 	const token = req.cookies.token;
 
+	// Inicializacion de req.user
+	req.user = {
+		isLogged: false,
+		esAdmin: 0,
+		descuento: 0,
+	};
+
 	// Si no hay token deja avanzar al siguiente middleware
 	if (!token) {
-		req.user.isLogged = false;
-		req.user.esAdmin = 0;
 		return next();
 	}
 
@@ -147,10 +159,15 @@ export const isLogged = async (req, res, next) => {
 	// Obtencion del token
 	const token = req.cookies.token;
 
+	// Inicializacion de req.user
+	req.user = {
+		isLogged: false,
+		esAdmin: 0,
+		descuento: 0,
+	};
+
 	// Token no enviado
 	if (!token) {
-		req.user.isLogged = false;
-		req.user.esAdmin = 0;
 		return next();
 	}
 
