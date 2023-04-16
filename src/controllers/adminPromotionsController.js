@@ -68,6 +68,8 @@ export const editPromotions = async (req, res) => {
 			],
 			isLogged: req.body.isLogged
 		});
+
+		console.log(result[0].id);
 	} catch (error) {
 		console.log(error);
 	}
@@ -212,14 +214,12 @@ const validateCode = async (codigo) => {
 export const updatePromotions = async (req, res) => {
 	try {
 		const { id } = req.params;
-
 		let codigo = req.body.id;
-
 
 		console.log("id:", id); // Agregar este console.log
 		console.log("codigo:", codigo); // Agregar este console.log
 
-		if (parseInt(id) !== parseInt(codigo)) {
+		if (id !== codigo) {
 			return res.status(400).send("No alterar los códigos");
 		}
 
