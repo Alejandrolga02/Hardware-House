@@ -241,7 +241,7 @@ export const completePurchase = async (req, res) => {
 			}
 
 			ventasDetalle += `(LAST_INSERT_ID(), ${escape(product.codigo)}, ${escape(product.cantidad)}),`;
-			total += parseFloat(product.precioFinal);
+			total += parseFloat(product.precioFinal * product.cantidad);
 		}
 
 		await pool.query("START TRANSACTION");
