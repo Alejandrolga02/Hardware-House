@@ -17,25 +17,25 @@ function showAlert(message, title) {
 // Obtener variables del formulario
 const getInputs = () => {
     return {
-        id: form['id'].value.trim(),
-        nombre: form['nombre'].value.trim(),
+        id: form['id'].value.trim().substring(0, 20),
+        nombre: form['nombre'].value.trim().substring(0, 60),
         estado: parseInt(form['estado'].value.trim())
     };
 };
 
 async function updateCategorie(event) {
-    console.log("HOLA");
 	try {
 		event.preventDefault();
 
-		// Llamada a funcion para obtener datos del formulario
 		let { id, nombre, estado} = getInputs();
 
-        if (!id || !nombre || !estado) {
+        if (!id || !nombre) {
             return showAlert("Existen campos vacios", "Error");
         }
+		if(isNaN(estado) || estado < 0 || estado > 1) {
+			return showAlert("Introduzca valores validos", "Error");
+		}
 
-		// Creación de objeto a mandar petición
 		let categoriaModificada = {
 			id,
 			nombre,
