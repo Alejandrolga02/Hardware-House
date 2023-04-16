@@ -86,6 +86,10 @@ export const searchVentasId = async (req, res) => {
             return res.status(400).send("Añada contenido a la consulta");
         }
 
+        if(isNaN(searchVenta.id) || searchVenta.id <= 0){
+            return res.status(400).send(`El Id ingresado no existe`);
+        }
+
         //Se prepara la query
         query = "SELECT ventas.id, usuarios.usuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE ";
 
@@ -94,7 +98,7 @@ export const searchVentasId = async (req, res) => {
             if (i === Object.keys(searchVenta).length - 1) {
                 query += `ventas.${key} LIKE ${escape("%" + value + "%")}`;
             } else {
-                query += `ventas.id${key} LIKE ${escape("%" + value + "%")} AND `;
+                query += `ventas.${key} LIKE ${escape("%" + value + "%")} AND `;
             }
 
             form[key] = value;
@@ -112,10 +116,12 @@ export const searchVentasFecha = async (req, res) => {
         let body = req.body;
         let searchVenta = filterSearchVenta(body);
 
-        console.log(searchVenta.fechaIni);
+        console.log(searchVenta);
+
+        console.log((Object.keys(searchVenta).length === 0) || (Object.keys(searchVenta).length === 1));
 
         //Se revisa que se hayan enviado datos.
-        if (Object.keys(searchVenta).length === 0) {
+        if ((Object.keys(searchVenta).length === 0) || (Object.keys(searchVenta).length === 1)) {
             return res.status(400).send("Añada contenido a la consulta");
         }
 
@@ -125,6 +131,37 @@ export const searchVentasFecha = async (req, res) => {
         form.counter = 2;
         return res.status(200).send("Query creado exitosamente");
     } catch (error) {
+        console.log(error);
+    }
+}
+
+export const searchVentasTotales = async (req, res) =>{
+    try{
+        let body = req.body;
+        let searchVenta = filterSearchVenta(body);
+
+        console.log(searchVenta);
+
+        //Se revisa que se hayan enviado datos.
+        if (Object.keys(searchVenta).length === 0 || (Object.keys(searchVenta).length === 1)) {
+            return res.status(400).send("Añada contenido a la consulta");
+        }
+
+        //Validación de los datos
+        if(isNaN(searchVenta.totalIni) || searchVenta.totalIni < 0){
+            return res.status(400).send("Ingrese cantidades validas");
+        }
+
+        if(isNaN(searchVenta.totalFin) || searchVenta.totalFin <= 0){
+            return res.status(400).send("Ingrese cantidades validas");
+        }
+
+        //Se prepara la query
+        query = `SELECT ventas.id, usuarios.usuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE total BETWEEN ${searchVenta.totalIni} AND ${searchVenta.totalFin};`;
+
+        form.counter = 2;
+        return res.status(200).send("Query creado exitosamente");
+    }catch(error){
         console.log(error);
     }
 }

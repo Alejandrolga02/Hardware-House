@@ -22,13 +22,39 @@ function showAlert(message, title) {
 const getInputs = () =>{
     return {
         id: parseInt(form['id'].value.trim()),
-        usuario: form['usuario'].value.trim().substring(0, 60),
+        Usuario: form['usuario'].value.trim().substring(0, 60),
         fechaIni: form['fechaIni'].value.trim(),
         fechaFin: form['fechaFin'].value.trim(),
         totalIni: parseFloat(form['totalIni'].value.trim()),
         totalFin: parseFloat(form['totalFin'].value.trim())
     };
 };
+
+//Función para llamar a otras funciones
+async function divisionFunciones (event){
+    try{
+        event.preventDefault();
+
+        let venta = getInputs();
+        console.log(venta.fechaIni.length);
+        console.log(venta.id);
+        console.log(venta.Usuario.length);
+        console.log(venta.fechaFin.length);
+        console.log((venta.id === NaN) && (venta.Usuario.length === 0) && (venta.fechaIni.length === 0) && (venta.fechaFin.length === 0));
+        if(venta.id === NaN && venta.Usuario.length === 0 && venta.fechaIni.length === 0 && venta.fechaFin.length === 0){
+            obtencionTotales;
+        }else if(venta.id === NaN && venta.Usuario.length === 0 && venta.totalIni.length === 0 && venta.totalFin.length === 0){
+            obtencionFecha;
+        }else if(venta.totalIni.length === 0 && venta.totalFin.length === 0 && venta.fechaIni.length === 0 && venta.fechaFin.length === 0){
+            obtencionIdUser;
+        }else{
+            showAlert("Rellene solo los campos necesarios", "Error")
+        }
+
+    }catch(error){
+        showAlert(error.response.data, "Error");
+    }
+}
 
 //Función para validar datos de fecha
 async function obtencionFecha(event){
@@ -54,7 +80,40 @@ async function obtencionFecha(event){
 
         window.location.pathname = window.location.pathname;
 
-    }catch{
+    }catch(error){
+        showAlert(error.response.data, "Error");
+    }
+}
+
+//Función para validar las cantidades
+async function obtencionTotales(event) {
+    try{
+        event.preventDefault();
+
+        let venta = getInputs();
+        let busqueda = {};
+
+        if (venta.totalIni) {
+            if (isNaN(parseFloat(venta.totalIni)) || parseFloat(venta.totalIni) < 0) return showAlert("Ingrese un total inicial valido", "Error");
+
+            busqueda.totalIni = venta.totalIni;
+        }
+
+        if (venta.totalFin) {
+            if (isNaN(parseFloat(venta.totalFin)) || parseFloat(venta.totalFin) <= 0) return showAlert("Ingrese un total final valido", "Error");
+        
+            busqueda.totalFin = venta.totalFin;
+        }
+
+        await axios.post('/admin/ventas/busqueda-total', { busqueda }, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        window.location.pathname = window.location.pathname;
+
+    }catch(error){
         showAlert(error.response.data, "Error");
     }
 }
@@ -75,18 +134,6 @@ async function obtencionIdUser(event) {
             busqueda.Usuario = venta.Usuario;
         }
 
-        if (venta.totalIni) {
-            if (isNaN(parseFloat(venta.totalIni)) || parseFloat(venta.totalIni) <= 0) return showAlert("Ingrese un total inicial valido", "Error");
-
-            busqueda.totalIni = venta.totalIni;
-        }
-
-        if (venta.totalFin) {
-            if (isNaN(parseFloat(venta.totalFin)) || parseFloat(venta.totalFin) <= 0) return showAlert("Ingrese un total final valido", "Error");
-        
-            busqueda.totalFin = venta.totalFin;
-        }
-
         await axios.post('/admin/ventas/busqueda-id', { busqueda }, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -100,9 +147,8 @@ async function obtencionIdUser(event) {
 }
 
 //Botones necesarios
-btnConsultarIdUser.addEventListener("click", obtencionIdUser);
+btnConsultarIdUser.addEventListener("click", divisionFunciones);
 form.addEventListener("reset", (event) => {
     event.preventDefault();
     window.location.pathname = window.location.pathname;
 });
-btnConsultarFecha.addEventListener("click", obtencionFecha);
