@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `HardwareHouse`
 --
-CREATE DATABASE IF NOT EXISTS `HardwareHouse` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE DATABASE IF NOT EXISTS `HardwareHouse`;
 USE `HardwareHouse`;
 
 -- --------------------------------------------------------
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `categorias` (
   `nombre` varchar(30) NOT NULL,
   `estado` tinyint UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 
 -- --------------------------------------------------------
 
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `productos` (
   `idCategoria` int UNSIGNED NOT NULL,
   PRIMARY KEY (`codigo`),
   KEY `idCategoria_idx` (`idCategoria`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 
 -- --------------------------------------------------------
 
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `promociones` (
   `estado` tinyint UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idCategoriaProm_idx` (`idCategoria`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 
 -- --------------------------------------------------------
 
@@ -85,21 +85,21 @@ CREATE TABLE IF NOT EXISTS `promociones` (
 DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE IF NOT EXISTS `usuarios` (
   `esAdmin` tinyint UNSIGNED NOT NULL,
-  `nombre` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `apellidos` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `nombre` varchar(60) NOT NULL,
+  `apellidos` varchar(60) NOT NULL,
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `usuario` varchar(60) NOT NULL,
-  `contrasena` varchar(161) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `contrasena` varchar(161) NOT NULL,
   `estado` varchar(32) NOT NULL,
   `municipio` varchar(32) NOT NULL,
-  `numeroExterior` varchar(6) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `numeroExterior` varchar(6) NOT NULL,
   `colonia` varchar(60) NOT NULL,
   `CP` varchar(5) NOT NULL,
   `calle` varchar(120) NOT NULL,
   `correo` varchar(240) NOT NULL,
   `telefono` varchar(12) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 
 -- --------------------------------------------------------
 
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `ventas` (
   `tipoPago` varchar(16) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idUsuario` (`idUsuario`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 
 -- --------------------------------------------------------
 
@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS `ventas_detalle` (
   `cantidad` int UNSIGNED NOT NULL,
   KEY `idVentas_idx` (`idVenta`),
   KEY `idProducto_idx` (`idProducto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 
 --
 -- Disparadores `ventas_detalle`
