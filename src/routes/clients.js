@@ -22,6 +22,6 @@ router.get("/contactos", isLogged, validarCliente, renderClientContactUs);
 router.post("/contactos", isLogged, validarCliente, postContactUs);
 router.post("/buy", validarJWT, validarCliente, completePurchase);
 
-router.use(renderNotFound);
+router.use(isLogged, renderNotFound);
 
 export default router;

@@ -205,6 +205,10 @@ function changeCantidadItem(index) {
 // Funcion para agregar productos al carrito
 async function addProductToCart(codigo) {
 	try {
+		if (!isLogged) {
+			return window.location.pathname = "/login";
+		}
+
 		// Validar codigo
 		if (!validateString(codigo)) return showAlert("Introduzca un articulo valido", "Error");
 
@@ -456,5 +460,3 @@ function clearCarrito() {
 	localStorage.removeItem('shopping-cart');
 	mostrarCarrito();
 }
-
-carrito.addEventListener("click", mostrarCarrito);
