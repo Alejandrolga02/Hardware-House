@@ -33,9 +33,9 @@ export const renderClientIndex = async (req, res) => {
 			products: rows,
 			navLinks: [
 				{ class: "nav-link active", link: "/", title: "Inicio" },
-				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
+				{ class: "nav-link", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
-				{ class: "nav-link", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
 			],
 			scripts: [
 				"/js/carrito.js"
@@ -55,7 +55,7 @@ export const renderClientAboutUs = async (req, res) => {
 				{ class: "nav-link", link: "/", title: "Inicio" },
 				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
-				{ class: "nav-link", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
 			],
 			scripts: [
 				"/js/carrito.js"
@@ -89,9 +89,9 @@ export const renderClientProducts = async (req, res) => {
 			products: rows,
 			navLinks: [
 				{ class: "nav-link", link: "/", title: "Inicio" },
-				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
+				{ class: "nav-link", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link active", link: "/productos", title: "Productos" },
-				{ class: "nav-link", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
 			],
 			scripts: [
 				"/js/carrito.js"
@@ -137,35 +137,20 @@ export const getProduct = async (req, res) => {
 	}
 };
 
-export const renderClientContactUs = async (req, res) => {
+export const renderClientFAQ = async (req, res) => {
 	try {
-		res.render("clients/contactos.html", {
+		res.render("clients/preguntas.html", {
 			title: "Contactos",
 			navLinks: [
 				{ class: "nav-link", link: "/", title: "Inicio" },
-				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
+				{ class: "nav-link", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
-				{ class: "nav-link active", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link active", link: "/preguntas", title: "Preguntas Frecuentes" },
 			],
 			scripts: [
 				"/js/carrito.js"
 			],
 			isLogged: req.user.isLogged
-		});
-	} catch (error) {
-		console.log(error);
-	}
-};
-
-export const postContactUs = async (req, res) => {
-	try {
-		res.render("admin/productos.html", {
-			title: "Admin - Productos",
-			products: rows,
-			categorias,
-			scripts: [
-				"/js/carrito.js"
-			]
 		});
 	} catch (error) {
 		console.log(error);
@@ -273,9 +258,9 @@ export const renderNotFound = async (req, res) => {
 			title: "Pagina no encontrada",
 			navLinks: [
 				{ class: "nav-link active", link: "/", title: "Inicio" },
-				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
+				{ class: "nav-link", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
-				{ class: "nav-link", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
 			],
 			scripts: [
 				"/js/carrito.js"

@@ -70,9 +70,9 @@ export const renderLogin = async (req, res) => {
             title: "Iniciar sesion",
             navLinks: [
                 { class: "nav-link active", link: "/", title: "Inicio" },
-                { class: "nav-link active", link: "/nosotros", title: "Nosotros" },
+                { class: "nav-link", link: "/nosotros", title: "Nosotros" },
                 { class: "nav-link", link: "/productos", title: "Productos" },
-                { class: "nav-link", link: "/contactos", title: "Contactos" },
+                { class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
             ],
             scripts: [
                 "/js/login.js"
@@ -99,9 +99,9 @@ export const renderRegister = async (req, res) => {
             title: "Registrarse",
             navLinks: [
                 { class: "nav-link active", link: "/", title: "Inicio" },
-                { class: "nav-link active", link: "/nosotros", title: "Nosotros" },
+                { class: "nav-link", link: "/nosotros", title: "Nosotros" },
                 { class: "nav-link", link: "/productos", title: "Productos" },
-                { class: "nav-link", link: "/contactos", title: "Contactos" },
+                { class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
             ],
             scripts: [
                 "js/estados.js",
