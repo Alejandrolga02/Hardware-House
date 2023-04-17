@@ -15,7 +15,7 @@ const router = Router();
 
 // Administración Productos
 router.get("/", isLogged, validarCliente, renderClientIndex);
-router.get("/empresa", isLogged, validarCliente, renderClientAboutUs);
+router.get("/nosotros", isLogged, validarCliente, renderClientAboutUs);
 router.get("/productos", isLogged, validarCliente, renderClientProducts);
 router.post("/productos/get", validarJWT, validarCliente, getProduct);
 router.get("/contactos", isLogged, validarCliente, renderClientContactUs);

@@ -167,3 +167,7 @@ input[type="number"] {
 	width: 100%;
 	max-width: 920px;
 }
+
+.cover {
+	object-fit: cover;
+}

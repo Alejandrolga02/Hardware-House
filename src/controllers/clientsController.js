@@ -29,11 +29,11 @@ export const renderClientIndex = async (req, res) => {
 		}
 
 		res.render("clients/index.html", {
-			title: "Home",
+			title: "Inicio",
 			products: rows,
 			navLinks: [
 				{ class: "nav-link active", link: "/", title: "Inicio" },
-				{ class: "nav-link", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
@@ -49,11 +49,11 @@ export const renderClientIndex = async (req, res) => {
 
 export const renderClientAboutUs = async (req, res) => {
 	try {
-		res.render("clients/empresa.html", {
-			title: "Empresa",
+		res.render("clients/nosotros.html", {
+			title: "Nosotros",
 			navLinks: [
 				{ class: "nav-link", link: "/", title: "Inicio" },
-				{ class: "nav-link active", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
@@ -89,7 +89,7 @@ export const renderClientProducts = async (req, res) => {
 			products: rows,
 			navLinks: [
 				{ class: "nav-link", link: "/", title: "Inicio" },
-				{ class: "nav-link", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link active", link: "/productos", title: "Productos" },
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
@@ -143,7 +143,7 @@ export const renderClientContactUs = async (req, res) => {
 			title: "Contactos",
 			navLinks: [
 				{ class: "nav-link", link: "/", title: "Inicio" },
-				{ class: "nav-link", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
 				{ class: "nav-link active", link: "/contactos", title: "Contactos" },
 			],
@@ -273,7 +273,7 @@ export const renderNotFound = async (req, res) => {
 			title: "Pagina no encontrada",
 			navLinks: [
 				{ class: "nav-link active", link: "/", title: "Inicio" },
-				{ class: "nav-link", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
 				{ class: "nav-link", link: "/contactos", title: "Contactos" },
 			],
