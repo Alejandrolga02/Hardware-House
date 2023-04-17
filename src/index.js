@@ -3,11 +3,12 @@ import https from 'https';
 import fs from 'fs';
 
 import app from "./app.js";
-import { PORT, SECURE_PORT, SSL_CERT_PATH, SSL_KEY_PATH } from "./config.js";
+import { PORT, SECURE_PORT, SSL_CA_PATH, SSL_CERT_PATH, SSL_KEY_PATH } from "./config.js";
 
 const options = {
 	key: fs.readFileSync(SSL_KEY_PATH),
-	cert: fs.readFileSync(SSL_CERT_PATH)
+	ca: fs.readFileSync(SSL_CA_PATH),
+	cert: fs.readFileSync(SSL_CERT_PATH),
 };
 
 https.createServer(options, app).listen(SECURE_PORT);
