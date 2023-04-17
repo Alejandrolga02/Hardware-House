@@ -9,7 +9,6 @@ const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // settings
-app.set("port", process.env.PORT || 80);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
@@ -18,7 +17,7 @@ app.set("view engine", "ejs");
 app.engine("html", ejs.renderFile);
 
 // middlewares
-app.use(morgan("dev"));
+app.use(morgan('short'));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 

@@ -2,7 +2,8 @@ import { config } from 'dotenv'
 
 config()
 
-export const port = process.env.PORT || 80;
+export const PORT = 80;
+export const SECURE_PORT = 443;
 
 // CLOUDINARY CREDENTIALS
 export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
@@ -18,3 +19,7 @@ export const DB_NAME = process.env.DB_NAME;
 
 // JSON WEB TOKEN
 export const SECRET_OR_PRIVATE_KEY = process.env.SECRET_OR_PRIVATE_KEY;
+
+// SSL CERTIFICATES
+export const SSL_KEY_PATH = process.env.SSL_KEY_PATH;
+export const SSL_CERT_PATH = process.env.SSL_CERT_PATH;
