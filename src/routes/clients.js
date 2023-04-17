@@ -3,8 +3,7 @@ import {
 	renderClientIndex,
 	renderClientAboutUs,
 	renderClientProducts,
-	renderClientContactUs,
-	postContactUs,
+	renderClientFAQ,
 	getProduct,
 	completePurchase,
 	renderNotFound
@@ -15,13 +14,12 @@ const router = Router();
 
 // Administración Productos
 router.get("/", isLogged, validarCliente, renderClientIndex);
-router.get("/empresa", isLogged, validarCliente, renderClientAboutUs);
+router.get("/nosotros", isLogged, validarCliente, renderClientAboutUs);
 router.get("/productos", isLogged, validarCliente, renderClientProducts);
 router.post("/productos/get", validarJWT, validarCliente, getProduct);
-router.get("/contactos", isLogged, validarCliente, renderClientContactUs);
-router.post("/contactos", isLogged, validarCliente, postContactUs);
+router.get("/preguntas", isLogged, validarCliente, renderClientFAQ);
 router.post("/buy", validarJWT, validarCliente, completePurchase);
 
-router.use(renderNotFound);
+router.use(isLogged, renderNotFound);
 
 export default router;

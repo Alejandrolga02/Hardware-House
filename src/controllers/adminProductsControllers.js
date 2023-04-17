@@ -33,7 +33,7 @@ export const renderProducts = async (req, res) => {
 			scripts: [
 				"/js/admin-productos.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -59,6 +59,7 @@ function filterSearchProduct(obj) {
 export const searchProducts = async (req, res) => {
 	try {
 		let body = req.body;
+		console.log(body);
 		let searchProduct = filterSearchProduct(body);
 
 		if (Object.keys(searchProduct).length === 0) {
@@ -259,7 +260,7 @@ export const editProducts = async (req, res) => {
 			scripts: [
 				"/js/admin-edit-product.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);

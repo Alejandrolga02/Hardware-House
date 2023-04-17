@@ -13,6 +13,7 @@ export const renderPromotions = async (req, res) => {
 		}
 
 		const [rows] = await pool.query(query);
+		console.log(rows);
 		const [categorias] = await pool.query("SELECT * FROM categorias");
 
 		res.render('admin/promociones.html', {
@@ -30,7 +31,7 @@ export const renderPromotions = async (req, res) => {
 			scripts: [
 				"/js/admin-promotions.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -65,7 +66,7 @@ export const editPromotions = async (req, res) => {
 			scripts: [
 				"/js/admin-edit-promotion.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -211,14 +212,9 @@ const validateCode = async (codigo) => {
 export const updatePromotions = async (req, res) => {
 	try {
 		const { id } = req.params;
-
 		let codigo = req.body.id;
 
-
-		console.log("id:", id); // Agregar este console.log
-		console.log("codigo:", codigo); // Agregar este console.log
-
-		if (parseInt(id) !== parseInt(codigo)) {
+		if (id !== codigo) {
 			return res.status(400).send("No alterar los códigos");
 		}
 

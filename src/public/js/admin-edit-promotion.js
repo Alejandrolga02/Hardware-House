@@ -31,16 +31,13 @@ async function updatePromotion(event) {
 	try {
 		event.preventDefault();
 
-		// Llamada a funcion para obtener datos del formulario
         let { id, nombre, fechaInicio, fechaFin, porcentajeDescuento, idCategoria, estado} = getInputs();
 
 
-		// Validación de campos
 		if (!id || !nombre || !fechaInicio || !fechaFin || !porcentajeDescuento) {
             return showAlert("Existen campos vacios", "Error");
         }
 
-		// Creación de objeto a mandar petición
 		let promocionModificada = {
 			id,
 			nombre,
@@ -64,7 +61,6 @@ async function updatePromotion(event) {
 		}, 2000);
 
 	} catch (error) {
-		// Captura de error y mandar retroalimentación al usuario
 		showAlert(error.response.data, "Error");
 	}
 }

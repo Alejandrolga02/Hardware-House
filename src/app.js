@@ -26,7 +26,7 @@ app.use(cookieParser());
 import adminProductos from "./routes/adminProductos.js";
 import adminCategorias from "./routes/adminCategorias.js";
 import adminPromociones from "./routes/adminPromociones.js";
-import adminAuth from "./routes/adminAuth.js";
+import adminAuth from "./routes/auth.js";
 import adminIndex from "./routes/adminIndex.js";
 import client from "./routes/clients.js";
 import adminVentas from "./routes/adminVentas.js";

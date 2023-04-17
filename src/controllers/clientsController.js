@@ -22,25 +22,25 @@ export const renderClientIndex = async (req, res) => {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
 
 			if (promociones[0]) {
-				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)))
+				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.user.descuento)) / 100)))
 			} else {
-				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.body.descuento) / 100)));
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.user.descuento) / 100)));
 			}
 		}
 
 		res.render("clients/index.html", {
-			title: "Home",
+			title: "Inicio",
 			products: rows,
 			navLinks: [
 				{ class: "nav-link active", link: "/", title: "Inicio" },
-				{ class: "nav-link", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
-				{ class: "nav-link", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
 			],
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -49,18 +49,18 @@ export const renderClientIndex = async (req, res) => {
 
 export const renderClientAboutUs = async (req, res) => {
 	try {
-		res.render("clients/empresa.html", {
-			title: "Empresa",
+		res.render("clients/nosotros.html", {
+			title: "Nosotros",
 			navLinks: [
 				{ class: "nav-link", link: "/", title: "Inicio" },
-				{ class: "nav-link active", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link active", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
-				{ class: "nav-link", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
 			],
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -78,9 +78,9 @@ export const renderClientProducts = async (req, res) => {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
 
 			if (promociones[0]) {
-				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)))
+				item.precioFinal = parseFloat(item.precio - (item.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.user.descuento)) / 100)))
 			} else {
-				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.body.descuento) / 100)));
+				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.user.descuento) / 100)));
 			}
 		}
 
@@ -89,14 +89,14 @@ export const renderClientProducts = async (req, res) => {
 			products: rows,
 			navLinks: [
 				{ class: "nav-link", link: "/", title: "Inicio" },
-				{ class: "nav-link", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link active", link: "/productos", title: "Productos" },
-				{ class: "nav-link", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
 			],
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -125,9 +125,9 @@ export const getProduct = async (req, res) => {
 		}
 
 		if (promociones[0]) {
-			producto.precioFinal = parseFloat(producto.precio - (producto.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.body.descuento)) / 100)));
+			producto.precioFinal = parseFloat(producto.precio - (producto.precio * ((parseFloat(promociones[0].porcentajeDescuento) + parseFloat(req.user.descuento)) / 100)));
 		} else {
-			producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(req.body.descuento) / 100)));
+			producto.precioFinal = parseFloat(producto.precio - (producto.precio * (parseFloat(req.user.descuento) / 100)));
 		}
 
 		return res.json(producto);
@@ -137,35 +137,20 @@ export const getProduct = async (req, res) => {
 	}
 };
 
-export const renderClientContactUs = async (req, res) => {
+export const renderClientFAQ = async (req, res) => {
 	try {
-		res.render("clients/contactos.html", {
+		res.render("clients/preguntas.html", {
 			title: "Contactos",
 			navLinks: [
 				{ class: "nav-link", link: "/", title: "Inicio" },
-				{ class: "nav-link", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
-				{ class: "nav-link active", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link active", link: "/preguntas", title: "Preguntas Frecuentes" },
 			],
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
-		});
-	} catch (error) {
-		console.log(error);
-	}
-};
-
-export const postContactUs = async (req, res) => {
-	try {
-		res.render("admin/productos.html", {
-			title: "Admin - Productos",
-			products: rows,
-			categorias,
-			scripts: [
-				"/js/carrito.js"
-			]
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);
@@ -175,7 +160,8 @@ export const postContactUs = async (req, res) => {
 export const completePurchase = async (req, res) => {
 	try {
 		// Obtencion de datos
-		let { productsList, id, tipoPago, descuento } = req.body;
+		let { productsList, tipoPago } = req.body;
+		let { id, descuento } = req.user;
 
 		try {
 			// Conversion de string obtenido a array
@@ -241,7 +227,7 @@ export const completePurchase = async (req, res) => {
 			}
 
 			ventasDetalle += `(LAST_INSERT_ID(), ${escape(product.codigo)}, ${escape(product.cantidad)}),`;
-			total += parseFloat(product.precioFinal);
+			total += parseFloat(product.precioFinal * product.cantidad);
 		}
 
 		await pool.query("START TRANSACTION");
@@ -272,14 +258,14 @@ export const renderNotFound = async (req, res) => {
 			title: "Pagina no encontrada",
 			navLinks: [
 				{ class: "nav-link active", link: "/", title: "Inicio" },
-				{ class: "nav-link", link: "/empresa", title: "Empresa" },
+				{ class: "nav-link", link: "/nosotros", title: "Nosotros" },
 				{ class: "nav-link", link: "/productos", title: "Productos" },
-				{ class: "nav-link", link: "/contactos", title: "Contactos" },
+				{ class: "nav-link", link: "/preguntas", title: "Preguntas Frecuentas" },
 			],
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.body.isLogged
+			isLogged: req.user.isLogged
 		});
 	} catch (error) {
 		console.log(error);

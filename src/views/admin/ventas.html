@@ -14,8 +14,8 @@
 			<input type="text" id="id" name="id" value="<%= form.id %>" class="form-control" placeholder="Introduzca un Id" />
 		</div>
 		<div class="mb-2">
-			<label for="fechaFij" class="form-label">Fecha fija</label>
-			<input type="date" id="fechaFij" name="fechaFij" class="form-control" placeholder="Fecha" />
+			<label for="usuario" class="form-label">Usuario</label>
+			<input type="text" id="usuario" name="usuario" class="form-control" placeholder="Usuario" />
 		</div>
 		<div class="mb-2">
 			<label for="fechaIni" class="form-label">Fecha Inicial</label>
@@ -27,14 +27,14 @@
 		</div>
 		<div class="mb-2">
 			<label for="totalIni" class="form-label">Total Inicial</label>
-			<input type="number" id="totalIni" name="totalIni" class="form-control" placeholder="Fecha" />
+			<input type="number" id="totalIni" name="totalIni" class="form-control" placeholder="Total Inicial" />
 		</div>
 		<div class="mb-2">
 			<label for="totalFin" class="form-label">Total Final</label>
-			<input type="number" id="totalFin" name="totalFin" class="form-control" placeholder="Fecha" />
+			<input type="number" id="totalFin" name="totalFin" class="form-control" placeholder="Total Final" />
 		</div>
 		<div class="d-flex flex-wrap justify-content-end gap-2">
-			<button class="btn btn-warning" id="btnConsultar">
+			<button class="btn btn-warning" id="btnConsultarIdUser">
 				<img src="/img/consultar.svg" alt="Icono de consultar">
 				Consultar
 			</button>
@@ -44,6 +44,8 @@
 			</button>
 		</div>
 
+		<% try { %>
+		<% if (ventas.length > 0) { %>
 		<div class="scrollable mt-2">
 			<table id="results" class="table table-light table-hover mt-2 mb-0 align-middle">
 				<thead class="sticky-top">
@@ -83,6 +85,22 @@
 				</tbody>
 			</table>
 		</div>
+		<% } else { %>
+			<div class="mb-2">
+				<div class="alert alert-primary d-flex align-items-center" role="alert">
+					<img src="/img/info.svg" alt="Icono de información" class="me-2">
+					<div> No existen registros de ventas</div>
+				</div>
+			</div>
+			<% } %>
+			<% } catch (error) { %>
+			<div class="mb-2">
+				<div class="alert alert-primary d-flex align-items-center" role="alert">
+					<img src="/img/info.svg" alt="Icono de información" class="me-2">
+					<div> No existen registros de ventas</div>
+				</div>
+			</div>
+			<% } %>
 	</form>
 
 	<div class="modal fade" id="alertModal" tabindex="-1">

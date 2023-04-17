@@ -119,6 +119,9 @@ function increaseItem(index) {
 		shoppingCart[index].cantidad += 1;
 	}
 
+	// Poner total correspondiente
+	document.querySelector("#shopping-cart-total").value = calcularTotal(shoppingCart);
+
 	// Cambiar valor de caja de texto
 	document.querySelectorAll(".item-counter")[index].value = shoppingCart[index].cantidad;
 
@@ -155,6 +158,9 @@ function decreaseItem(index) {
 		shoppingCart[index].cantidad -= 1;
 	}
 
+	// Poner total correspondiente
+	document.querySelector("#shopping-cart-total").value = calcularTotal(shoppingCart);
+
 	// Cambiar valor de caja de texto
 	document.querySelectorAll(".item-counter")[index].value = shoppingCart[index].cantidad;
 
@@ -186,6 +192,9 @@ function changeCantidadItem(index) {
 		return deleteItem(index);
 	}
 
+	// Poner total correspondiente
+	document.querySelector("#shopping-cart-total").value = calcularTotal(shoppingCart);
+
 	document.querySelectorAll(".item-counter")[index].setAttribute("value", shoppingCart[index].cantidad);
 	document.querySelectorAll(".item-counter")[index].value = shoppingCart[index].cantidad;
 
@@ -196,6 +205,10 @@ function changeCantidadItem(index) {
 // Funcion para agregar productos al carrito
 async function addProductToCart(codigo) {
 	try {
+		if (!isLogged) {
+			return window.location.pathname = "/login";
+		}
+
 		// Validar codigo
 		if (!validateString(codigo)) return showAlert("Introduzca un articulo valido", "Error");
 
@@ -249,6 +262,16 @@ async function addProductToCart(codigo) {
 		console.log(error);
 		showAlert(error.response.data, "Error");
 	}
+}
+
+function calcularTotal(carrito = '[]') {
+	let total = 0;
+
+	carrito.forEach(item => {
+		total += parseFloat(item.precioFinal) * parseFloat(item.cantidad);
+	});
+
+	return total;
 }
 
 async function mostrarCarrito() {
@@ -313,7 +336,6 @@ async function mostrarCarrito() {
 	// For para obtener informacion de cada item del inventario
 	let i = 0;
 	let erroneos = [];
-	let total = 0;
 	for (const item of shoppingCart) {
 		try {
 			let { data } = await axios.post('/productos/get', {
@@ -332,7 +354,7 @@ async function mostrarCarrito() {
 				item.cantidad = data.disponibilidad;
 			}
 			item.disponibilidad = data.disponibilidad;
-			total += parseFloat(data.precioFinal);
+			item.precioFinal = data.precioFinal;
 
 			tableContent.innerHTML += `<tr>
 				<td class="text-center p-0">
@@ -372,7 +394,7 @@ async function mostrarCarrito() {
 	}
 
 	// Poner total correspondiente
-	div.querySelector("#shopping-cart-total").value = total;
+	div.querySelector("#shopping-cart-total").value = calcularTotal(shoppingCart);
 
 	// Elimina los elementos en orden inverso para no afectar los indices
 	for (let i = erroneos.length - 1; i >= 0; i--) {
@@ -438,5 +460,3 @@ function clearCarrito() {
 	localStorage.removeItem('shopping-cart');
 	mostrarCarrito();
 }
-
-carrito.addEventListener("click", mostrarCarrito);

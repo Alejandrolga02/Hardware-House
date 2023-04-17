@@ -29,6 +29,13 @@ export const validarJWT = async (req, res, next) => {
 	// Obtencion del token
 	const token = req.cookies.token;
 
+	// Inicializacion de req.user
+	req.user = {
+		isLogged: false,
+		esAdmin: 0,
+		descuento: 0,
+	};
+
 	// Token no enviado
 	if (!token) {
 		return res.redirect("/login");
@@ -48,9 +55,9 @@ export const validarJWT = async (req, res, next) => {
 		}
 
 		// Asignacion de valores
-		req.body.isLogged = true;
-		req.body.id = id;
-		req.body.esAdmin = user.esAdmin;
+		req.user.isLogged = true;
+		req.user.id = id;
+		req.user.esAdmin = user.esAdmin;
 
 		next();
 	} catch (error) {
@@ -64,10 +71,15 @@ export const checkLogged = async (req, res, next) => {
 	// Obtencion de token
 	const token = req.cookies.token;
 
+	// Inicializacion de req.user
+	req.user = {
+		isLogged: false,
+		esAdmin: 0,
+		descuento: 0,
+	};
+
 	// Si no hay token deja avanzar al siguiente middleware
 	if (!token) {
-		req.body.isLogged = false;
-		req.body.esAdmin = 0;
 		return next();
 	}
 
@@ -84,13 +96,13 @@ export const checkLogged = async (req, res, next) => {
 			return next();
 		}
 
-		req.body.isLogged = true;
-		req.body.esAdmin = user.esAdmin;
+		req.user.isLogged = true;
+		req.user.esAdmin = user.esAdmin;
 
-		if (req.body.esAdmin === 1) {
+		if (req.user.esAdmin === 1) {
 			// Si es admin te redirecciona a el menu
 			return res.redirect('/admin/');
-		} else if (req.body.esAdmin === 0) {
+		} else if (req.user.esAdmin === 0) {
 			// Si no es admin te redirecciona a la seccion de clientes
 			return res.redirect('/');
 		}
@@ -107,7 +119,7 @@ export const checkLogged = async (req, res, next) => {
 export const validarAdmin = (req, res, next) => {
 	try {
 		// Obtiene isAdmin del body
-		const { esAdmin } = req.body;
+		const { esAdmin } = req.user;
 
 		// Si el rol es distinto a admin te manda un error
 		if (esAdmin !== 1) {
@@ -125,14 +137,14 @@ export const validarAdmin = (req, res, next) => {
 export const validarCliente = (req, res, next) => {
 	try {
 		// Obtiene esAdmin del body
-		const { esAdmin } = req.body;
+		const { esAdmin } = req.user;
 
 		if (esAdmin === 1) {
 			// Si es admin te da descuento
-			req.body.descuento = 10;
+			req.user.descuento = 10;
 		} else {
 			// Si no, no hay descuento
-			req.body.descuento = 0;
+			req.user.descuento = 0;
 		}
 
 		return next();
@@ -147,10 +159,15 @@ export const isLogged = async (req, res, next) => {
 	// Obtencion del token
 	const token = req.cookies.token;
 
+	// Inicializacion de req.user
+	req.user = {
+		isLogged: false,
+		esAdmin: 0,
+		descuento: 0,
+	};
+
 	// Token no enviado
 	if (!token) {
-		req.body.isLogged = false;
-		req.body.esAdmin = 0;
 		return next();
 	}
 
@@ -168,9 +185,9 @@ export const isLogged = async (req, res, next) => {
 		}
 
 		// Asignacion de valores
-		req.body.isLogged = true;
-		req.body.id = id;
-		req.body.esAdmin = user.esAdmin;
+		req.user.isLogged = true;
+		req.user.id = id;
+		req.user.esAdmin = user.esAdmin;
 
 		next();
 	} catch (error) {
