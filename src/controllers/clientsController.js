@@ -40,7 +40,8 @@ export const renderClientIndex = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.user.isLogged
+			isLogged: req.user.isLogged,
+			esAdmin: req.user.esAdmin
 		});
 	} catch (error) {
 		console.log(error);
@@ -60,7 +61,8 @@ export const renderClientAboutUs = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.user.isLogged
+			isLogged: req.user.isLogged,
+			esAdmin: req.user.esAdmin
 		});
 	} catch (error) {
 		console.log(error);
@@ -96,7 +98,8 @@ export const renderClientProducts = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.user.isLogged
+			isLogged: req.user.isLogged,
+			esAdmin: req.user.esAdmin
 		});
 	} catch (error) {
 		console.log(error);
@@ -150,7 +153,8 @@ export const renderClientFAQ = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.user.isLogged
+			isLogged: req.user.isLogged,
+			esAdmin: req.user.esAdmin
 		});
 	} catch (error) {
 		console.log(error);

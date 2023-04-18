@@ -4,7 +4,8 @@ import {
     renderVentasDet,
     searchVentasId,
     searchVentasFecha,
-    searchVentasTotales
+    searchVentasTotales,
+    getUser
 } from "../controllers/adminVentasControllers.js";
 import { validarAdmin, validarJWT } from "../jwt.js";
 
@@ -12,6 +13,7 @@ const router = Router();
 
 //Administración de las ventas
 router.get("/", validarJWT, validarAdmin, renderPage);
+router.get("/getUser/:id", validarJWT, validarAdmin, getUser);
 router.post("/busqueda-id", validarJWT, validarAdmin, searchVentasId);
 router.post("/busqueda-fecha", validarJWT, validarAdmin, searchVentasFecha);
 router.post("/busqueda-total", validarJWT, validarAdmin, searchVentasTotales);

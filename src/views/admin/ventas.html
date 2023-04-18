@@ -65,7 +65,7 @@
 							<%= element.id %>
 						</th>
 						<td class="text-center">
-							<%= element.usuario %>
+							<a class="btn btn-outline-dark btn-sm" onclick="showInfo('<%= element.idUsuario %>')"><%= element.usuario %></a>
 						</td>
 						<td class="text-center">
 							<%= element.fecha %>
@@ -86,21 +86,21 @@
 			</table>
 		</div>
 		<% } else { %>
-			<div class="mb-2">
-				<div class="alert alert-primary d-flex align-items-center" role="alert">
-					<img src="/img/info.svg" alt="Icono de información" class="me-2">
-					<div> No existen registros de ventas</div>
-				</div>
+		<div class="mb-2">
+			<div class="alert alert-primary d-flex align-items-center" role="alert">
+				<img src="/img/info.svg" alt="Icono de información" class="me-2">
+				<div> No existen registros de ventas</div>
 			</div>
-			<% } %>
-			<% } catch (error) { %>
-			<div class="mb-2">
-				<div class="alert alert-primary d-flex align-items-center" role="alert">
-					<img src="/img/info.svg" alt="Icono de información" class="me-2">
-					<div> No existen registros de ventas</div>
-				</div>
+		</div>
+		<% } %>
+		<% } catch (error) { %>
+		<div class="mb-2">
+			<div class="alert alert-primary d-flex align-items-center" role="alert">
+				<img src="/img/info.svg" alt="Icono de información" class="me-2">
+				<div> No existen registros de ventas</div>
 			</div>
-			<% } %>
+		</div>
+		<% } %>
 	</form>
 
 	<div class="modal fade" id="alertModal" tabindex="-1">
