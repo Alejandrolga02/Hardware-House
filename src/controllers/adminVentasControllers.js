@@ -2,14 +2,14 @@ import { pool } from "../db.js";
 import fs from "fs";
 import { escape } from 'mysql2';
 let form = {};
-let query = "SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id;";
+let query = "SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y %H:%i:%s') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id;";
 
 export const renderPage = async (req, res) => {
     try {
         form.counter -= 1;
         if (form.counter === 0) {
             form = {};
-            query = "SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id;";
+            query = "SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y %H:%i:%s') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id;";
         }
 
         const [rows] = await pool.query(query);
@@ -38,7 +38,7 @@ export const renderPage = async (req, res) => {
 export const renderVentasDet = async (req, res) => {
     try {
         const { id } = req.params;
-        const [[infoVenta]] = await pool.query("SELECT ventas.id, ventas.idUsuario, DATE_FORMAT(ventas.fecha, '%d-%m-%Y') AS dia, DATE_FORMAT(ventas.fecha, '%H:%i:%s') AS hora, ventas.total, ventas.tipoPago, usuarios.usuario FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE ventas.id = ?", [id]);
+        const [[infoVenta]] = await pool.query("SELECT ventas.id, ventas.idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y') AS dia, DATE_FORMAT(ventas.fecha, '%H:%i:%s') AS hora, ventas.total, ventas.tipoPago, usuarios.usuario FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE ventas.id = ?", [id]);
 
         if (!infoVenta) {
             return res.redirect("/admin/ventas/");
@@ -94,7 +94,7 @@ export const searchVentasId = async (req, res) => {
         }
 
         //Se prepara la query
-        query = "SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE ";
+        query = "SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y %H:%i:%s') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE ";
 
         if (!searchVenta.id || isNaN(searchVenta.id)) {
             delete searchVenta.id;
@@ -147,7 +147,7 @@ export const searchVentasFecha = async (req, res) => {
 
 
         //Se prepara la query
-        query = `SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE fecha BETWEEN STR_TO_DATE('${searchVenta.fechaIni}', '%Y-%m-%d') AND STR_TO_DATE('${searchVenta.fechaFin}', '%Y-%m-%d');`
+        query = `SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y %H:%i:%s') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE fecha BETWEEN STR_TO_DATE('${searchVenta.fechaIni}', '%Y-%m-%d') AND STR_TO_DATE('${searchVenta.fechaFin}', '%Y-%m-%d');`
 
         form.counter = 2;
         return res.status(200).send("Query creado exitosamente");
@@ -180,7 +180,7 @@ export const searchVentasTotales = async (req, res) => {
         }
 
         //Se prepara la query
-        query = `SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE total BETWEEN ${searchVenta.totalIni} AND ${searchVenta.totalFin};`;
+        query = `SELECT ventas.id, usuarios.usuario, usuarios.id AS idUsuario, DATE_FORMAT(ventas.fecha, '%d/%m/%Y %H:%i:%s') AS fecha, ventas.total, ventas.tipoPago FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE total BETWEEN ${searchVenta.totalIni} AND ${searchVenta.totalFin};`;
 
         form.counter = 2;
         return res.status(200).send("Query creado exitosamente");
