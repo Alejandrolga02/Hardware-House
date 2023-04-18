@@ -38,9 +38,15 @@ export const renderPage = async (req, res) => {
 export const renderVentasDet = async (req, res) => {
     try {
         const { id } = req.params;
-        const [rows] = await pool.query("SELECT ventas_detalle.idVenta, productos.nombre, ventas_detalle.cantidad FROM ventas_detalle LEFT JOIN productos ON ventas_detalle.idProducto = productos. codigo WHERE ventas_detalle.idVenta = ?", [id]);
+        const [[infoVenta]] = await pool.query("SELECT ventas.id, ventas.idUsuario, DATE_FORMAT(ventas.fecha, '%d-%m-%Y') AS dia, DATE_FORMAT(ventas.fecha, '%H:%i:%s') AS hora, ventas.total, ventas.tipoPago, usuarios.usuario FROM ventas LEFT JOIN usuarios ON ventas.idUsuario = usuarios.id WHERE ventas.id = ?", [id]);
+
+        if (!infoVenta) {
+            return res.redirect("/admin/ventas/");
+        }
+        const [rows] = await pool.query("SELECT ventas_detalle.idVenta, productos.nombre, productos.urlImagen, ventas_detalle.cantidad FROM ventas_detalle LEFT JOIN productos ON ventas_detalle.idProducto = productos.codigo WHERE ventas_detalle.idVenta = ?", [id]);
         res.render("admin/ventasDetalles.html", {
             title: "Detalles de las Venta",
+            infoVenta,
             ventasDetalles: rows,
             navLinks: [
                 { class: "nav-link", link: "/", title: "Inicio" },
@@ -48,6 +54,9 @@ export const renderVentasDet = async (req, res) => {
                 { class: "nav-link active", link: "/admin/ventas/", title: "Ventas" },
                 { class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
                 { class: "nav-link", link: "/admin/promociones/", title: "Promociones" },
+            ],
+            scripts: [
+                "/js/admin-ventasDetalle.js"
             ],
             isLogged: req.user.isLogged
         })
