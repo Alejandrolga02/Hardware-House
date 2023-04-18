@@ -12,14 +12,14 @@ const results = document.querySelector("#results");
 //Función para alertar errores
 function showAlert(message, title) {
     const modalToggle = document.getElementById("alertModal");
-	const myModal = new bootstrap.Modal("#alertModal", { keyboard: false });
-	document.getElementById("alertTitle").innerHTML = title;
-	document.getElementById("alertMessage").innerHTML = message;
-	myModal.show(modalToggle);
+    const myModal = new bootstrap.Modal("#alertModal", { keyboard: false });
+    document.getElementById("alertTitle").innerHTML = title;
+    document.getElementById("alertMessage").innerHTML = message;
+    myModal.show(modalToggle);
 }
 
 //Obtener los valores de los inputs
-const getInputs = () =>{
+const getInputs = () => {
     return {
         id: parseInt(form['id'].value.trim()),
         Usuario: form['usuario'].value.trim().substring(0, 60),
@@ -31,48 +31,35 @@ const getInputs = () =>{
 };
 
 //Función para llamar a otras funciones
-async function divisionFunciones (event){
-    try{
+async function divisionFunciones(event) {
+    try {
         event.preventDefault();
 
-        let venta = getInputs();
-        console.log(venta.fechaIni.length);
-        console.log(venta.id);
-        console.log(venta.Usuario.length);
-        console.log(venta.fechaFin.length);
-        console.log((venta.id === NaN) && (venta.Usuario.length === 0) && (venta.fechaIni.length === 0) && (venta.fechaFin.length === 0));
-        if(venta.id === NaN && venta.Usuario.length === 0 && venta.fechaIni.length === 0 && venta.fechaFin.length === 0){
-            obtencionTotales;
-        }else if(venta.id === NaN && venta.Usuario.length === 0 && venta.totalIni.length === 0 && venta.totalFin.length === 0){
-            obtencionFecha;
-        }else if(venta.totalIni.length === 0 && venta.totalFin.length === 0 && venta.fechaIni.length === 0 && venta.fechaFin.length === 0){
-            obtencionIdUser;
-        }else{
+        let { Usuario, id, fechaIni, fechaFin, totalIni, totalFin } = getInputs();
+
+        if (totalIni > 0 && !isNaN(totalIni) && totalFin > 0 && !isNaN(totalFin)) {
+            obtencionTotales(totalIni, totalFin);
+        } else if (fechaIni !== "" && fechaFin !== "") {
+            obtencionFecha(fechaIni, fechaFin);
+        } else if (Usuario !== "" || !isNaN(id)) {
+            obtencionIdUser(Usuario, id);
+        } else {
             showAlert("Rellene solo los campos necesarios", "Error")
         }
-
-    }catch(error){
+    } catch (error) {
         showAlert(error.response.data, "Error");
     }
 }
 
 //Función para validar datos de fecha
-async function obtencionFecha(event){
-    try{
-        event.preventDefault();
-
-        let venta = getInputs();
-        let busqueda = {};
-
-        if (venta.fechaIni) {
-            busqueda.fechaIni = venta.fechaIni;
-        }
-
-        if (venta.fechaFin) {
-            busqueda.fechaFin = venta.fechaFin;
-        }
-
-        await axios.post('/admin/ventas/busqueda-fecha', { busqueda }, {
+async function obtencionFecha(fechaIni, fechaFin) {
+    try {
+        await axios.post('/admin/ventas/busqueda-fecha', {
+            busqueda: {
+                fechaIni,
+                fechaFin
+            }
+        }, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -80,32 +67,23 @@ async function obtencionFecha(event){
 
         window.location.pathname = window.location.pathname;
 
-    }catch(error){
+    } catch (error) {
         showAlert(error.response.data, "Error");
     }
 }
 
 //Función para validar las cantidades
-async function obtencionTotales(event) {
-    try{
-        event.preventDefault();
-
-        let venta = getInputs();
-        let busqueda = {};
-
-        if (venta.totalIni) {
-            if (isNaN(parseFloat(venta.totalIni)) || parseFloat(venta.totalIni) < 0) return showAlert("Ingrese un total inicial valido", "Error");
-
-            busqueda.totalIni = venta.totalIni;
+async function obtencionTotales(totalIni, totalFin) {
+    try {
+        if (totalIni >= totalFin) {
+            return showAlert("El total final debe ser mayor que el total inicial", "Mensaje")
         }
-
-        if (venta.totalFin) {
-            if (isNaN(parseFloat(venta.totalFin)) || parseFloat(venta.totalFin) <= 0) return showAlert("Ingrese un total final valido", "Error");
-        
-            busqueda.totalFin = venta.totalFin;
-        }
-
-        await axios.post('/admin/ventas/busqueda-total', { busqueda }, {
+        await axios.post('/admin/ventas/busqueda-total', {
+            busqueda: {
+                totalIni,
+                totalFin
+            }
+        }, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -113,35 +91,27 @@ async function obtencionTotales(event) {
 
         window.location.pathname = window.location.pathname;
 
-    }catch(error){
+    } catch (error) {
         showAlert(error.response.data, "Error");
     }
 }
 
 //Función para validar los datos.
-async function obtencionIdUser(event) {
+async function obtencionIdUser(Usuario, id) {
     try {
-        event.preventDefault();
-
-        let venta = getInputs();
-        let busqueda = {};
-
-        if (venta.id){
-            busqueda.id = venta.id;
-        }
-
-        if (venta.Usuario) {
-            busqueda.Usuario = venta.Usuario;
-        }
-
-        await axios.post('/admin/ventas/busqueda-id', { busqueda }, {
+        await axios.post('/admin/ventas/busqueda-id', {
+            busqueda: {
+                Usuario,
+                id
+            }
+        }, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
 
         window.location.pathname = window.location.pathname;
-    }catch (error){
+    } catch (error) {
         showAlert(error.response.data, "Error");
     }
 }
