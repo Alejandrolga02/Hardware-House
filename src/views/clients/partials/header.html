@@ -46,11 +46,16 @@
 					<% }); %>
 				</div>
 				<div class="navbar-nav">
+					<% if (esAdmin === 1) { %>
+					<a class="nav-link p-0 align-self-start align-self-lg-end me-3" href="/admin/">
+						<img src="/img/settings.svg">
+					</a>
+					<% } %>
 					<% if (isLogged) { %>
-					<a class="nav-link p-0 align-self-start align-self-lg-end me-3" id="shopping-cart" onclick="mostrarCarrito()">
+					<a class="nav-link p-0 align-self-start align-self-lg-end" id="shopping-cart" onclick="mostrarCarrito()">
 						<img src="/img/shopping-cart.svg">
 					</a>
-					<a class="nav-link p-0 align-self-start align-self-lg-end" href="/logout">
+					<a class="nav-link p-0 align-self-start align-self-lg-end ms-3" href="/logout">
 						<img src="/img/cerrar-sesion.svg" alt="Icono de cerrar sesión">
 					</a>
 					<% } else { %>
