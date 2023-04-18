@@ -72,7 +72,7 @@ export const editCategories = async (req, res) => {
 			title: "Editar Categoria",
 			categorie: result[0],
 			navLinks: [
-				{ class: "nav-link", link: "/", title: "Inicio" },
+				{ class: "nav-link", link: "/admin/", title: "Inicio" },
 				{ class: "nav-link", link: "/admin/productos/", title: "Productos" },
 				{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
 				{ class: "nav-link active", link: "/admin/categorias/", title: "Categorias" },
@@ -204,7 +204,7 @@ export const updateCategories = async (req, res) => {
 		try {
 			await pool.query("UPDATE categorias set ? WHERE id = ?", [newCategorie, id]);
 			return res.redirect("/admin/categorias");
-		} catch(error) {
+		} catch (error) {
 			console.log(error);
 			return res.status(400).send("Sucedio un error al actualizar la categoria");
 		}

@@ -24,7 +24,7 @@ export const renderProducts = async (req, res) => {
 			categorias,
 			form,
 			navLinks: [
-				{ class: "nav-link", link: "/", title: "Inicio" },
+				{ class: "nav-link", link: "/admin/", title: "Inicio" },
 				{ class: "nav-link active", link: "/admin/productos/", title: "Productos" },
 				{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
 				{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
@@ -251,7 +251,7 @@ export const editProducts = async (req, res) => {
 			product: result[0],
 			categorias,
 			navLinks: [
-				{ class: "nav-link", link: "/", title: "Inicio" },
+				{ class: "nav-link", link: "/admin/", title: "Inicio" },
 				{ class: "nav-link active", link: "/admin/productos/", title: "Productos" },
 				{ class: "nav-link", link: "/admin/ventas/", title: "Ventas" },
 				{ class: "nav-link", link: "/admin/categorias/", title: "Categorias" },

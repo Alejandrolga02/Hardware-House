@@ -19,7 +19,7 @@ export const renderPage = async (req, res) => {
             ventas: rows,
             form,
             navLinks: [
-                { class: "nav-link", link: "/", title: "Inicio" },
+                { class: "nav-link", link: "/admin/", title: "Inicio" },
                 { class: "nav-link", link: "/admin/productos/", title: "Productos" },
                 { class: "nav-link active", link: "/admin/ventas/", title: "Ventas" },
                 { class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
@@ -49,7 +49,7 @@ export const renderVentasDet = async (req, res) => {
             infoVenta,
             ventasDetalles: rows,
             navLinks: [
-                { class: "nav-link", link: "/", title: "Inicio" },
+                { class: "nav-link", link: "/admin/", title: "Inicio" },
                 { class: "nav-link", link: "/admin/productos/", title: "Productos" },
                 { class: "nav-link active", link: "/admin/ventas/", title: "Ventas" },
                 { class: "nav-link", link: "/admin/categorias/", title: "Categorias" },
