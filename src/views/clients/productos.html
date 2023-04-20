@@ -2,6 +2,14 @@
 <main class="container mh py-4">
 	<h1 class="text-center mb-2">Nuestros productos</h1>
 	<div class="row align-content-stretch">
+		<% if (products.length === 0) { %>
+		<div class="mb-2">
+			<div class="alert alert-primary d-flex align-items-center" role="alert">
+				<img src="/img/info.svg" alt="Icono de información" class="me-2">
+				<p class="m-0"> No hay productos disponibles</p>
+			</div>
+		</div>
+		<% } else { %>
 		<% products.forEach(element => { %>
 		<div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
 			<div class="card h-100">
@@ -27,7 +35,9 @@
 				</div>
 			</div>
 		</div>
-		<% }); %>
+		<% });
+	 	} %>
+
 	</div>
 </main>
 <%- include('partials/footer.html') %>

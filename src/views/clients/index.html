@@ -30,6 +30,14 @@
 	<section class="container my-4 bg-light">
 		<h3>Nuevos productos</h3>
 		<div class="row">
+			<% if (products.length === 0) { %>
+			<div class="mb-2">
+				<div class="alert alert-primary d-flex align-items-center" role="alert">
+					<img src="/img/info.svg" alt="Icono de información" class="me-2">
+					<p class="m-0"> No hay productos disponibles</p>
+				</div>
+			</div>
+			<% } else { %>
 			<% products.forEach(element => { %>
 			<div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
 				<div class="card h-100">
@@ -55,7 +63,8 @@
 					</div>
 				</div>
 			</div>
-			<% }); %>
+			<% });
+		 	} %>
 		</div>
 	</section>
 </main>

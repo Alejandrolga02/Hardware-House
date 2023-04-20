@@ -14,9 +14,6 @@ const validateString = (cadena) => {
 export const renderClientIndex = async (req, res) => {
 	try {
 		const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen, idCategoria FROM productos WHERE estado = 1 LIMIT 4");
-		if (!rows[0]) {
-			return res.status(400).send("No existen productos disponibles");
-		}
 
 		for (const item of rows) {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
@@ -72,9 +69,6 @@ export const renderClientAboutUs = async (req, res) => {
 export const renderClientProducts = async (req, res) => {
 	try {
 		const [rows] = await pool.query("SELECT codigo, nombre, descripcion, precio, urlImagen, idCategoria FROM productos WHERE estado = 1");
-		if (!rows[0]) {
-			return res.status(400).send("No existen productos disponibles");
-		}
 
 		for (const item of rows) {
 			const [promociones] = await pool.query("SELECT porcentajeDescuento FROM promociones WHERE CURDATE() >= fechaInicio AND CURDATE() <= fechaFin AND idCategoria = ?", [item.idCategoria]);
