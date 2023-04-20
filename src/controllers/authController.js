@@ -181,11 +181,17 @@ export const register = async (req, res) => {
         if (!validateUser(newUser))
             return res.status(400).send("Datos invalidos");
 
+        let [[{ numeroUsuarios }]] = await pool.query("SELECT COUNT(*) AS numeroUsuarios FROM usuarios");
+
+        newUser.esAdmin = 0;
+        if (numeroUsuarios === 0) {
+            newUser.esAdmin = 1;
+        }
+
         const salt = randomBytes(16).toString('hex');
         const hashedPassword = scryptSync(newUser.contrasena, salt, 64).toString('hex');
         newUser.contrasena = `${salt}:${hashedPassword}`;
         newUser.id = 0;
-        newUser.esAdmin = 0;
 
         newUser.municipio = estados[newUser.estado].municipios[newUser.municipio];
         newUser.estado = estados[newUser.estado].nombre;
