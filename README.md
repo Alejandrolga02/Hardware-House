@@ -13,12 +13,14 @@ Y la segunda es un panel de administrador donde puede agregar productos, categor
 ## Tecnologias usadas
 
 -   [Nodejs](https://nodejs.org/en)
+-   [npm](https://www.npmjs.com/)
 -   [Git](https://git-scm.com/)
 -   [MySQL](https://www.mysql.com/)
 -   [Bootstrap](https://getbootstrap.com/)
 -   [Visual Studio Code](https://code.visualstudio.com/)
 -   [Cloudinary](https://cloudinary.com/)
 -   [AWS](https://aws.amazon.com/es/)
+-   [TablePlus](https://tableplus.com/)
 
 ## Instalación local
 
@@ -72,11 +74,19 @@ SECRET_OR_PRIVATE_KEY = "your_secret_or_private_key"
 npm run dev
 ```
 
-9. Accedemos a la pagina
+9. Acceder a la pagina
 
 ```
 http://localhost/
 ```
+
+10. Crear una cuenta en
+
+```
+http://localhost/register
+```
+
+11. Crear categorias, productos y promociones en el panel de administrador
 
 ## Desarrollado por
 
