@@ -3,6 +3,7 @@ import cloudinary from '../cloudinary.js';
 import fs from "fs";
 import { escape } from 'mysql2';
 import fileUpload from "express-fileupload";
+import { CLOUDINARY_CLOUD_NAME } from "../config.js";
 let query = "SELECT productos.codigo, productos.nombre, productos.descripcion, productos.precio, productos.urlImagen, productos.estado, productos.disponibilidad, categorias.nombre AS categoria FROM productos LEFT JOIN categorias ON productos.idCategoria = categorias.id";
 let form = {};
 
@@ -33,6 +34,7 @@ export const renderProducts = async (req, res) => {
 			scripts: [
 				"/js/admin-productos.js"
 			],
+			CLOUDINARY_CLOUD_NAME,
 			isLogged: req.user.isLogged
 		});
 	} catch (error) {
@@ -260,6 +262,7 @@ export const editProducts = async (req, res) => {
 			scripts: [
 				"/js/admin-edit-product.js"
 			],
+			CLOUDINARY_CLOUD_NAME,
 			isLogged: req.user.isLogged
 		});
 	} catch (error) {

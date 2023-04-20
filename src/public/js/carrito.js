@@ -357,7 +357,7 @@ async function mostrarCarrito() {
 
 			tableContent.innerHTML += `<tr>
 				<td class="text-center p-0">
-					<img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_150,h_150,c_fill,q_90/${data.urlImagen}" alt="Imagen de ${data.nombre}" />
+					<img class="w-100" src="http://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/w_150,h_150,c_fill,q_90/${data.urlImagen}" alt="Imagen de ${data.nombre}" />
 				</td>
 				<td class="text-center" scope="row">
 					${data.nombre}

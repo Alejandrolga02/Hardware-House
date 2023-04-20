@@ -51,7 +51,7 @@
 				<tbody>
 					<% ventasDetalles.forEach(element=> { %>
 					<tr>
-						<td class="text-center p-0"><img class="w-100" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_120,h_120,c_fill,q_90/<%= element.urlImagen %>" alt="Imagen de <%= element.nombre %>" /></td>
+						<td class="text-center p-0"><img class="w-100" src="http://res.cloudinary.com/<%= CLOUDINARY_CLOUD_NAME %>/image/upload/w_120,h_120,c_fill,q_90/<%= element.urlImagen %>" alt="Imagen de <%= element.nombre %>" /></td>
 						<td class="text-center">
 							<%= element.nombre %>
 						</td>

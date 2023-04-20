@@ -41,7 +41,7 @@
 			<% products.forEach(element => { %>
 			<div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
 				<div class="card h-100">
-					<img src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_298,h_298,c_fill,q_90/<%= element.urlImagen %>" class="card-img-top">
+					<img src="http://res.cloudinary.com/<%= CLOUDINARY_CLOUD_NAME %>/image/upload/w_298,h_298,c_fill,q_90/<%= element.urlImagen %>" class="card-img-top">
 					<div class="card-body pb-5 position-relative">
 						<h5 class="card-title my-0"><%= element.nombre %></h5>
 						<p class="card-text my-2"><%= element.descripcion %></p>

@@ -58,7 +58,7 @@
 		</div>
 		<div class="mb-2 d-flex flex-column">
 			<label for="urlImagen" class="form-label">Imagen</label>
-			<img id="imgPreview" src="http://res.cloudinary.com/dzlemvbvt/image/upload/w_200,h_200,c_fill,q_90/<%= product.urlImagen %>" height="200" class="align-self-center my-2" alt="Imagen introducida" />
+			<img id="imgPreview" src="http://res.cloudinary.com/<%= CLOUDINARY_CLOUD_NAME %>/image/upload/w_200,h_200,c_fill,q_90/<%= product.urlImagen %>" height="200" class="align-self-center my-2" alt="Imagen introducida" />
 			<input class="form-control" type="file" accept="image/png,image/jpeg" id="urlImagen" name="urlImagen" />
 		</div>
 

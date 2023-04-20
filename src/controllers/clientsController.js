@@ -1,5 +1,6 @@
 import { escape } from "mysql2";
 import { pool } from "../db.js";
+import { CLOUDINARY_CLOUD_NAME } from "../config.js";
 
 //Función para validar que la cadena no cuente con caracteres especiales
 const validateString = (cadena) => {
@@ -24,7 +25,6 @@ export const renderClientIndex = async (req, res) => {
 				item.precioFinal = parseFloat(item.precio - (item.precio * (parseFloat(req.user.descuento) / 100)));
 			}
 		}
-
 		res.render("clients/index.html", {
 			title: "Inicio",
 			products: rows,
@@ -38,7 +38,8 @@ export const renderClientIndex = async (req, res) => {
 				"/js/carrito.js"
 			],
 			isLogged: req.user.isLogged,
-			esAdmin: req.user.esAdmin
+			esAdmin: req.user.esAdmin,
+			CLOUDINARY_CLOUD_NAME
 		});
 	} catch (error) {
 		console.log(error);
@@ -59,7 +60,8 @@ export const renderClientAboutUs = async (req, res) => {
 				"/js/carrito.js"
 			],
 			isLogged: req.user.isLogged,
-			esAdmin: req.user.esAdmin
+			esAdmin: req.user.esAdmin,
+			CLOUDINARY_CLOUD_NAME
 		});
 	} catch (error) {
 		console.log(error);
@@ -93,7 +95,8 @@ export const renderClientProducts = async (req, res) => {
 				"/js/carrito.js"
 			],
 			isLogged: req.user.isLogged,
-			esAdmin: req.user.esAdmin
+			esAdmin: req.user.esAdmin,
+			CLOUDINARY_CLOUD_NAME
 		});
 	} catch (error) {
 		console.log(error);
@@ -148,7 +151,8 @@ export const renderClientFAQ = async (req, res) => {
 				"/js/carrito.js"
 			],
 			isLogged: req.user.isLogged,
-			esAdmin: req.user.esAdmin
+			esAdmin: req.user.esAdmin,
+			CLOUDINARY_CLOUD_NAME
 		});
 	} catch (error) {
 		console.log(error);
@@ -263,7 +267,8 @@ export const renderNotFound = async (req, res) => {
 			scripts: [
 				"/js/carrito.js"
 			],
-			isLogged: req.user.isLogged
+			isLogged: req.user.isLogged,
+			CLOUDINARY_CLOUD_NAME
 		});
 	} catch (error) {
 		console.log(error);
